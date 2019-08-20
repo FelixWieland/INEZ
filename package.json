@@ -1,0 +1,43 @@
+{
+  "name": "inez",
+  "version": "1.0.0",
+  "description": "INEZ- Der INtelligente EinkaufZettell by EDEKA DIGITAL",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=9.0",
+    "npm": ">=5.0",
+    "yarn": ">=1.0"
+  },
+  "main": "src/server/index.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
+    "server": "babel-node src/server/index.js",
+    "start": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "@babel/cli": "^7.5.5",
+    "esm": "^3.2.25",
+    "express": "^4.16.3",
+    "mongodb": "^3.3.0",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0-beta.49",
+    "babel-loader": "^8.0.0-beta.3",
+    "clean-webpack-plugin": "^0.1.19",
+    "concurrently": "^3.5.1",
+    "css-loader": "^0.28.11",
+    "html-webpack-plugin": "^3.2.0",
+    "nodemon": "^1.17.5",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.9.1",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.1.4"
+  }
+}
