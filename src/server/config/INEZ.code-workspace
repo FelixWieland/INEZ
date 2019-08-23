@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "/Users/wielandf/Documents/GitHub/Go/src/github.com/FelixWieland/OpenFood"
+		},
+		{
+			"path": "/Users/wielandf/Documents/GitHub/Go/src/github.com/FelixWieland/ParallelLevenshtein"
 		}
 	],
 	"settings": {}

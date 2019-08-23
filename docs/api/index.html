@@ -1,0 +1,103 @@
+<!-- HTML for static distribution bundle build -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>INEZ-API - Der INtelligente EinkaufsZettel</title>
+    <link rel="stylesheet" type="text/css" href="dist/swagger-ui.css">
+    <link rel="icon" type="image/png" href="dist/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="dist/favicon-16x16.png" sizes="16x16" />
+    <style>
+        html {
+            box-sizing: border-box;
+            overflow: -moz-scrollbars-vertical;
+            overflow-y: scroll;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        body {
+            margin: 0;
+            background: #fafafa;
+        }
+
+        .inez-custom-navbar {
+            width: 100%;
+            height: 70px;
+            background-color: #5c6bc0;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            z-index: 90000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        }
+
+        #swagger-ui {
+            width: 80%;
+            margin-left: 10%;
+        }
+
+        @media (max-width: 768px) {
+            #swagger-ui {
+                width: 100%;
+                margin-left: 0%;
+            }
+        }
+
+        .title { 
+            font-size: 45px !important;
+            margin-bottom: 10px !important;
+            margin-top: 10px !important;
+        }
+
+        .description {
+            background-color: white;
+            padding: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+            margin-bottom: 20px !important;
+            margin-top: 20px !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="inez-custom-navbar">
+
+    </div>
+    <div id="swagger-ui"></div>
+
+    <script src="dist/swagger-ui-bundle.js"> </script>
+    <script src="dist/swagger-ui-standalone-preset.js"> </script>
+    <script>
+        window.onload = function () {
+            // Begin Swagger UI call region
+            const ui = SwaggerUIBundle({
+                url: "api.yaml",
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout"
+            })
+            // End Swagger UI call region
+            window.ui = ui
+        }
+    </script>
+</body>
+
+</html>
