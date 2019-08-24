@@ -25,7 +25,11 @@
     "mongodb": "^3.3.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
+<<<<<<< HEAD
     "sinon": "^7.4.1"
+=======
+    "swagger-ui-dist": "^3.23.5"
+>>>>>>> dc5ddf4317cdc66cf599e3b321ec26b453047661
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
