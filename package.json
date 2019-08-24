@@ -13,24 +13,30 @@
 	"scripts": {
 		"build": "webpack --mode production",
 		"client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
-		"server": "babel-node src/server/index.js",
+		"server": "nodemon --exec babel-node src/server/index.js",
 		"start": "concurrently \"npm run server\" \"npm run client\""
 	},
 	"dependencies": {
 		"@babel/cli": "^7.5.5",
+		"@material-ui/core": "^4.3.3",
+		"@material-ui/icons": "^4.2.1",
+		"@material-ui/styles": "^4.3.3",
 		"chai": "^4.2.0",
+		"downshift": "^3.2.12",
 		"esm": "^3.2.25",
 		"express": "^4.16.3",
 		"mocha": "^6.2.0",
 		"mongodb": "^3.3.0",
 		"react": "^16.4.0",
 		"react-dom": "^16.4.0",
+		"react-draggable": "^3.3.2",
 		"sinon": "^7.4.1",
 		"swagger-ui-dist": "^3.23.5"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.5.5",
 		"@babel/node": "^7.5.5",
+		"@babel/plugin-proposal-class-properties": "^7.5.5",
 		"@babel/preset-env": "^7.5.5",
 		"@babel/preset-react": "^7.0.0-beta.49",
 		"babel-loader": "^8.0.0-beta.3",
