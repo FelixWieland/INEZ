@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,8 +13,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { TextField, Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import { withStyles } from '@material-ui/styles'
+import DownshiftTextfield from './DownshiftTexfield';
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
     root: {
         flexGrow: 1,
     },
@@ -29,67 +31,68 @@ const useStyles = makeStyles(theme => ({
     },
     addButton: {
         marginLeft: 10,
-    }
-}));
-
-const overrideTextfield = makeStyles(theme => ({
+    },
     toolbar: {
         backgroundColor: "#FFFFFF"
     }
-}))
+});
 
+class Navbar extends Component {
 
-const Navbar = (props) => {
-    const classes = useStyles();
-    const overrides = overrideTextfield();
+    constructor(props) {
+        super(props);
+        this.state = {
+            fullstring: ""
+        }
+    }
 
-    return (
-        <AppBar position="static">
-            <Toolbar variant="dense" classes={{ root: overrides.toolbar }}>
-                <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                    <MenuIcon />
-                </IconButton>
-                <Typography variant="h6" className={classes.title}>
-                    {document.title}
-                </Typography>
-                <div>
-                    <IconButton
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        color="inherit"
-                    >
-                        <AccountCircle />
+    render() {
+        const { classes } = this.props;
+
+        return (
+            <AppBar position="static">
+                <Toolbar variant="dense" classes={{ root: classes.toolbar }}>
+                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                        <MenuIcon />
                     </IconButton>
-                    <Menu
-                        id="menu-appbar"
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                    >
-                        <MenuItem>Profile</MenuItem>
-                        <MenuItem>My account</MenuItem>
-                    </Menu>
-                </div>
-            </Toolbar>
-            <Toolbar variant="dense">
-                <TextField
-                    classes={{ root: overrides.root }}
-                    className={classes.textField}
-                    placeholder="Ich brauche (z. B. 3L Milch)"
-                />
-                <Button className={classes.addButton} variant="outlined">
-                    <AddIcon />
-                </Button>
-            </Toolbar>
-        </AppBar>
-    )
+                    <Typography variant="h6" className={classes.title}>
+                        {document.title}
+                    </Typography>
+                    <div>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            color="inherit"
+                        >
+                            <AccountCircle />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                        >
+                            <MenuItem>Profile</MenuItem>
+                            <MenuItem>My account</MenuItem>
+                        </Menu>
+                    </div>
+                </Toolbar>
+                <Toolbar variant="dense">
+                    <DownshiftTextfield />
+                    <Button className={classes.addButton} variant="outlined">
+                        <AddIcon />
+                    </Button>
+                </Toolbar>
+            </AppBar>
+        )
+    }
 }
 
-export default Navbar
+export default withStyles(styles)(Navbar)

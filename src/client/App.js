@@ -4,6 +4,8 @@ import GroupFAB from './components/GroupFAB';
 import { theme } from './theme';
 import Navbar from './components/Navbar';
 import GroceryList from './components/GroceryList';
+import DownshiftTextfield from './components/DownshiftTexfield';
+import Homepage from './components/Homepage';
 
 const App = (props) => {
 	const [state, setState] = useState({
@@ -20,6 +22,7 @@ const App = (props) => {
 	return (
 		<>
 			<MuiThemeProvider theme={theme}>
+				{/* <Homepage /> */}
 				<Navbar />
 				<Container maxWidth="md">
 					<GroceryList />
@@ -29,5 +32,9 @@ const App = (props) => {
 		</>
 	);
 }
+
+/*
+
+*/
 
 export default App;
