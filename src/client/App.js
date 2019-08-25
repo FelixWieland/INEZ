@@ -5,11 +5,14 @@ const App = (props) => {
 		username: "",
 	});
 
-	fetch('/api/getUsername')
-      .then(res => res.json())
-      .then(user => setState({
-        username: user.username
-      }));
+	if (state.username === "") {
+		fetch('/api/getUsername')
+			.then(res => res.json())
+			.then(user => setState({
+				username: user.username
+			}));
+	}
+
 
 	return (
 		<p>Hello {state.username}</p>
