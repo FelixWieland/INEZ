@@ -1,4 +1,11 @@
 import React, { Component, useState } from 'react'
+import { Button, MuiThemeProvider, Container } from '@material-ui/core';
+import GroupFAB from './components/GroupFAB';
+import { theme } from './theme';
+import Navbar from './components/Navbar';
+import GroceryList from './components/GroceryList';
+import DownshiftTextfield from './components/DownshiftTexfield';
+import Homepage from './components/Homepage';
 
 const App = (props) => {
 	const [state, setState] = useState({
@@ -14,9 +21,23 @@ const App = (props) => {
 	}
 
 
+	//<p>Hello {state.username} <Button color="primary" variant="contained">Test</Button></p>
 	return (
-		<p>Hello {state.username}</p>
+		<>
+			<MuiThemeProvider theme={theme}>
+				{/* <Homepage /> */}
+				<Navbar />
+				<Container maxWidth="md">
+					<GroceryList />
+				</Container>
+				<GroupFAB />
+			</MuiThemeProvider>
+		</>
 	);
 }
+
+/*
+
+*/
 
 export default App;
