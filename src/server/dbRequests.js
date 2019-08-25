@@ -26,7 +26,6 @@ mongoose.connect(MONGO_URI,{ useNewUrlParser: true});
  *  create a user, gives back a null for success and a err in case of a failure
  */
 var createUser = function(name, password_hash, done){
-	console.log("createUser: name: " + name +" pwhash " +password_hash);
 	var user = new model.user({name: name, password_hash : password_hash});
 	user.save(function(err, data){
 		if (err)
@@ -53,24 +52,41 @@ var getUser = function (name, done){
  *  Get a passwordhash from user by name
  *  returns null or the userpassword
  */
-var getPasswordhash = function (name){
-	model.user.findOne({name : name}),function (err, data) {
-		if (err) return null
-		return data.password_hash;
-	}
+var getPasswordhash = function (name,done){
+	model.user.findOne({name : name},function (err, data) {
+		if (err) return done(err);
+		return done(null, data.password_hash);
+	});
 }
 
 /**
  * Delete a user by name
- * their is no return
+ * return is a error a true
  */
-var deleteUser = function(name){
+var deleteUser = function(name,done){
 	model.user.findOne({name: name}, function ( err, data) {
-		if (err) return err;
-		data.remove();
-		return null;
+		if (err) return done (err);
+		else{
+			if(data!=null)
+				data.remove();
+			return done(null, true);
+		}
 	})
 }
+
+/** createShoppingList
+ *  this function will return the ID of a shoppingList or a Error
+ */
+var createUser = function(name, password_hash, done){
+	console.log("createUser: name: " + name +" pwhash " +password_hash);
+	var user = new model.user({name: name, password_hash : password_hash});
+	user.save(function(err, data){
+		if (err)
+			return done(err);
+		return done(null,data);
+	});
+}
+
 
 /**
  *  Export all functions for the database
