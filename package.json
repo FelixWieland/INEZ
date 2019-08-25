@@ -18,9 +18,11 @@
 	},
 	"dependencies": {
 		"@babel/cli": "^7.5.5",
+		"bcrypt": "^3.0.6",
 		"chai": "^4.2.0",
 		"esm": "^3.2.25",
 		"express": "^4.16.3",
+		"express-session": "^1.16.2",
 		"mocha": "^6.2.0",
 		"mongodb": "^3.3.0",
 		"react": "^16.4.0",
