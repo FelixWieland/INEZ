@@ -75,17 +75,47 @@ var deleteUser = function(name,done){
 }
 
 /** createShoppingList
- *  this function will return the ID of a shoppingList or a Error
+ *  this function will return the JSON of a shoppingList or a Error
  */
-var createUser = function(name, password_hash, done){
-	console.log("createUser: name: " + name +" pwhash " +password_hash);
-	var user = new model.user({name: name, password_hash : password_hash});
-	user.save(function(err, data){
-		if (err)
-			return done(err);
-		return done(null,data);
-	});
-}
+var createShoppingList = function(userName, listname , done){
+
+
+		var shoppingList= new model.shopping_List({list_name: listname});
+		shoppingList.save(function(err, listData){
+			if (err)
+				return done(err);
+			else{
+				model.user.findOne({name: userName}, function ( err, data) {
+					if (err) return done (err);
+					else{
+						if(data!=null){
+							data.shopping_lists.push(listData._id);
+							data.save();
+						}
+
+						return done(null, listData);
+					}
+				})
+			}
+		});
+	}
+/**
+ * DeleteShoppingList
+ * this function will delete a shoppingList by its documentID
+ * In case of an Error it will return err, else it will return null, true
+ */
+var deleteShoppingList = function(id,done){
+	model.shopping_List.findOne({_id: id}, function ( err, data) {
+		if (err) return done(err);
+		else {
+			if (data != null)
+				data.remove();
+			return done(null, true);
+		}
+	})
+};
+
+
 
 
 /**
@@ -95,5 +125,7 @@ module.exports = {
 	createUser : createUser,
 	getUser: getUser,
 	getPasswordhash: getPasswordhash,
-	deleteUser: deleteUser
+	deleteUser: deleteUser,
+	createShoppingList: createShoppingList,
+	deleteShoppingList:deleteShoppingList
 }
