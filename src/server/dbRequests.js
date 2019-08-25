@@ -115,6 +115,15 @@ var deleteShoppingList = function(id,done){
 	})
 };
 
+/**
+ *Get a list of all Products
+ */
+var getAllProducts = function(done){
+	model.products.find({}, function(err, data) {
+		if(err) return done(err);
+		done (null, data)
+	}).select({"name":1});
+}
 
 
 
@@ -127,5 +136,6 @@ module.exports = {
 	getPasswordhash: getPasswordhash,
 	deleteUser: deleteUser,
 	createShoppingList: createShoppingList,
-	deleteShoppingList:deleteShoppingList
+	deleteShoppingList:deleteShoppingList,
+	getAllProducts:getAllProducts
 }
