@@ -12,11 +12,14 @@ const App = (props) => {
 		username: "",
 	});
 
-	fetch('/api/getUsername')
-		.then(res => res.json())
-		.then(user => setState({
-			username: user.username
-		}));
+	if (state.username === "") {
+		fetch('/api/getUsername')
+			.then(res => res.json())
+			.then(user => setState({
+				username: user.username
+			}));
+	}
+
 
 	//<p>Hello {state.username} <Button color="primary" variant="contained">Test</Button></p>
 	return (
