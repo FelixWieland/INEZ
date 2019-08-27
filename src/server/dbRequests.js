@@ -24,7 +24,7 @@ let getUser = function (name, done){
 		if(err)
 			return done(null);
 		else
-			if (data==null) return done(null);
+			if (data==undefined) return done(null);
 			data.password_hash=null;
 		return done(null, data);
 	});
@@ -67,6 +67,7 @@ let createShoppingList = function(userName, listname , done){
 			else{
 				model.user.findOne({name: userName}, function ( err, data) {
 					if (err) return done (err);
+					if(data==undefined) return  done("error");
 					else{
 						if(data!=null){
 							data.shopping_lists.push(listData._id);
@@ -96,6 +97,30 @@ let deleteShoppingList = function(id,done){
 };
 
 /**
+ *  Add Product to a shopping List by the ID of the ShoppingList
+ *  Required Parameters: ShoppingListID, ProductID, Measure, Amount
+ *  In Case of an Error it will return an error, else it will return the ShoppingList as JSON
+ */
+let addProductToShoppingList = function(shoppingListId, productId, measure, amount, done){
+	model.shopping_List.findOne({_id: shoppingListId}, function (err, data) {
+		if(err) return err;
+		if(data==null){
+			return done(null, null);
+		}
+		try {
+			data.products.push({productId: productId, measure: measure, amount : amount});
+		}
+		catch (e) {
+			return done(e);
+		}
+		data.save();
+		return done(data);
+	});
+}
+
+
+
+/**
  *Get a list of all Products
  */
 let getAllProducts = function(done){
@@ -117,5 +142,6 @@ module.exports = {
 	deleteUser: deleteUser,
 	createShoppingList: createShoppingList,
 	deleteShoppingList:deleteShoppingList,
+	addProductToShoppingList:addProductToShoppingList,
 	getAllProducts:getAllProducts
 }
