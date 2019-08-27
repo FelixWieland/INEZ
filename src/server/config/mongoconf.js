@@ -1,11 +1,11 @@
 import { MongoClient } from 'mongodb';
 
 // Connect to the db
-export const connect = async () => {
+export const connect = async (connectionString, database) => {
     return new Promise((resolve, reject) => {
-        MongoClient.connect("mongodb://localhost:27017", (err, db) => {
+        MongoClient.connect(connectionString, { useNewUrlParser: true }, (err, db) => {
             if (err) reject(err);
-            resolve(db.db("Symblexity"));
+            resolve(db.db(database));
         });
     });
 }

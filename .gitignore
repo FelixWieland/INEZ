@@ -47,3 +47,5 @@ ehthumbs.db
 # Windows shortcuts #
 #####################
 *.lnk
+
+credentials.json
