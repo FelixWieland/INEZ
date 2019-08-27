@@ -5,6 +5,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Draggable from 'react-draggable';
+import GroceryItem from './GroceryItem';
 
 const styles = theme => ({
     list: {
@@ -86,18 +87,21 @@ class GroceryList extends React.Component {
         )
     }
 
+    buildGroceryItem = (name) => {
+        return (
+            <GroceryItem name={name} />
+        );
+    }
+
     render() {
         const { classes } = this.props
         return (
             <List className={classes.list}>
-                {this.buildListItem(undefined, this.buildText("Milch", 1, "Liter"))}
-                {this.buildGroup("DemoGroup", (
-                    <>
-                        {this.buildListItem(undefined, this.buildText("Milch", 1, "Liter"))}
-                        {this.buildListItem(undefined, this.buildText("Milch", 1, "Liter"))}
-                        {this.buildListItem(undefined, this.buildText("Milch", 1, "Liter"))}
-                    </>
-                ))}
+                {this.buildGroceryItem("Milchschnitte")}
+                {this.buildGroceryItem("Milchschnitte")}
+                {this.buildGroceryItem("Milchschnitte")}
+                {this.buildGroceryItem("Milchschnitte")}
+                {this.buildGroceryItem("Milchschnitte")}
             </List>
         )
     }

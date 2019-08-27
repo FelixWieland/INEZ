@@ -9,8 +9,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Chip from '@material-ui/core/Chip';
 import subscribeToAutosuggestion from '../api';
 
-let suggestions = [];
-
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -80,7 +78,7 @@ class DownshiftTextfield extends React.Component {
                     fontWeight: isSelected ? 500 : 400,
                 }}
             >
-                {suggestion.name}
+                {suggestion.label}
             </MenuItem>
         );
     }
@@ -154,6 +152,7 @@ class DownshiftTextfield extends React.Component {
                 product: e
             })
         }
+        return e
         //setstate({ fullstring: e.target.value })
     }
 
@@ -172,11 +171,16 @@ class DownshiftTextfield extends React.Component {
                         inputValue,
                         isOpen,
                         selectedItem,
+                        clearSelection,
                     }) => {
                         const { onBlur, onFocus, ...inputProps } = getInputProps({
                             placeholder: 'Produkt z.B. (1L Milch)',
+                            onChange: event => {
+                                if (event.target.value === '') {
+                                    clearSelection();
+                                }
+                            }
                         });
-
 
                         return (
                             <div className={classes.container}>
@@ -184,7 +188,7 @@ class DownshiftTextfield extends React.Component {
                                     fullWidth: true,
                                     classes,
                                     InputLabelProps: getLabelProps({ shrink: true }),
-                                    InputProps: { onBlur, onFocus },
+                                    InputProps: { onBlur, onFocus, onFocus },
                                     inputProps,
                                     value: inputValue,
                                     onChange: this.handleChange

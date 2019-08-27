@@ -10,8 +10,12 @@ export const theme = createMuiTheme({
         secondary: {
             main: "#ffee58"
         },
+        background: {
+            default: '#eeeeee',
+        },
     },
     status: {
         danger: 'orange',
     },
+
 });

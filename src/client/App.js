@@ -3,9 +3,9 @@ import { Button, MuiThemeProvider, Container } from '@material-ui/core';
 import GroupFAB from './components/GroupFAB';
 import { theme } from './theme';
 import Navbar from './components/Navbar';
-import GroceryList from './components/GroceryList';
 import DownshiftTextfield from './components/DownshiftTexfield';
 import Homepage from './components/Homepage';
+import GroceryGroups from './components/GroceryGroups';
 
 const App = (props) => {
 	const [state, setState] = useState({
@@ -28,7 +28,7 @@ const App = (props) => {
 				{/* <Homepage /> */}
 				<Navbar />
 				<Container maxWidth="md">
-					<GroceryList />
+					<GroceryGroups />
 				</Container>
 				<GroupFAB />
 			</MuiThemeProvider>

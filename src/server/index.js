@@ -38,12 +38,13 @@ io.on('connection', (socket) => {
         socket.emit('autosuggest', {
           suggestions: result.map((elm) => {
             return {
-              name: elm.name
+              label: elm.name
             }
           })
-
         })
       }, 10)
-    } catch { }
+    } catch (ex) {
+      console.log(ex)
+    }
   });
 })

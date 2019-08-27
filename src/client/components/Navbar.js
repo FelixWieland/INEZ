@@ -15,6 +15,7 @@ import { TextField, Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { withStyles } from '@material-ui/styles'
 import DownshiftTextfield from './DownshiftTexfield';
+import ReactAutosuggestTextfield from './ReactAutosuggestTextfield';
 
 const styles = theme => ({
     root: {
@@ -42,9 +43,20 @@ class Navbar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            fullstring: ""
+            fullstring: "",
+            textfieldValue: {},
+            clearValue: () => undefined
         }
     }
+
+    setValue = (value) => this.setState({ textfieldValue: value })
+
+    handleClick = (e) => {
+        console.log(this.state.textfieldValue)
+        this.state.clearValue()
+    }
+
+    setClearValue = (fn) => this.setState({ clearValue: fn })
 
     render() {
         const { classes } = this.props;
@@ -56,7 +68,7 @@ class Navbar extends Component {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        {document.title}
+                        {""}
                     </Typography>
                     <div>
                         <IconButton
@@ -85,8 +97,9 @@ class Navbar extends Component {
                     </div>
                 </Toolbar>
                 <Toolbar variant="dense">
-                    <DownshiftTextfield />
-                    <Button className={classes.addButton} variant="outlined">
+                    {/* <DownshiftTextfield /> */}
+                    {<ReactAutosuggestTextfield setValue={this.setValue} setClearValue={this.setClearValue} />}
+                    <Button className={classes.addButton} variant="outlined" onClick={this.handleClick}>
                         <AddIcon />
                     </Button>
                 </Toolbar>
