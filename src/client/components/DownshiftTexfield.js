@@ -1,104 +1,17 @@
 import React from 'react';
 import deburr from 'lodash/deburr';
 import Downshift from 'downshift';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Popper from '@material-ui/core/Popper';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 import Chip from '@material-ui/core/Chip';
+import subscribeToAutosuggestion from '../api';
 
-const suggestions = [
-    { label: 'Afghanistan' },
-    { label: 'Aland Islands' },
-    { label: 'Albania' },
-    { label: 'Algeria' },
-    { label: 'American Samoa' },
-    { label: 'Andorra' },
-    { label: 'Angola' },
-    { label: 'Anguilla' },
-    { label: 'Antarctica' },
-    { label: 'Antigua and Barbuda' },
-    { label: 'Argentina' },
-    { label: 'Armenia' },
-    { label: 'Aruba' },
-    { label: 'Australia' },
-    { label: 'Austria' },
-    { label: 'Azerbaijan' },
-    { label: 'Bahamas' },
-    { label: 'Bahrain' },
-    { label: 'Bangladesh' },
-    { label: 'Barbados' },
-    { label: 'Belarus' },
-    { label: 'Belgium' },
-    { label: 'Belize' },
-    { label: 'Benin' },
-    { label: 'Bermuda' },
-    { label: 'Bhutan' },
-    { label: 'Bolivia, Plurinational State of' },
-    { label: 'Bonaire, Sint Eustatius and Saba' },
-    { label: 'Bosnia and Herzegovina' },
-    { label: 'Botswana' },
-    { label: 'Bouvet Island' },
-    { label: 'Brazil' },
-    { label: 'British Indian Ocean Territory' },
-    { label: 'Brunei Darussalam' },
-];
+let suggestions = [];
 
-function renderInput(inputProps) {
-    const { InputProps, classes, ref, ...other } = inputProps;
-
-    return (
-        <TextField
-            InputProps={{
-                inputRef: ref,
-                classes: {
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                },
-                ...InputProps,
-            }}
-            {...other}
-        />
-    );
-
-    // 
-    // 
-}
-
-
-function renderSuggestion(suggestionProps) {
-    const { suggestion, index, itemProps, highlightedIndex, selectedItem } = suggestionProps;
-    const isHighlighted = highlightedIndex === index;
-    const isSelected = (selectedItem || '').indexOf(suggestion.label) > -1;
-
-    return (
-        <MenuItem
-            {...itemProps}
-            key={suggestion.label}
-            selected={isHighlighted}
-            component="div"
-            style={{
-                fontWeight: isSelected ? 500 : 400,
-            }}
-        >
-            {suggestion.label}
-        </MenuItem>
-    );
-}
-
-function getSuggestions(value, { showEmpty = false } = {}) {
-    const inputValue = deburr(value.trim()).toLowerCase();
-    const inputLength = inputValue.length;
-    let count = 0;
-
-
-    return inputLength === 0 && !showEmpty ?
-        [] :
-        [suggestions[1], suggestions[2], suggestions[3]]
-}
-
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
     root: {
         flexGrow: 1,
         overflow: "visible"
@@ -127,19 +40,79 @@ const useStyles = makeStyles(theme => ({
     divider: {
         height: theme.spacing(2),
     },
-}));
+});
 
-export default function DownshiftTextfield(props) {
-    const classes = useStyles();
-    const [state, setstate] = React.useState({
-        fullstring: ""
-    })
+class DownshiftTextfield extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            fullstring: "",
+            emit: undefined,
+            suggestions: []
+        }
+        this.getSuggestions = this.getSuggestions.bind(this)
+    }
 
-    const hasNumbers = (t) => {
+    componentDidMount() {
+        this.setState({ emit: subscribeToAutosuggestion(this.onAutosuggest) })
+    }
+
+    onAutosuggest = (results) => {
+        this.setState({ suggestions: results.suggestions })
+    }
+
+    hasNumbers = (t) => {
         return /\d/.test(t);
     }
 
-    const extractMeasureObj = (string) => {
+    renderSuggestion = (suggestionProps) => {
+        const { suggestion, index, itemProps, highlightedIndex, selectedItem } = suggestionProps;
+        const isHighlighted = highlightedIndex === index;
+        const isSelected = (selectedItem || '').indexOf(suggestion.label) > -1;
+
+        return (
+            <MenuItem
+                {...itemProps}
+                key={suggestion.label}
+                selected={isHighlighted}
+                component="div"
+                style={{
+                    fontWeight: isSelected ? 500 : 400,
+                }}
+            >
+                {suggestion.name}
+            </MenuItem>
+        );
+    }
+
+    getSuggestions = (value) => {
+        const inputValue = deburr(value.trim()).toLowerCase();
+        const inputLength = inputValue.length;
+
+        return inputLength === 0 ?
+            [] :
+            this.state.suggestions
+    }
+
+    renderInput = (inputProps) => {
+        const { InputProps, classes, ref, ...other } = inputProps;
+
+        return (
+            <TextField
+                InputProps={{
+                    inputRef: ref,
+                    classes: {
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                    },
+                    ...InputProps,
+                }}
+                {...other}
+            />
+        );
+    }
+
+    extractMeasureObj = (string) => {
         //(\D*) -> Liter
         //(.* )
         try {
@@ -171,63 +144,75 @@ export default function DownshiftTextfield(props) {
         }
     }
 
-    const handleChange = (e) => {
+    handleChange = (e) => {
         try {
-            console.log(extractMeasureObj(e))
-        } catch { }
-
+            this.state.emit(this.extractMeasureObj(e))
+        } catch {
+            this.state.emit({
+                amount: 0,
+                measure: "",
+                product: e
+            })
+        }
         //setstate({ fullstring: e.target.value })
     }
 
-    return (
-        <div className={classes.root}>
-            <Downshift id="downshift-simple" onInputValueChange={handleChange}>
-                {({
-                    getInputProps,
-                    getItemProps,
-                    getLabelProps,
-                    getMenuProps,
-                    highlightedIndex,
-                    inputValue,
-                    isOpen,
-                    selectedItem,
-                }) => {
-                    const { onBlur, onFocus, ...inputProps } = getInputProps({
-                        placeholder: 'Produkt z.B. (1L Milch)',
-                    });
+    render() {
+        const { classes } = this.props;
+
+        return (
+            <div className={classes.root}>
+                <Downshift id="downshift-simple" onInputValueChange={this.handleChange}>
+                    {({
+                        getInputProps,
+                        getItemProps,
+                        getLabelProps,
+                        getMenuProps,
+                        highlightedIndex,
+                        inputValue,
+                        isOpen,
+                        selectedItem,
+                    }) => {
+                        const { onBlur, onFocus, ...inputProps } = getInputProps({
+                            placeholder: 'Produkt z.B. (1L Milch)',
+                        });
 
 
-                    return (
-                        <div className={classes.container}>
-                            {renderInput({
-                                fullWidth: true,
-                                classes,
-                                InputLabelProps: getLabelProps({ shrink: true }),
-                                InputProps: { onBlur, onFocus },
-                                inputProps,
-                                value: inputValue,
-                                onChange: handleChange
-                            })}
+                        return (
+                            <div className={classes.container}>
+                                {this.renderInput({
+                                    fullWidth: true,
+                                    classes,
+                                    InputLabelProps: getLabelProps({ shrink: true }),
+                                    InputProps: { onBlur, onFocus },
+                                    inputProps,
+                                    value: inputValue,
+                                    onChange: this.handleChange
+                                })}
 
-                            <div {...getMenuProps()}>
-                                {isOpen ? (
-                                    <Paper className={classes.paper} square>
-                                        {getSuggestions(inputValue).map((suggestion, index) =>
-                                            renderSuggestion({
-                                                suggestion,
-                                                index,
-                                                itemProps: getItemProps({ item: suggestion.label }),
-                                                highlightedIndex,
-                                                selectedItem,
-                                            }),
-                                        )}
-                                    </Paper>
-                                ) : null}
+                                <div {...getMenuProps()}>
+                                    {isOpen ? (
+                                        <Paper className={classes.paper} square>
+                                            {this.getSuggestions(inputValue).map((suggestion, index) =>
+                                                this.renderSuggestion({
+                                                    suggestion,
+                                                    index,
+                                                    itemProps: getItemProps({ item: suggestion.label }),
+                                                    highlightedIndex,
+                                                    selectedItem,
+                                                }),
+                                            )}
+                                        </Paper>
+                                    ) : null}
+                                </div>
                             </div>
-                        </div>
-                    );
-                }}
-            </Downshift>
-        </div>
-    );
+                        );
+                    }}
+                </Downshift>
+            </div>
+        );
+    }
+
 }
+
+export default withStyles(styles)(DownshiftTextfield)

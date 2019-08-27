@@ -50,15 +50,21 @@ class FuzzyAutosuggest {
             this.loadDataset(function (result) {
                 var fuse = that.initializeFuse(result)
                 that.loading = false
-                if (limit === undefined)
+                if (limit === undefined) {
                     respond(fuse.search(toSeachFor))
-                else
+                }
+                else {
                     respond(fuse.search(toSeachFor).slice(0, limit))
-
+                }
             })
             return
         }
-        respond(this.fuse.search(toSeachFor))
+        if (limit === undefined) {
+            respond(this.fuse.search(toSeachFor))
+        }
+        else {
+            respond(this.fuse.search(toSeachFor).slice(0, limit))
+        }
     }
 }
 
