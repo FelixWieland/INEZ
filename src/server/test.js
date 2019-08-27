@@ -3,7 +3,6 @@ var request= require("./dbRequests");
 
 
 request.getUser("Felix",function (err, data) {
-	console.log("hi");
 	if (err) console.log(err);
 	else {
 		console.log(data);

@@ -14,4 +14,6 @@ mongoose.connect(MONGO_URI,{ useNewUrlParser: true});
 /**
  *  Export the connection
  */
-
+module.exports = {
+	mongoose:  mongoose
+};

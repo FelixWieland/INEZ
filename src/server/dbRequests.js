@@ -24,6 +24,7 @@ let getUser = function (name, done){
 		if(err)
 			return done(null);
 		else
+			if (data==null) return done(null);
 			data.password_hash=null;
 		return done(null, data);
 	});

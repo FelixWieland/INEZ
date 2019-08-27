@@ -1,19 +1,8 @@
-/**
- *  Get the required credential data.
- */
-const fs = require('fs');
 
-let rawdata = fs.readFileSync('./config/credentials.json');
-let credentials = JSON.parse(rawdata);
-const MONGO_URI=credentials.mongo.srv;
 /**
- *  Establish the connection to the mongoDb via mongoose
+ *  Establish the connection to the mongoDb via mongooseConnection module
  */
-var mongoose = require('mongoose');
-console.log(MONGO_URI);
-mongoose.connect(MONGO_URI, { useNewUrlParser: true });
-Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10000);
-console.log(mongoose);
+var mongoose = require('./mongooseConnection').mongoose
 
 
 
