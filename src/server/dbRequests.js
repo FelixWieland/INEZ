@@ -1,32 +1,13 @@
 /**
  *  Include all Models
  */
-var model = require("./config/dbModels");
-
-/**
- *  Get the required credential data.
- */
-const fs = require('fs');
-
-let rawdata = fs.readFileSync('./config/credentials.json');
-let credentials = JSON.parse(rawdata);
-const MONGO_URI=credentials.mongo.srv;
-
-
-/**
- *  Establish the connection to the mongoDb via mongoose
- */
-const mongoose = require('mongoose');
-mongoose.connect(MONGO_URI,{ useNewUrlParser: true});
-
-
-
+var model = require("./config/dbModels.js");
 
 /**
  *  create a user, gives back a null for success and a err in case of a failure
  */
-var createUser = function(name, password_hash, done){
-	var user = new model.user({name: name, password_hash : password_hash});
+let createUser = function(name, password_hash, done){
+	let user = new model.user({name: name, password_hash : password_hash});
 	user.save(function(err, data){
 		if (err)
 			return done(err);
@@ -38,7 +19,7 @@ var createUser = function(name, password_hash, done){
  *  Get a user by name without hash
  *  returns null or the user
  */
-var getUser = function (name, done){
+let getUser = function (name, done){
 	model.user.findOne({name: name}, function(err, data){
 		if(err)
 			return done(null);
@@ -52,7 +33,7 @@ var getUser = function (name, done){
  *  Get a passwordhash from user by name
  *  returns null or the userpassword
  */
-var getPasswordhash = function (name,done){
+let getPasswordhash = function (name,done){
 	model.user.findOne({name : name},function (err, data) {
 		if (err) return done(err);
 		return done(null, data.password_hash);
@@ -63,7 +44,7 @@ var getPasswordhash = function (name,done){
  * Delete a user by name
  * return is a error a true
  */
-var deleteUser = function(name,done){
+let deleteUser = function(name,done){
 	model.user.findOne({name: name}, function ( err, data) {
 		if (err) return done (err);
 		else{
@@ -77,10 +58,8 @@ var deleteUser = function(name,done){
 /** createShoppingList
  *  this function will return the JSON of a shoppingList or a Error
  */
-var createShoppingList = function(userName, listname , done){
-
-
-		var shoppingList= new model.shopping_List({list_name: listname});
+let createShoppingList = function(userName, listname , done){
+		let shoppingList= new model.shopping_List({list_name: listname});
 		shoppingList.save(function(err, listData){
 			if (err)
 				return done(err);
@@ -104,7 +83,7 @@ var createShoppingList = function(userName, listname , done){
  * this function will delete a shoppingList by its documentID
  * In case of an Error it will return err, else it will return null, true
  */
-var deleteShoppingList = function(id,done){
+let deleteShoppingList = function(id,done){
 	model.shopping_List.findOne({_id: id}, function ( err, data) {
 		if (err) return done(err);
 		else {
@@ -118,7 +97,7 @@ var deleteShoppingList = function(id,done){
 /**
  *Get a list of all Products
  */
-var getAllProducts = function(done){
+let getAllProducts = function(done){
 	model.products.find({}, function(err, data) {
 		if(err) return done(err);
 		done (null, data)

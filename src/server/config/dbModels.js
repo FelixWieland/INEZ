@@ -1,5 +1,3 @@
-
-
 /**
  *  Get the required credential data.
  */
@@ -8,25 +6,28 @@ const fs = require('fs');
 let rawdata = fs.readFileSync('./config/credentials.json');
 let credentials = JSON.parse(rawdata);
 const MONGO_URI=credentials.mongo.srv;
-
-
-
 /**
  *  Establish the connection to the mongoDb via mongoose
  */
-const mongoose = require('mongoose');
-mongoose.connect(MONGO_URI,{ useNewUrlParser: true});
+var mongoose = require('mongoose');
+console.log(MONGO_URI);
+mongoose.connect(MONGO_URI, { useNewUrlParser: true });
+Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10000);
+console.log(mongoose);
 
-let Schema = mongoose.Schema;
+
+
+
+var Schema = mongoose.Schema;
 
 let userSchema = new Schema({
 	name: {type: String, required: true, unique: true},
 	password_hash: {type: String, required:true},
-	shopping_lists: [{type:Schema.Types.ObjectId, ref: 'shopping_List'}]
+	shopping_lists: [{type: Schema.Types.ObjectId, ref: 'shopping_List'}]
 });
 userSchema.index({name: 'text'})
 
-var user = mongoose.model('user', userSchema);
+let user = mongoose.model('user', userSchema);
 
 let shoppingListSchema = new Schema({
 	list_name: {type: String, required: true},
@@ -36,7 +37,7 @@ let shoppingListSchema = new Schema({
 							}]
 });
 
-var shopping_List = mongoose.model('shopping_List', shoppingListSchema);
+let shopping_List = mongoose.model('shopping_List', shoppingListSchema);
 
 
 let productsSchema = new Schema({
@@ -45,7 +46,7 @@ let productsSchema = new Schema({
 });
 productsSchema.index({name: 'text'});
 
-var products = mongoose.model('products', productsSchema);
+let products = mongoose.model('products', productsSchema);
 
 
 let productgroupsSchema = new Schema({
@@ -54,7 +55,7 @@ let productgroupsSchema = new Schema({
 });
 productgroupsSchema.index({groupname: 'text' });
 
-var productgroups = mongoose.model('productgroups', productgroupsSchema);
+let productgroups = mongoose.model('productgroups', productgroupsSchema);
 module.exports = {
 	user:  user ,
 	shopping_List: shopping_List,
