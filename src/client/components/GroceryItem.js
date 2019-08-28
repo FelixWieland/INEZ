@@ -153,7 +153,7 @@ class GroceryItem extends Component {
         const { classes } = this.props;
         return (
             <Grid container justify="center" spacing={4} className={classes.container}>
-                <Grid item xs={6} md={3}>
+                <Grid item xs={6} md={4}>
                     <TextField
                         label={"Menge"}
                         className={classes.textField}
@@ -179,7 +179,7 @@ class GroceryItem extends Component {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={10} md={4}>
+                <Grid item xs={8} sm={11} md={3}>
                     <FormControl className={classes.selectionField}>
                         <InputLabel shrink htmlFor="group-label-placeholder">
                             Gruppe
@@ -196,7 +196,7 @@ class GroceryItem extends Component {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={2} md={1} >
+                <Grid item xs={4} sm={1} >
                     <Fab size="small" color="primary" aria-label="add" className={classes.flat} onClick={this.props.onDelete}>
                         <DeleteIcon />
                     </Fab>

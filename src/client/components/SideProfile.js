@@ -15,7 +15,8 @@ class SideProfile extends Component {
         return (
             <SwipeableDrawer
                 anchor="right"
-                open={this.props.open}
+                open={false}
+                // open={this.props.open}
                 onClose={this.props.onClose}
                 onOpen={this.props.onOpen}
             >
