@@ -16,6 +16,9 @@ import AddIcon from '@material-ui/icons/Add';
 import { withStyles } from '@material-ui/styles'
 import DownshiftTextfield from './DownshiftTexfield';
 import ReactAutosuggestTextfield from './ReactAutosuggestTextfield';
+import { withRouter } from 'react-router-dom'
+import { ArrowBack } from '@material-ui/icons'
+import SideProfile from './SideProfile';
 
 const styles = theme => ({
     root: {
@@ -45,67 +48,92 @@ class Navbar extends Component {
         this.state = {
             fullstring: "",
             textfieldValue: {},
-            clearValue: () => undefined
+            clearValue: () => undefined,
+            anchorEl: null,
+            sideProfileOpen: false,
         }
+    }
+
+    handleClick = (e) => {
+        this.props.addGroceryItem(this.state.textfieldValue)
+        this.state.clearValue()
     }
 
     setValue = (value) => this.setState({ textfieldValue: value })
 
-    handleClick = (e) => {
-        console.log(this.state.textfieldValue)
-        this.state.clearValue()
-    }
-
     setClearValue = (fn) => this.setState({ clearValue: fn })
+
+    goBack = () => this.props.history.goBack();
+
+    handleMenu = (event) => this.setState({ anchorEl: event.currentTarget });
+
+    toggleSideProfile = (event) => this.setState({
+        sideProfileOpen: true,
+        anchorEl: null
+    })
 
     render() {
         const { classes } = this.props;
 
         return (
-            <AppBar position="static">
-                <Toolbar variant="dense" classes={{ root: classes.toolbar }}>
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" className={classes.title}>
-                        {""}
-                    </Typography>
-                    <div>
-                        <IconButton
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            color="inherit"
-                        >
-                            <AccountCircle />
+            <>
+                <AppBar position="static">
+                    <Toolbar variant="dense" classes={{ root: classes.toolbar }}>
+                        <IconButton edge="start" className={classes.menuButton} onClick={this.goBack} color="inherit" aria-label="menu">
+                            {window.location.pathname === "/" ? <></> : <ArrowBack /> /*<MenuIcon />*/}
                         </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                        >
-                            <MenuItem>Profile</MenuItem>
-                            <MenuItem>My account</MenuItem>
-                        </Menu>
-                    </div>
-                </Toolbar>
-                <Toolbar variant="dense">
-                    {/* <DownshiftTextfield /> */}
-                    {<ReactAutosuggestTextfield setValue={this.setValue} setClearValue={this.setClearValue} />}
-                    <Button className={classes.addButton} variant="outlined" onClick={this.handleClick}>
-                        <AddIcon />
-                    </Button>
-                </Toolbar>
-            </AppBar>
+                        <Typography variant="h6" className={classes.title}>
+                            {""}
+                        </Typography>
+                        <div>
+                            <IconButton
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                color="inherit"
+                                onClick={this.handleMenu}
+                            >
+                                <AccountCircle />
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={this.state.anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(this.state.anchorEl)}
+                                onClose={() => this.setState({ anchorEl: null })}
+                            >
+                                <MenuItem onClick={this.toggleSideProfile}>Profil</MenuItem>
+                                <MenuItem>Logout</MenuItem>
+                            </Menu>
+                        </div>
+                    </Toolbar>
+                    <Toolbar variant="dense">
+                        {(this.props.disableAutosuggest === undefined || this.props.disableAutosuggest === false) && (
+                            <>
+                                <ReactAutosuggestTextfield setValue={this.setValue} setClearValue={this.setClearValue} />
+                                <Button className={classes.addButton} variant="outlined" onClick={this.handleClick}>
+                                    <AddIcon />
+                                </Button>
+                            </>
+                        )}
+                    </Toolbar>
+                </AppBar>
+                <SideProfile
+                    open={this.state.sideProfileOpen}
+                    onOpen={() => this.setState({ sideProfileOpen: true })}
+                    onClose={() => this.setState({ sideProfileOpen: false })}
+                />
+            </>
         )
     }
 }
 
-export default withStyles(styles)(Navbar)
+export default withStyles(styles)(withRouter(Navbar))

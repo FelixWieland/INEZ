@@ -6,11 +6,18 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import { TimerSharp } from '@material-ui/icons';
+import { TimerSharp, Delete } from '@material-ui/icons';
+import GroupFAB from './GroupFAB';
+import DialogPopup from './DialogPopup'
+import GroupDeleteFAB from './GroupDeleteFab';
+import SelectionPopup from './SelectionPopup';
 
 const styles = theme => ({
     root: {
         marginTop: 15,
+    },
+    tabbar: {
+        marginTop: 25,
     }
 });
 
@@ -45,6 +52,8 @@ class GroceryGroups extends Component {
         this.state = {
             activeTab: 0,
             groceryList: "",
+            addGroup: false,
+            deleteGroup: false,
             groups: [
                 {
                     label: "Edeka"
@@ -59,6 +68,11 @@ class GroceryGroups extends Component {
         }
     }
 
+    componentDidMount() {
+        this.props.activeGroup(this.state.groups[this.state.activeTab].label)
+    }
+
+
     toggleTab = (value) => {
         this.setState({ activeTab: value })
     }
@@ -71,7 +85,12 @@ class GroceryGroups extends Component {
         })
     }
 
+    changeGroup = (obj, newgroup) => {
+        this.state[newgroup + "AddFn"](obj.id, obj.name, obj.amount, obj.measure)
+    }
+
     handleChange(event, newValue) {
+        this.props.activeGroup(this.state.groups[newValue].label)
         this.setState({ activeTab: newValue })
     }
 
@@ -79,17 +98,66 @@ class GroceryGroups extends Component {
         return this.state.groups.map((elm, index) => {
             return (
                 <TabPanel value={elm.label} index={index} hidden={this.state.activeTab != index}>
-                    <GroceryList group={elm.label} groceryList={this.state.groceryList} />
+                    <GroceryList group={elm.label} groceryList={this.state.groceryList} onGroupChange={this.changeGroup} currentGroups={this.state.groups} exportAdd={(fn) => {
+                        this.setState({ [elm.label + "AddFn"]: fn })
+                        this.props.exportAdd(elm.label, fn)
+                    }} />
                 </TabPanel>
             );
         })
+    }
+
+    renderAddGroupPopup = (open) => {
+        return (
+            <DialogPopup
+                open={open}
+                title={"Gruppe hinzufügen"}
+                text={"Name der Gruppe"}
+                labels={{ ok: "ok", close: "close" }}
+                onOk={this.addGroup}
+                handleClose={() => this.setState({ addGroup: false })}
+            />
+        )
+    }
+
+    renderDeleteGroupPopup = (open) => {
+        return (
+            <SelectionPopup
+                open={open}
+                title={"Gruppe löschen"}
+                icon={<Delete />}
+                list={this.state.groups}
+                onOk={this.deleteGroup}
+                handleClose={() => this.setState({ deleteGroup: false })}
+            />
+        )
+    }
+
+
+    addGroup = (groupname) => {
+        let newGroups = this.state.groups;
+        newGroups.push({ label: groupname })
+        this.setState({ groups: newGroups, activeGroup: newGroups.length })
+    }
+
+    deleteGroup = (groupobj) => {
+        console.log(groupobj)
+        this.setState({ groups: this.state.groups.filter((elm) => elm.label !== groupobj.label) })
+    }
+
+    toggleAddGroupPopup = (e) => {
+        this.setState({ addGroup: true })
+    }
+
+    toggleDeleteGroupPopup = (e) => {
+        this.setState({ deleteGroup: true })
     }
 
     render() {
         const { classes } = this.props;
         return (
             <div className={classes.root}>
-                <AppBar position="static" color="default">
+                <AppBar position="static" color="default" className={classes.tabbar}>
                     <Tabs
                         value={this.state.activeTab}
                         onChange={(e, v) => this.handleChange(e, v)}
@@ -103,6 +171,10 @@ class GroceryGroups extends Component {
                     </Tabs>
                 </AppBar>
                 {this.buildTabPanels()}
+                {this.renderAddGroupPopup(this.state.addGroup)}
+                {this.renderDeleteGroupPopup(this.state.deleteGroup)}
+                <GroupDeleteFAB onClick={this.toggleDeleteGroupPopup} />
+                <GroupFAB onClick={this.toggleAddGroupPopup} />
             </div>
         )
     }

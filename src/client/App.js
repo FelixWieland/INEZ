@@ -1,43 +1,35 @@
 import React, { Component, useState } from 'react'
 import { Button, MuiThemeProvider, Container } from '@material-ui/core';
-import GroupFAB from './components/GroupFAB';
 import { theme } from './theme';
-import Navbar from './components/Navbar';
-import DownshiftTextfield from './components/DownshiftTexfield';
-import Homepage from './components/Homepage';
-import GroceryGroups from './components/GroceryGroups';
+import { withStyles } from '@material-ui/core';
+import { BrowserRouter, Route, Link, Switch } from "react-router-dom";
+import Grocerys from "./pages/Grocerys"
 
-const App = (props) => {
-	const [state, setState] = useState({
-		username: "",
-	});
 
-	if (state.username === "") {
-		fetch('/api/getUsername')
-			.then(res => res.json())
-			.then(user => setState({
-				username: user.username
-			}));
+const styles = theme => ({
+
+});
+
+class App extends Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+
+		}
 	}
 
-
-	//<p>Hello {state.username} <Button color="primary" variant="contained">Test</Button></p>
-	return (
-		<>
+	render() {
+		return (
 			<MuiThemeProvider theme={theme}>
-				{/* <Homepage /> */}
-				<Navbar />
-				<Container maxWidth="md">
-					<GroceryGroups />
-				</Container>
-				<GroupFAB />
+				<BrowserRouter>
+					<Switch>
+						<Route path="/" component={Grocerys} />
+					</Switch>
+				</BrowserRouter>
 			</MuiThemeProvider>
-		</>
-	);
+		)
+	}
 }
 
-/*
-
-*/
-
-export default App;
+export default withStyles(styles)(App);

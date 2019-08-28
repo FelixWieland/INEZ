@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { withStyles, Card, IconButton, Avatar, CardHeader, Collapse, CardContent, Typography, TextField, MenuItem, CircularProgress, Grid } from '@material-ui/core';
+import { withStyles, Card, IconButton, Avatar, CardHeader, Collapse, CardContent, Typography, TextField, MenuItem, CircularProgress, Grid, Fab, Select, FormControl, InputLabel, Input } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import CheckIcon from '@material-ui/icons/Check';
 import { green } from '@material-ui/core/colors';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const styles = theme => ({
     card: {
@@ -38,7 +39,6 @@ const styles = theme => ({
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
         width: "100%",
-        padding: 5,
     },
     fabProgress: {
         color: green[500],
@@ -57,6 +57,19 @@ const styles = theme => ({
         '&:hover': {
             cursor: "pointer"
         }
+    },
+    flat: {
+        boxShadow: "none",
+        marginTop: 25,
+    },
+    container: {
+        marginTop: -40,
+    },
+    selectionField: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: "100%",
+        marginTop: 16,
     }
 });
 
@@ -79,21 +92,10 @@ class GroceryItem extends Component {
                     value: "gramm"
                 },
                 {
-                    key: 1,
+                    key: 2,
                     value: "kilo"
                 }
             ],
-
-            groupItems: [
-                {
-                    key: 1,
-                    value: "Edeka"
-                },
-                {
-                    key: 1,
-                    value: "Lidl"
-                }
-            ]
         }
     }
 
@@ -131,7 +133,7 @@ class GroceryItem extends Component {
     }
 
     buildGroupItems = () => {
-        return this.buildItems(this.state.groupItems)
+        return this.buildItems(this.props.currentGroups.map((elm, index) => ({ key: index, value: elm.label })))
     }
 
     handleMeasureChange = (e) => {
@@ -143,13 +145,14 @@ class GroceryItem extends Component {
     }
 
     handleGroupChange = (e) => {
+        this.props.onGroupChange({ id: this.props.id, name: this.props.name, amount: this.state.amount, measure: this.state.measure }, e.target.value)
         this.setState({ group: e.target.value })
     }
 
     buildAmountInteraction = () => {
         const { classes } = this.props;
         return (
-            <Grid container justify="center">
+            <Grid container justify="center" spacing={4} className={classes.container}>
                 <Grid item xs={6} md={3}>
                     <TextField
                         label={"Menge"}
@@ -160,40 +163,45 @@ class GroceryItem extends Component {
                     />
                 </Grid>
                 <Grid item xs={6} md={4}>
-                    <TextField
-                        label={"Einheit"}
-                        select
-                        className={classes.textField}
-                        value={this.state.measure}
-                        onChange={this.handleMeasureChange}
-                        SelectProps={{
-                            MenuProps: {
-                                className: classes.menu,
-                            },
-                        }}
-                        margin="normal"
-                    >
-                        {this.buildMeasureItems()}
-                    </TextField>
+                    <FormControl className={classes.selectionField}>
+                        <InputLabel shrink htmlFor="measure-label-placeholder">
+                            Einheit
+                        </InputLabel>
+                        <Select
+                            value={this.state.measure}
+                            onChange={this.handleMeasureChange}
+                            input={<Input name="measure" id="measure-label-placeholder" />}
+                            displayEmpty
+                            name="Einheit"
+                            className={classes.selectEmpty}
+                        >
+                            {this.buildMeasureItems()}
+                        </Select>
+                    </FormControl>
                 </Grid>
-                <Grid item xs={12} md={5}>
-                    <TextField
-                        label={"Gruppe"}
-                        select
-                        className={classes.textField}
-                        value={this.state.group}
-                        onChange={this.handleGroupChange}
-                        SelectProps={{
-                            MenuProps: {
-                                className: classes.menu,
-                            },
-                        }}
-                        margin="normal"
-                    >
-                        {this.buildGroupItems()}
-                    </TextField>
+                <Grid item xs={10} md={4}>
+                    <FormControl className={classes.selectionField}>
+                        <InputLabel shrink htmlFor="group-label-placeholder">
+                            Gruppe
+                        </InputLabel>
+                        <Select
+                            value={this.state.group}
+                            onChange={this.handleGroupChange}
+                            input={<Input name="group" id="group-label-placeholder" />}
+                            displayEmpty
+                            name="Gruppe"
+                            className={classes.selectEmpty}
+                        >
+                            {this.buildGroupItems()}
+                        </Select>
+                    </FormControl>
                 </Grid>
-            </Grid>
+                <Grid item xs={2} md={1} >
+                    <Fab size="small" color="primary" aria-label="add" className={classes.flat} onClick={this.props.onDelete}>
+                        <DeleteIcon />
+                    </Fab>
+                </Grid>
+            </Grid >
         );
     }
 

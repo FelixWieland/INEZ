@@ -8,7 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 import Popper from '@material-ui/core/Popper';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import subscribeToAutosuggestion from '../api';
+import { subscribeToAutosuggestion } from '../api';
 
 const styles = theme => ({
     root: {
@@ -92,7 +92,6 @@ class ReactAutosuggestTextfield extends React.Component {
     componentDidMount() {
         this.setState({
             emit: subscribeToAutosuggestion(this.onAutosuggest)
-
         })
     }
 
@@ -104,7 +103,17 @@ class ReactAutosuggestTextfield extends React.Component {
     }
 
     onAutosuggest = (results) => {
-        this.setState({ suggestions: results.suggestions })
+        this.setState({
+            suggestions: results.suggestions.map((elm) => {
+                let nelm = elm;
+                var obj = this.extractMeasureObj(this.state.popper)
+                if (obj.amount === 0) {
+                    return nelm
+                }
+                nelm.label = (obj.amount + " " + elm.portionsizename + " " + elm.label).trim()
+                return nelm
+            })
+        })
     }
 
     hasNumbers = (t) => {
@@ -166,34 +175,43 @@ class ReactAutosuggestTextfield extends React.Component {
         //(\D*) -> Liter
         //(.* )
         try {
-            let measureAndAmount = string.match(/(.* )/g)[0];
-            let product = string.replace(measureAndAmount, "").trim();
-            let amount = parseInt(measureAndAmount)
-            let measure = measureAndAmount.replace(/[0-9]/g, '').trim();
+            try {
+                let measureAndAmount = string.match(/(.* )/g)[0];
+                let product = string.replace(measureAndAmount, "").trim();
+                let amount = parseInt(measureAndAmount)
+                let measure = measureAndAmount.replace(/[0-9]/g, '').trim();
 
-            return {
-                amount: amount,
-                measure: measure,
-                product: product
+                return {
+                    amount: amount,
+                    measure: measure,
+                    product: product
+                }
+
+            } catch {
+                if (!hasNumbers(string))
+                    return {
+                        amount: 0,
+                        measure: "",
+                        product: string
+                    }
+                else
+                    return {
+                        amount: 0,
+                        measure: "",
+                        product: ""
+                    }
             }
-
         } catch {
-            if (!hasNumbers(string))
-                return {
-                    amount: 0,
-                    measure: "",
-                    product: string
-                }
-            else
-                return {
-                    amount: 0,
-                    measure: "",
-                    product: ""
-                }
+            return {
+                amount: 0,
+                measure: "",
+                product: string
+            }
         }
+
     }
 
-    stringFromMeasureObj = (measureObj) => {
+    stringFromMeasureObj = (obj) => {
         if (obj.amount != 0 && obj.measure.length != 0 && obj.product.length != 0) {
             return obj.amount + " " + obj.measure + " " + obj.product
         } else if (obj.amount != 0 && obj.product.length != 0) {
@@ -204,31 +222,18 @@ class ReactAutosuggestTextfield extends React.Component {
     }
 
     handleChange = name => (event, { newValue }) => {
-        if (event.type == "keydown" && event.type == "click") {
-            this.setState({
-                popper: "Test"
-            });
-            return
-        }
-        try {
-            let obj = this.extractMeasureObj(newValue)
-            this.setState({
-                popper: this.stringFromMeasureObj(obj)
-            });
+        let obj = this.extractMeasureObj(newValue)
+        console.log(obj)
+        this.setState({
+            popper: this.stringFromMeasureObj(obj)
+        });
+        if (event.type != "keydown" && event.type != "click") {
             this.state.emit(obj)
-            this.props.setValue(obj)
-        } catch {
-            let obj = {
-                amount: 0,
-                measure: "",
-                product: newValue
-            }
-            this.state.emit(obj)
-            this.setState({
-                popper: newValue,
-            });
-            this.props.setValue(obj)
         }
+        this.props.setValue(obj)
+        this.setState({
+            popper: newValue,
+        });
     };
 
     render() {

@@ -16,6 +16,7 @@ let conn = undefined;
 (async () => { conn = await connect(credentials.mongo.srv, "INEZ") })();
 
 const fuzzyAutosuggest = new FuzzyAutosuggest(credentials.mongo.srv)
+fuzzyAutosuggest.runSearch("DUMMYVALUE", (_) => undefined)
 
 credentials = undefined;
 
@@ -26,6 +27,12 @@ app.get('/api/getUsername', (req, res) => {
     username: userInfo().username
   });
 })
+
+app.get('/api/demoCall', (req, res) => {
+  console.log(req.body)
+  res.send({ status: "ok" })
+})
+
 
 let server = app.listen(3001, () => console.log('Listening on port 3000, API on port 3001!'))
 let io = require('socket.io').listen(server);
@@ -38,7 +45,8 @@ io.on('connection', (socket) => {
         socket.emit('autosuggest', {
           suggestions: result.map((elm) => {
             return {
-              label: elm.name
+              label: elm.name,
+              portionsizename: elm.portionsizename
             }
           })
         })

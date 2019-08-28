@@ -7,7 +7,7 @@ import Popper from '@material-ui/core/Popper';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 import Chip from '@material-ui/core/Chip';
-import subscribeToAutosuggestion from '../api';
+import { subscribeToAutosuggestion } from '../api';
 
 const styles = theme => ({
     root: {

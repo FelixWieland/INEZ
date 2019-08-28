@@ -30,8 +30,42 @@ class GroceryList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            listItems: [
+                {
+                    id: "01",
+                    name: "Milch"
+                },
+                {
+                    id: "02",
+                    name: "Milch"
+                }
+            ]
         }
+    }
+
+    componentDidMount() {
+        this.props.exportAdd(this.addItem)
+    }
+
+    addItem = (id, name, amount, measure) => {
+        let newItems = this.state.listItems;
+        newItems.push({
+            id: id,
+            name: name,
+            amount: amount,
+            measure: measure
+        });
+        this.setState({
+            listItems: newItems
+        })
+    }
+
+    deleteItem = (id) => {
+        this.setState({ listItems: this.state.listItems.filter((elm) => elm.id != id) })
+    }
+
+    deleteItemComponentOnly = (id) => {
+        this.setState({ listItems: this.state.listItems.filter((elm) => elm.id != id) })
     }
 
     buildText = (text, amount, measure) => {
@@ -67,29 +101,22 @@ class GroceryList extends React.Component {
 
     }
 
-    buildGroup = (name, items) => {
-        const open = this.state[name] != undefined ? this.state[name] : true;
-        return (
-            <>
-                <ListItem button className={this.props.classes.groupItem} onClick={() => this.toggleGroup(name)}>
-                    <ListItemIcon>
-
-                    </ListItemIcon>
-                    <ListItemText secondary="Inbox" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div" className={this.props.classes.groupList}>
-                        {items}
-                    </List>
-                </Collapse>
-            </>
-        )
+    groupChange = (obj, newgroup) => {
+        this.deleteItemComponentOnly(obj.id)
+        this.props.onGroupChange(obj, newgroup)
     }
 
-    buildGroceryItem = (name) => {
+    buildGroceryItem = (id, name, amount, measure) => {
         return (
-            <GroceryItem name={name} />
+            <GroceryItem
+                id={id}
+                onDelete={() => this.deleteItem(id)}
+                onGroupChange={this.groupChange}
+                name={name}
+                amount={amount}
+                measure={measure}
+                group={this.props.group}
+                currentGroups={this.props.currentGroups} />
         );
     }
 
@@ -97,11 +124,9 @@ class GroceryList extends React.Component {
         const { classes } = this.props
         return (
             <List className={classes.list}>
-                {this.buildGroceryItem("Milchschnitte")}
-                {this.buildGroceryItem("Milchschnitte")}
-                {this.buildGroceryItem("Milchschnitte")}
-                {this.buildGroceryItem("Milchschnitte")}
-                {this.buildGroceryItem("Milchschnitte")}
+                {this.state.listItems.map((elm) => {
+                    return this.buildGroceryItem(elm.id, elm.name, elm.amount, elm.measure)
+                })}
             </List>
         )
     }

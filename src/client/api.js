@@ -1,9 +1,9 @@
 import openSocket from 'socket.io-client';
-const socket = openSocket('http://localhost:3001', {
+const socket = openSocket('localhost:3001', {
     forceNew: true,
 });
 
-const subscribeToAutosuggestion = (callback) => {
+export const subscribeToAutosuggestion = (callback) => {
     const event = 'autosuggest'
     socket.on(event, autosuggestions => callback(autosuggestions))
     return (toSend) => {
@@ -11,4 +11,44 @@ const subscribeToAutosuggestion = (callback) => {
     }
 }
 
-export default subscribeToAutosuggestion
+const updateGroceryItem = (grocerylistid, item, callback) => {
+    fetch("http://localhost:3000/").then((response) => {
+        callback(response)
+    })
+}
+
+const deleteGroceryItem = (grocerylistid, item, callback) => {
+    fetch("http://localhost:3000/").then((response) => {
+        callback(response)
+    })
+}
+
+const createGroceryItem = (grocerylistid, item, callback) => {
+    fetch("http://localhost:3000/").then((response) => {
+        callback(response)
+    })
+}
+
+const deleteGroceryListGroup = (grocerylistid, groupname, callback) => {
+    fetch("http://localhost:3000/").then((response) => {
+        callback(response)
+    })
+}
+
+const createGroceryListGroup = (grocerylistid, groupname, callback) => {
+    fetch("http://localhost:3000/").then((response) => {
+        callback(response)
+    })
+}
+
+const createGroceryList = (listname, callback) => {
+    fetch("http://localhost:3000/").then((response) => {
+        callback(response)
+    })
+}
+
+const deleteGroceryList = (listname, callback) => {
+    fetch("http://localhost:3000/").then((response) => {
+        callback(response)
+    })
+}
