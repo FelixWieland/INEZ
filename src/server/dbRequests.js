@@ -49,8 +49,14 @@ let deleteUser = function(name,done){
 	model.user.findOne({name: name}, function ( err, data) {
 		if (err) return done (err);
 		else{
-			if(data!=null)
+			if(data!=null){
+				data.shopping_lists.forEach(function(element){
+					deleteShoppingList(name, element);
+				});
 				data.remove();
+
+			}
+
 			return done(null, true);
 		}
 	})
@@ -85,16 +91,66 @@ let createShoppingList = function(userName, listname , done){
  * this function will delete a shoppingList by its documentID
  * In case of an Error it will return err, else it will return null, true
  */
-let deleteShoppingList = function(id,done){
-	model.shopping_List.findOne({_id: id}, function ( err, data) {
+let deleteShoppingList = function(username, id ,done){
+	model.user.findOne({name: username}), function(err, data){
 		if (err) return done(err);
-		else {
-			if (data != null)
-				data.remove();
-			return done(null, true);
+		else{
+			if (data==undefined) return done(false);
+			let count=0;
+			data.shopping_lists.forEach(function (element) {
+				if (element==id){
+					data.shopping_lists.splice(i,1);
+				}
+				count++;
+			});
+			data.save();
+
+			model.shopping_List.findOne({_id: id}, function ( err, data) {
+				if (err) return done(err);
+				else {
+					if (data != undefined)
+						data.remove();
+					return done(null, true);
+				}
+			})
 		}
-	})
+	}
 };
+
+/**
+ *  Get Shopping Lists by Name
+ *  Returns a Array JSON of the ShoppingLists. In Case of an error the return will be an error
+ */
+let getShoppingLists = function(username, done){
+	model.user.findOne({name: username}, function(err, data){
+		if (err) return done(err);
+		else{
+			if (data==undefined)
+				return done(false);
+			model.shopping_List.find({_id: data.shopping_lists}, function (err, data2) {
+				if (err) return done(err);
+				return done(null, data2);
+			});
+		}
+	});
+}
+
+/**
+ * Get Shopping List by Id
+ * Return JSON With a shoppingList;
+ */
+let getShoppingListsById = function(id, done){
+	model.shopping_List.findOne({_id: id}, function(err, data){
+		if (err) return done(err);
+		else{
+			if (data==null)
+				return done(false);
+			return done(null, data);
+		}
+	});
+};
+
+
 
 /**
  *  Add Product to a shopping List by the ID of the ShoppingList
@@ -105,7 +161,7 @@ let addProductToShoppingList = function(shoppingListId, productId, measure, amou
 	model.shopping_List.findOne({_id: shoppingListId}, function (err, data) {
 		if(err) return err;
 		if(data==null){
-			return done(null, null);
+			return done("error ShoppingList not found");
 		}
 		try {
 			data.products.push({productId: productId, measure: measure, amount : amount});
@@ -114,7 +170,7 @@ let addProductToShoppingList = function(shoppingListId, productId, measure, amou
 			return done(e);
 		}
 		data.save();
-		return done(data);
+		return done(null, data);
 	});
 }
 
@@ -142,6 +198,8 @@ module.exports = {
 	deleteUser: deleteUser,
 	createShoppingList: createShoppingList,
 	deleteShoppingList:deleteShoppingList,
+	getShoppingLists:getShoppingLists,
 	addProductToShoppingList:addProductToShoppingList,
-	getAllProducts:getAllProducts
-}
+	getAllProducts: getAllProducts,
+	getShoppingListsById:getShoppingListsById
+};
