@@ -92,7 +92,22 @@ request.getShoppingLists("tim",function (err, data){
 
 */
 
+request.getAllProductGroups(function (err,data) {
+	if(err) console.log(err);
+	else{
+		console.log(data);
+		request.getAllProductsByGroupId(data[0]._id, function (err, data){
+			if (err) console.log(err);
+			else {
+				console.log(data);
+			}
+		});
 
+	}
+
+});
+
+/*
 request.getShoppingLists("Tim",function(err, data) {
 	if (err) console.log(err);
 	else {

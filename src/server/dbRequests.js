@@ -219,6 +219,13 @@ let getAllProductsByGroupId = function(productGroupId, done){
 	});
 }
 
+let getAllProductGroups = function(done){
+	model.productgroups.find({}, function(err, data) {
+		if(err) return done(err);
+		done (null, data)
+	});
+}
+
 
 
 
@@ -236,5 +243,6 @@ module.exports = {
 	addProductToShoppingList:addProductToShoppingList,
 	getAllProducts: getAllProducts,
 	getShoppingListsById:getShoppingListsById,
-	getAllProductsByGroupId:getAllProductsByGroupId
+	getAllProductsByGroupId:getAllProductsByGroupId,
+	getAllProductGroups:getAllProductGroups
 };
