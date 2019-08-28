@@ -25,43 +25,45 @@ request.createUser("tim","abc",function (err, data) {
 	}
 });
 
-
-/*
-request.getUser("Tim",function (err, data) {
-	if (err) console.log(err);
-	else {
-		console.log(data);
-	}
-});
 */
+
+
 
 /*
 let id="";
-request.createShoppingList("tim", "Wochenende",function (err, data) {
+request.createShoppingList("ABC", "1",function (err, data) {
 	if (err) console.log(err);
 	else {
 		console.log(data);
 		id=data._id;
 	}
 });
-request.createShoppingList("tim", "Sonntag",function (err, data) {
+request.createShoppingList("ABC", "2",function (err, data) {
 	if (err) console.log(err);
 	else {
 		console.log(data);
 		id=data._id;
 	}
 });
-
-
-request.addProductToShoppingList(id, "5d60504025e690b4eefece03", "g",250,function (err, data) {
-	if (err) console.log(err);
-	else {
-		console.log(data);
-	}
-});
+/*
 */
+request.addProductToShoppingList("5d66b6b3c8fc280b34f12497", "5d60504025e690b4eefece03", "g",250,function (err, data) {
+	if (err) console.log(err);
+	else {
+		console.log(data);
+	}
+});
 
+/*
 request.getShoppingListsById("5d66a8c806c8a43bac0ef4fc",function (err, data){
+	if (err) console.log(err);
+	else {
+		console.log(data);
+	}
+});
+ */
+
+request.deleteUser("tim",function (err, data){
 	if (err) console.log(err);
 	else {
 		console.log(data);

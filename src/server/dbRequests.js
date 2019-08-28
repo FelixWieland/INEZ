@@ -51,7 +51,14 @@ let deleteUser = function(name,done){
 		else{
 			if(data!=null){
 				data.shopping_lists.forEach(function(element){
-					deleteShoppingList(name, element);
+					model.shopping_List.findOne({_id: element}, function ( err, data2) {
+						if (err) return done(err);
+						else {
+							if (data2 != undefined)
+								data2.remove();
+							return done(null, true);
+						}
+					})
 				});
 				data.remove();
 
@@ -72,12 +79,23 @@ let createShoppingList = function(userName, listname , done){
 				return done(err);
 			else{
 				model.user.findOne({name: userName}, function ( err, data) {
-					if (err) return done (err);
-					if(data==undefined) return  done("error");
+					if (err) {
+						shoppingList.remove();
+
+						return done (err);
+					};
+					if(data==undefined)   {
+						shoppingList.remove();
+						return done("error");
+					}
 					else{
 						if(data!=null){
 							data.shopping_lists.push(listData._id);
 							data.save();
+						}
+						else {
+							listData.remove();
+							return done("Error, user did not exist")
 						}
 
 						return done(null, listData);
