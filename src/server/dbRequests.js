@@ -199,7 +199,27 @@ let addProductToShoppingList = function(shoppingListId, productId, measure, amou
 	});
 }
 
+/**
+ * Remove a Product by its ID from a shoppinglist (ID must be provided)
+ */
+let removeProductFromShoppingList = function(productId, shoppingListId, done){
+	model.shopping_List.findOne({_id: mongoose.Types.ObjectId(shoppingListId)}, function(err, data) {
+		if (err) return done(err);
+		else {
+			if (data == undefined) return done(false);
+			for (let i = data.products.length - 1; i >= 0; i--) {
+				if (data.products[i].equals(productId)) {
+					data.products.splice(i, 1);
 
+					data.save;
+				}
+			}
+
+			data.save();
+			return done(null, true);
+		}
+	});
+}
 
 /**
  *Get a list of all Products
@@ -211,7 +231,9 @@ let getAllProducts = function(done){
 	}).select({"name":1});
 }
 
-
+/**
+ * Get a List of all Products which are in the group of the provided ID
+ */
 let getAllProductsByGroupId = function(productGroupId, done){
 	model.products.find({productgroupid: mongoose.Types.ObjectId("5d625be7bb9fb093bf5fa4f0")}, function (err, data) {
 		if (err) return done(err);
@@ -219,6 +241,10 @@ let getAllProductsByGroupId = function(productGroupId, done){
 	});
 }
 
+
+/**
+ * Get a List of all ProductGroups
+ */
 let getAllProductGroups = function(done){
 	model.productgroups.find({}, function(err, data) {
 		if(err) return done(err);
@@ -244,5 +270,6 @@ module.exports = {
 	getAllProducts: getAllProducts,
 	getShoppingListsById:getShoppingListsById,
 	getAllProductsByGroupId:getAllProductsByGroupId,
-	getAllProductGroups:getAllProductGroups
+	getAllProductGroups:getAllProductGroups,
+	removeProductFromShoppingList: removeProductFromShoppingList
 };
