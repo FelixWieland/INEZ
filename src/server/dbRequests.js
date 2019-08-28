@@ -2,6 +2,7 @@
  *  Include all Models
  */
 var model = require("./config/dbModels.js");
+const mongoose = require("./config/mongooseConnection").mongoose;
 
 /**
  *  create a user, gives back a null for success and a err in case of a failure
@@ -51,7 +52,7 @@ let deleteUser = function(name,done){
 		else{
 			if(data!=null){
 				data.shopping_lists.forEach(function(element){
-					model.shopping_List.findOne({_id: element}, function ( err, data2) {
+					model.shopping_List.findOne({_id: mongoose.Types.ObjectId(element)}, function ( err, data2) {
 						if (err) return done(err);
 						else {
 							if (data2 != undefined)
@@ -90,7 +91,7 @@ let createShoppingList = function(userName, listname , done){
 					}
 					else{
 						if(data!=null){
-							data.shopping_lists.push(listData._id);
+							data.shopping_lists.push(mongoose.Types.ObjectId(listData._id));
 							data.save();
 						}
 						else {
@@ -110,29 +111,29 @@ let createShoppingList = function(userName, listname , done){
  * In case of an Error it will return err, else it will return null, true
  */
 let deleteShoppingList = function(username, id ,done){
-	model.user.findOne({name: username}), function(err, data){
+	model.user.findOne({name: username}, function(err, data){
 		if (err) return done(err);
 		else{
 			if (data==undefined) return done(false);
-			let count=0;
-			data.shopping_lists.forEach(function (element) {
-				if (element==id){
+			for(let i=data.shopping_lists.length-1; i>=0;i--){
+				if (data.shopping_lists[i].equals(id) ){
 					data.shopping_lists.splice(i,1);
-				}
-				count++;
-			});
-			data.save();
 
-			model.shopping_List.findOne({_id: id}, function ( err, data) {
+					data.save;
+				}
+			}
+
+			data.save();
+			model.shopping_List.findOne({_id: mongoose.Types.ObjectId(id)}, function ( err, data) {
 				if (err) return done(err);
 				else {
 					if (data != undefined)
 						data.remove();
 					return done(null, true);
 				}
-			})
+			});
 		}
-	}
+	});
 };
 
 /**
@@ -142,15 +143,21 @@ let deleteShoppingList = function(username, id ,done){
 let getShoppingLists = function(username, done){
 	model.user.findOne({name: username}, function(err, data){
 		if (err) return done(err);
-		else{
-			if (data==undefined)
-				return done(false);
-			model.shopping_List.find({_id: data.shopping_lists}, function (err, data2) {
-				if (err) return done(err);
-				return done(null, data2);
-			});
+		if (data==null){
+			return done(new Error("user not Found"))
 		}
+		else{
+
+				model.shopping_List.find({_id: data.shopping_lists}, function (err, data2) {
+					if (err) return done(err);
+					return done(null, data2);
+				});
+			}
+
+
+
 	});
+
 }
 
 /**
@@ -176,13 +183,13 @@ let getShoppingListsById = function(id, done){
  *  In Case of an Error it will return an error, else it will return the ShoppingList as JSON
  */
 let addProductToShoppingList = function(shoppingListId, productId, measure, amount, done){
-	model.shopping_List.findOne({_id: shoppingListId}, function (err, data) {
+	model.shopping_List.findOne({_id: mongoose.Types.ObjectId(shoppingListId)}, function (err, data) {
 		if(err) return err;
 		if(data==null){
 			return done("error ShoppingList not found");
 		}
 		try {
-			data.products.push({productId: productId, measure: measure, amount : amount});
+			data.products.push({productId: mongoose.Types.ObjectId(productId), measure: measure, amount : amount});
 		}
 		catch (e) {
 			return done(e);
@@ -205,6 +212,15 @@ let getAllProducts = function(done){
 }
 
 
+let getAllProductsByGroupId = function(productGroupId, done){
+	model.products.find({productgroupid: mongoose.Types.ObjectId("5d625be7bb9fb093bf5fa4f0")}, function (err, data) {
+		if (err) return done(err);
+		return  done(null, data)
+	});
+}
+
+
+
 
 /**
  *  Export all functions for the database
@@ -219,5 +235,6 @@ module.exports = {
 	getShoppingLists:getShoppingLists,
 	addProductToShoppingList:addProductToShoppingList,
 	getAllProducts: getAllProducts,
-	getShoppingListsById:getShoppingListsById
+	getShoppingListsById:getShoppingListsById,
+	getAllProductsByGroupId:getAllProductsByGroupId
 };
