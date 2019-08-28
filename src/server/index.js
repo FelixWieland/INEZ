@@ -3,7 +3,41 @@ import { userInfo } from "os";
 import { connect } from "./config/mongoconf";
 import fs from "fs";
 import path from "path";
-const jwt = require("jsonwebtoken");
+import * as jwt from "jsonwebtoken";
+import * as db from "./dbRequests";
+const bcrypt = require("bcrypt");
+const saltRounds = "FFF12345678";
+const myPlaintextPassword = "s0//P4$$w0rD"; // comes in after post request
+const someOtherPlaintextPassword = "not_bacon"; // comparisin value from dbquery
+
+//salt and hash
+bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
+	// Store hash in your password DB.
+});
+
+bcrypt.compare(myPlaintextPassword, hash, function(err, res) {
+	// res == true
+});
+
+//authenticate input against database
+UserSchema.statics.authenticate = function(email, password, callback) {
+	User.findOne({ email: email }).exec(function(err, user) {
+		if (err) {
+			return callback(err);
+		} else if (!user) {
+			var err = new Error("User not found.");
+			err.status = 401;
+			return callback(err);
+		}
+		bcrypt.compare(password, user.password, function(err, result) {
+			if (result === true) {
+				return callback(null, user);
+			} else {
+				return callback();
+			}
+		});
+	});
+};
 
 const app = express();
 
@@ -46,13 +80,28 @@ app.post("/api/test", verifyToken, (req, res) => {
 });
 
 //generates token
-app.post("/api/login", (req, res) => {
+app.post("/api/users/login", (req, res) => {
 	//mock user, function must be added
 
 	const user = {
 		id: 1,
 		username: "tim",
 		password: "someHash"
+	};
+
+	jwt.sign({ user }, "secret key", (err, token) => {
+		res.json({ token });
+	});
+});
+
+//register user
+app.post("/api/users/login", (req, res) => {
+	//mock user, function must be added
+
+	const user = {
+		id: 1,
+		username: req.body.username,
+		password: bcrypt.hash(req.body.password)
 	};
 
 	jwt.sign({ user }, "secret key", (err, token) => {
