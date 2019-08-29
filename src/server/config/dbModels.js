@@ -22,7 +22,8 @@ let shoppingListSchema = new Schema({
 	list_name: {type: String, required: true},
 	products: [{_id: {type:Schema.Types.ObjectId, ref: 'products', required:true},
 							measure: String,
-							amount: {type: Number, min: 0}
+							amount: {type: Number, min: 0},
+							group: {type: String, required: true}
 							}]
 });
 

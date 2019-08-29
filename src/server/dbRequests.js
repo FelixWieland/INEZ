@@ -7,21 +7,22 @@ const mongoose = require("./config/mongooseConnection").mongoose;
 /**
  *  create a user, gives back the user in case of success and a err in case of a failure
  */
-const createUser = function(name, password_hash, done){
+const createUser =(name, password_hash, done) => {
 	let user = new model.user({name: name, password_hash : password_hash});
-	user.save(function(err, data){
+	user.save((err, data)=> {
 		if (err)
 			return done(err);
 		return done(null,data);
 	});
 }
 
+
 /**
  *  Get a user by name without hash
  *  returns null or the user
  */
-const getUser = function (name, done){
-	model.user.findOne({name: name}, function(err, data){
+const getUser =  (name, done)=> {
+	model.user.findOne({name: name}, (err, data)=> {
 		if(err)
 			return done(null);
 		else
@@ -35,8 +36,8 @@ const getUser = function (name, done){
  *  Get a passwordhash from user by name
  *  returns null or the userpassword
  */
-const getPasswordhash = function (name,done){
-	model.user.findOne({name : name},function (err, data) {
+const getPasswordhash =  (name,done)=> {
+	model.user.findOne({name : name}, (err, data) => {
 		if (err) return done(err);
 		return done(null, data.password_hash);
 	});
@@ -46,13 +47,13 @@ const getPasswordhash = function (name,done){
  * Delete a user by name
  * return is a error a true
  */
-const deleteUser = function(name,done){
-	model.user.findOne({name: name}, function ( err, data) {
+const deleteUser = (name,done)=> {
+	model.user.findOne({name: name},  ( err, data)=>  {
 		if (err) return done (err);
 		else{
 			if(data!=null){
-				data.shopping_lists.forEach(function(element){
-					model.shopping_List.findOne({_id: mongoose.Types.ObjectId(element)}, function ( err, data2) {
+				data.shopping_lists.forEach((element)=> {
+					model.shopping_List.findOne({_id: mongoose.Types.ObjectId(element)},  ( err, data2) => {
 						if (err) return done(err);
 						else {
 							if (data2 != undefined)
@@ -73,13 +74,13 @@ const deleteUser = function(name,done){
 /** createShoppingList
  *  this function will return the JSON of a shoppingList or a Error
  */
-const createShoppingList = function(userName, listname , done){
+const createShoppingList = (userName, listname , done)=> {
 		let shoppingList= new model.shopping_List({list_name: listname});
-		shoppingList.save(function(err, listData){
+		shoppingList.save((err, listData)=> {
 			if (err)
 				return done(err);
 			else{
-				model.user.findOne({name: userName}, function ( err, data) {
+				model.user.findOne({name: userName},  ( err, data)=>  {
 					if (err) {
 						shoppingList.remove();
 
@@ -111,8 +112,8 @@ const createShoppingList = function(userName, listname , done){
  * this function will delete a shoppingList by its documentID
  * In case of an Error it will return err, else it will return null, true
  */
-const deleteShoppingList = function(username, id ,done){
-	model.user.findOne({name: username}, function(err, data){
+const deleteShoppingList = (username, id ,done)=> {
+	model.user.findOne({name: username}, (err, data)=> {
 		if (err) return done(err);
 		else{
 			if (data==undefined) return done(null,true);
@@ -143,15 +144,15 @@ const deleteShoppingList = function(username, id ,done){
  *  Get Shopping Lists by Name
  *  Returns a Array JSON of the ShoppingLists. In Case of an error the return will be an error
  */
-const getShoppingLists = function(username, done){
-	model.user.findOne({name: username}, function(err, data){
+const getShoppingLists = (username, done)=> {
+	model.user.findOne({name: username}, (err, data)=> {
 		if (err) return done(err);
 		if (data==null){
 			return done(new Error("user not Found"))
 		}
 		else{
 
-				model.shopping_List.find({_id: data.shopping_lists}, function (err, data2) {
+				model.shopping_List.find({_id: data.shopping_lists},  (err, data2) => {
 					if (err) return done(err);
 					return done(null, data2);
 				});
@@ -167,8 +168,8 @@ const getShoppingLists = function(username, done){
  * Get Shopping List by Id
  * Return JSON With a shoppingList;
  */
-const getShoppingListsById = function(id, done){
-	model.shopping_List.findOne({_id: id}, function(err, data){
+const getShoppingListsById = (id, done)=> {
+	model.shopping_List.findOne({_id: id}, (err, data)=> {
 		if (err) return done(err);
 		else{
 			if (data==null)
@@ -183,8 +184,8 @@ const getShoppingListsById = function(id, done){
  *  Required Parameters: ShoppingListID, ProductID, Measure, Amount
  *  In Case of an Error it will return an error, else it will return the ShoppingList as JSON
  */
-const addProductToShoppingList = function(shoppingListId, productId, measure, amount, done){
-	model.shopping_List.findOne({_id: mongoose.Types.ObjectId(shoppingListId)}, function (err, data) {
+const addProductToShoppingList = (shoppingListId, productId, measure, amount, group, done)=> {
+	model.shopping_List.findOne({_id: mongoose.Types.ObjectId(shoppingListId)},  (err, data) => {
 		if(err) return err;
 		if(data==null){
 			return done("error ShoppingList not found");
@@ -195,7 +196,7 @@ const addProductToShoppingList = function(shoppingListId, productId, measure, am
 				return done(new Error("This Product is already in the shoppingList"))
 			}
 		}
-		data.products.push({_id: mongoose.Types.ObjectId(productId), measure: measure, amount : amount});
+		data.products.push({_id: mongoose.Types.ObjectId(productId), measure: measure, amount : amount, group: group});
 
 
 		data.save();
@@ -206,8 +207,8 @@ const addProductToShoppingList = function(shoppingListId, productId, measure, am
 /**
  * Remove a Product by its ID from a shoppinglist (ID must be provided)
  */
-const removeProductFromShoppingList = function(productId, shoppingListId, done){
-	model.shopping_List.findOne({_id: mongoose.Types.ObjectId(shoppingListId)}, function(err, data) {
+const removeProductFromShoppingList = (productId, shoppingListId, done)=> {
+	model.shopping_List.findOne({_id: mongoose.Types.ObjectId(shoppingListId)}, (err, data) => {
 		if (err) return done(err);
 		else {
 			if (data == undefined) return done(false);
@@ -228,8 +229,8 @@ const removeProductFromShoppingList = function(productId, shoppingListId, done){
 /**
  * Change Amount of a Product in a ShoppingList
  */
-const changeProductAmountInShooppingList = function(shoppingListId, productId, newAmount, done){
-	model.shopping_List.findOne({_id: shoppingListId}, function (err, data) {
+const changeProductAmountInShooppingList = (shoppingListId, productId, newAmount, done)=> {
+	model.shopping_List.findOne({_id: shoppingListId},  (err, data) => {
 		if (err) return done(err);
 		for(let i=0; i<data.products.length; i++){
 			if(data.products[i]._id.equals(mongoose.Types.ObjectId(productId))){
@@ -241,12 +242,27 @@ const changeProductAmountInShooppingList = function(shoppingListId, productId, n
 
 	});
 }
+/**
+ * Change Group of a Product in a ShoppingList
+ */
+const changeProductGroupInShooppingList = (shoppingListId, productId, newGroup, done)=> {
+	model.shopping_List.findOne({_id: shoppingListId},  (err, data) => {
+		if (err) return done(err);
+		for(let i=0; i<data.products.length; i++){
+			if(data.products[i]._id.equals(mongoose.Types.ObjectId(productId))){
+				data.products[i].group=newGroup;
+				data.save();
+				return done(null, data);
+			}
+		}
+	});
+}
 
 /**
  * Change Measure of a Product in a ShoppingList
  */
-const changeProductMeasureInShooppingList = function(shoppingListId, productId, newMeasure, done){
-	model.shopping_List.findOne({_id: shoppingListId}, function (err, data) {
+const changeProductMeasureInShooppingList = (shoppingListId, productId, newMeasure, done)=> {
+	model.shopping_List.findOne({_id: shoppingListId},  (err, data)=>  {
 		if (err) return done(err);
 		for(let i=0; i<data.products.length; i++){
 			if(data.products[i]._id.equals(mongoose.Types.ObjectId(productId))){
@@ -263,9 +279,9 @@ const changeProductMeasureInShooppingList = function(shoppingListId, productId, 
  *Get a list of all Products
  */
 let allProducts;
-const getAllProducts = function(done){
+const getAllProducts = (done)=> {
 	if (allProducts==undefined){
-		model.products.find({}, function(err, data) {
+		model.products.find({}, (err, data) => {
 			if(err) return done(err);
 			allProducts=data;
 			done (null, data)
@@ -278,11 +294,11 @@ const getAllProducts = function(done){
 
 let minutes_prd = 10, the_interval_prd = minutes_prd * 60 * 1000;
 //const interval = function(){
-setInterval(function() {
+setInterval(()=>  {
 	console.log("I am doing my 10 minutes check and update allProductsvariable");
 	// do your stuff here
 
-	model.products.find({}, function(err, data) {
+	model.products.find({}, (err, data) => {
 		if(err) return console.log(err);
 		allProducts=data;
 		console.log("allProducts updated")
@@ -294,8 +310,8 @@ setInterval(function() {
 /**
  * Get a List of all Products which are in the group of the provided ID
  */
-const getAllProductsByGroupId = function(productGroupId, done){
-	model.products.find({productgroupid: mongoose.Types.ObjectId("5d625be7bb9fb093bf5fa4f0")}, function (err, data) {
+const getAllProductsByGroupId = (productGroupId, done)=> {
+	model.products.find({productgroupid: mongoose.Types.ObjectId("5d625be7bb9fb093bf5fa4f0")},  (err, data) => {
 		if (err) return done(err);
 		return  done(null, data)
 	});
@@ -304,8 +320,8 @@ const getAllProductsByGroupId = function(productGroupId, done){
 /**
  * Get a List of all ProductGroups
  */
-const getAllProductGroups = function(done){
-	model.productgroups.find({}, function(err, data) {
+const getAllProductGroups = (done)=> {
+	model.productgroups.find({}, (err, data)=>  {
 		if(err) return done(err);
 		done (null, data)
 	});
@@ -314,10 +330,10 @@ const getAllProductGroups = function(done){
 /**
  *  Function to remove unused shoppingLists
  */
-const removeUnusedShoppingLists = function (done){
-	model.shopping_List.find({},function (err, data) {
-		data.forEach(function (element) {
-			model.user.findOne({shopping_lists: mongoose.Types.ObjectId(element._id)},function(err, data2){
+const removeUnusedShoppingLists =  (done)=> {
+	model.shopping_List.find({}, (err, data) => {
+		data.forEach( (element)=>  {
+			model.user.findOne({shopping_lists: mongoose.Types.ObjectId(element._id)},(err, data2)=> {
 				if (err) return done(err);
 				if (data2==undefined){
 					element.remove();
@@ -332,10 +348,10 @@ const removeUnusedShoppingLists = function (done){
  * sets a intervall to remove all unused Shopping Lists every 10 minutes
  */
 let minutes_remShoppingLists = 5, the_interval_remShoppingLists = minutes_remShoppingLists * 60 * 1000;
-setInterval(function() {
+setInterval(() => {
 	console.log("I am doing my 5 minutes check and delete all unused Shopping Lists");
 	// do your stuff here
-	removeUnusedShoppingLists(function (err, data) {
+	removeUnusedShoppingLists( (err, data) => {
 		if (err) console.log(err);
 		else console.log(data);
 	})
@@ -344,20 +360,22 @@ setInterval(function() {
 /**
  *  Export all functions for the database
  */
-module.exports = {
-	createUser : createUser,
-	getUser: getUser,
-	getPasswordhash: getPasswordhash,
-	deleteUser: deleteUser,
-	createShoppingList: createShoppingList,
-	deleteShoppingList:deleteShoppingList,
-	getShoppingLists:getShoppingLists,
-	addProductToShoppingList:addProductToShoppingList,
-	getAllProducts: getAllProducts,
-	getShoppingListsById:getShoppingListsById,
-	getAllProductsByGroupId:getAllProductsByGroupId,
-	getAllProductGroups:getAllProductGroups,
-	removeProductFromShoppingList: removeProductFromShoppingList,
-	changeProductAmountInShooppingList:changeProductAmountInShooppingList,
-	changeProductMeasureInShooppingList:changeProductMeasureInShooppingList
-};
+
+
+
+module.exports = {createUser,
+				getUser,
+				getPasswordhash,
+				deleteUser,
+				createShoppingList,
+				deleteShoppingList,
+				getShoppingLists,
+				addProductToShoppingList,
+				getAllProducts,
+				getShoppingListsById,
+				getAllProductsByGroupId,
+				getAllProductGroups,
+				removeProductFromShoppingList,
+				changeProductAmountInShooppingList,
+				changeProductMeasureInShooppingList,
+				changeProductGroupInShooppingList};
