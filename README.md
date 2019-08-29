@@ -1,4 +1,4 @@
-# # NEZ - Der INtelligente EinkaufsZettel
+# INEZ - Der INtelligente EinkaufsZettel
 
 # Projektbeschreibung
 
@@ -22,12 +22,9 @@ Weitere Beispiele:
 
 # Inhaltsverzeichnis
 
-
 * [Development-Mode](#Development-Mode)
 * [Production-Mode](#Production-Mode)
 * [Genutzte Technologien](#Genutze-Technologien)
-
-StackEdit stores your files in your browser, which means all your files are automatically saved locally and are accessible **offline!**
 
 ## Development-Mode
 
