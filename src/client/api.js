@@ -1,5 +1,6 @@
 import openSocket from 'socket.io-client';
-const socket = openSocket('localhost:3001', {
+
+const socket = openSocket(process.env.API_URL, {
     forceNew: true,
 });
 

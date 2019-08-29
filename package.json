@@ -11,10 +11,11 @@
 	},
 	"main": "src/server/index.js",
 	"scripts": {
-		"build": "webpack --mode production",
-		"client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
-		"server": "nodemon --exec babel-node src/server/index.js",
-		"start": "concurrently \"npm run server\" \"npm run client\""
+		"build": "webpack --env.API_URL=/ --mode production",
+		"client": "webpack-dev-server --env.API_URL=localhost:3001/ --mode development --devtool inline-source-map --hot",
+		"server": "NODE_ENV=development nodemon --exec babel-node src/server/index.js",
+		"start": "concurrently \"npm run server\" \"npm run client\"",
+		"production": "NODE_ENV=production babel-node src/server/index.js"
 	},
 	"dependencies": {
 		"@babel/cli": "^7.5.5",

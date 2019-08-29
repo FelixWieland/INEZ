@@ -15,7 +15,7 @@ class FuzzyAutosuggest {
     loadDataset(ready) {
         var MongoClient = mongodb.MongoClient
         this.loading = true
-        MongoClient.connect(this.connectionString, { useNewUrlParser: true }, function (err, conn) {
+        MongoClient.connect(this.connectionString, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, conn) {
             if (err) {
                 throw err
             }
