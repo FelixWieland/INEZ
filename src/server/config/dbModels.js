@@ -1,42 +1,33 @@
 
-
 /**
- *  Get the required credential data.
+ *  Establish the connection to the mongoDb via mongooseConnection module
  */
-const fs = require('fs');
-
-let rawdata = fs.readFileSync('./config/credentials.json');
-let credentials = JSON.parse(rawdata);
-const MONGO_URI=credentials.mongo.srv;
+const mongoose = require('./mongooseConnection').mongoose;
 
 
 
-/**
- *  Establish the connection to the mongoDb via mongoose
- */
-const mongoose = require('mongoose');
-mongoose.connect(MONGO_URI,{ useNewUrlParser: true});
 
 let Schema = mongoose.Schema;
 
 let userSchema = new Schema({
 	name: {type: String, required: true, unique: true},
 	password_hash: {type: String, required:true},
-	shopping_lists: [{type:Schema.Types.ObjectId, ref: 'shopping_List'}]
+	shopping_lists: [{type: Schema.Types.ObjectId, ref: 'shopping_List'}]
 });
-userSchema.index({name: 'text'})
+userSchema.index({name: 'text'});
 
-var user = mongoose.model('user', userSchema);
+const user = mongoose.model('user', userSchema);
 
 let shoppingListSchema = new Schema({
 	list_name: {type: String, required: true},
-	products: [{product_name: {type:Schema.Types.ObjectId, ref: 'products'},
+	products: [{_id: {type:Schema.Types.ObjectId, ref: 'products', required:true},
 							measure: String,
-							amount: {type: Number, min: 0 }
+							amount: {type: Number, min: 0},
+							group: {type: String, required: true}
 							}]
 });
 
-var shopping_List = mongoose.model('shopping_List', shoppingListSchema);
+const shopping_List = mongoose.model('shopping_List', shoppingListSchema);
 
 
 let productsSchema = new Schema({
@@ -45,7 +36,7 @@ let productsSchema = new Schema({
 });
 productsSchema.index({name: 'text'});
 
-var products = mongoose.model('products', productsSchema);
+const products = mongoose.model('products', productsSchema);
 
 
 let productgroupsSchema = new Schema({
@@ -54,10 +45,11 @@ let productgroupsSchema = new Schema({
 });
 productgroupsSchema.index({groupname: 'text' });
 
-var productgroups = mongoose.model('productgroups', productgroupsSchema);
+const productgroups = mongoose.model('productgroups', productgroupsSchema);
 module.exports = {
 	user:  user ,
 	shopping_List: shopping_List,
 	products: products,
 	productgroups: productgroups
 };
+
