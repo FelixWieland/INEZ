@@ -1,4 +1,35 @@
 let request= require("./dbRequests");
+
+
+		request.addProductToShoppingList("5d67c91bd9b8553ce452148f","5d60504225e690b4eefece07",	"g",100, function (err,data2) {
+			if(err) console.log(err)
+			else {
+				console.log(data2);
+			}
+				request.addProductToShoppingList("5d67c91bd9b8553ce452148f","5d60504225e690b4eefece07",	"g",100, function (err,data3) {
+					if(err) console.log(err)
+					else{
+						console.log(data3);
+					}
+					request.changeProductAmountInShooppingList("5d67c91bd9b8553ce452148f","5d60504225e690b4eefece07","120", function (err,data4){
+						if (err) console.log(err)
+						else {
+							console.log(data4);
+						}
+					});
+				});
+
+		});
+
+/*
+request.createUser("corn","asd", function (err, data) {
+	if (err) console.log(err);
+	else {
+		console.log(data);
+	}
+});
+
+ */
 /*
 request.getUser("Felix",function (err, data) {
 	if (err) console.log(err);
@@ -160,9 +191,6 @@ request.getShoppingLists("Tim",function(err, data){
 });
 */
 
-request.removeProductFromShoppingList("5d66ec548e486c2f50732387", "5d66ddc591ada6213417685c", function (err, data) {
-	console.log(data);
-});
 /*
 request.getShoppingListsById("5d66ddc591ada6213417685c", function (err, data) {
 	if (err) console.log(err);

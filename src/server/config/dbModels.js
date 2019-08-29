@@ -2,12 +2,12 @@
 /**
  *  Establish the connection to the mongoDb via mongooseConnection module
  */
-var mongoose = require('./mongooseConnection').mongoose;
+const mongoose = require('./mongooseConnection').mongoose;
 
 
 
 
-var Schema = mongoose.Schema;
+let Schema = mongoose.Schema;
 
 let userSchema = new Schema({
 	name: {type: String, required: true, unique: true},
@@ -16,17 +16,17 @@ let userSchema = new Schema({
 });
 userSchema.index({name: 'text'});
 
-let user = mongoose.model('user', userSchema);
+const user = mongoose.model('user', userSchema);
 
 let shoppingListSchema = new Schema({
 	list_name: {type: String, required: true},
-	products: [{product_id: {type:Schema.Types.ObjectId, ref: 'products'},
+	products: [{_id: {type:Schema.Types.ObjectId, ref: 'products', required:true},
 							measure: String,
-							amount: {type: Number, min: 0 }
+							amount: {type: Number, min: 0}
 							}]
 });
 
-let shopping_List = mongoose.model('shopping_List', shoppingListSchema);
+const shopping_List = mongoose.model('shopping_List', shoppingListSchema);
 
 
 let productsSchema = new Schema({
@@ -35,7 +35,7 @@ let productsSchema = new Schema({
 });
 productsSchema.index({name: 'text'});
 
-let products = mongoose.model('products', productsSchema);
+const products = mongoose.model('products', productsSchema);
 
 
 let productgroupsSchema = new Schema({
@@ -44,7 +44,7 @@ let productgroupsSchema = new Schema({
 });
 productgroupsSchema.index({groupname: 'text' });
 
-let productgroups = mongoose.model('productgroups', productgroupsSchema);
+const productgroups = mongoose.model('productgroups', productgroupsSchema);
 module.exports = {
 	user:  user ,
 	shopping_List: shopping_List,

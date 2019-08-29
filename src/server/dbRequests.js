@@ -5,7 +5,7 @@ const model = require("./config/dbModels.js");
 const mongoose = require("./config/mongooseConnection").mongoose;
 
 /**
- *  create a user, gives back a null for success and a err in case of a failure
+ *  create a user, gives back the user in case of success and a err in case of a failure
  */
 const createUser = function(name, password_hash, done){
 	let user = new model.user({name: name, password_hash : password_hash});
@@ -105,6 +105,7 @@ const createShoppingList = function(userName, listname , done){
 			}
 		});
 	}
+
 /**
  * DeleteShoppingList
  * this function will delete a shoppingList by its documentID
@@ -177,8 +178,6 @@ const getShoppingListsById = function(id, done){
 	});
 };
 
-
-
 /**
  *  Add Product to a shopping List by the ID of the ShoppingList
  *  Required Parameters: ShoppingListID, ProductID, Measure, Amount
@@ -190,12 +189,15 @@ const addProductToShoppingList = function(shoppingListId, productId, measure, am
 		if(data==null){
 			return done("error ShoppingList not found");
 		}
-		try {
-			data.products.push({productId: mongoose.Types.ObjectId(productId), measure: measure, amount : amount});
+
+		for(let i=0; i< data.products.length;i++){
+			if (data.products[i]._id.equals(mongoose.Types.ObjectId(productId))){
+				return done(new Error("This Product is already in the shoppingList"))
+			}
 		}
-		catch (e) {
-			return done(e);
-		}
+		data.products.push({_id: mongoose.Types.ObjectId(productId), measure: measure, amount : amount});
+
+
 		data.save();
 		return done(null, data);
 	});
@@ -224,6 +226,40 @@ const removeProductFromShoppingList = function(productId, shoppingListId, done){
 }
 
 /**
+ * Change Amount of a Product in a ShoppingList
+ */
+const changeProductAmountInShooppingList = function(shoppingListId, productId, newAmount, done){
+	model.shopping_List.findOne({_id: shoppingListId}, function (err, data) {
+		if (err) return done(err);
+		for(let i=0; i<data.products.length; i++){
+			if(data.products[i]._id.equals(mongoose.Types.ObjectId(productId))){
+				data.products[i].amount=newAmount;
+				data.save();
+				return done(null, data);
+			}
+		}
+
+	});
+}
+
+/**
+ * Change Measure of a Product in a ShoppingList
+ */
+const changeProductMeasureInShooppingList = function(shoppingListId, productId, newMeasure, done){
+	model.shopping_List.findOne({_id: shoppingListId}, function (err, data) {
+		if (err) return done(err);
+		for(let i=0; i<data.products.length; i++){
+			if(data.products[i]._id.equals(mongoose.Types.ObjectId(productId))){
+				data.products[i].measure=newMeasure;
+				data.save();
+				return done(null, data);
+			}
+		}
+
+	});
+}
+
+/**
  *Get a list of all Products
  */
 let allProducts;
@@ -236,7 +272,7 @@ const getAllProducts = function(done){
 		}).select({"name":1});
 	}
 	else {
-		return done(allProducts);
+		return done(null, allProducts);
 	}
 }
 
@@ -247,17 +283,13 @@ setInterval(function() {
 	// do your stuff here
 
 	model.products.find({}, function(err, data) {
-		if(err) return done(err);
+		if(err) return console.log(err);
 		allProducts=data;
-		done (null, data)
+		console.log("allProducts updated")
 	}).select({"name":1});
 
 
 }, the_interval_prd);
-
-
-
-
 
 /**
  * Get a List of all Products which are in the group of the provided ID
@@ -269,7 +301,6 @@ const getAllProductsByGroupId = function(productGroupId, done){
 	});
 }
 
-
 /**
  * Get a List of all ProductGroups
  */
@@ -280,9 +311,8 @@ const getAllProductGroups = function(done){
 	});
 }
 
-
 /**
- *  Function to remove unesed shoppingLists
+ *  Function to remove unused shoppingLists
  */
 const removeUnusedShoppingLists = function (done){
 	model.shopping_List.find({},function (err, data) {
@@ -298,26 +328,18 @@ const removeUnusedShoppingLists = function (done){
 	done(null, "done");
 }
 
-
 /**
  * sets a intervall to remove all unused Shopping Lists every 10 minutes
  */
-let minutes = 10, the_interval = minutes * 60 * 1000;
-//const interval = function(){
-	setInterval(function() {
-		console.log("I am doing my 5 minutes check and delete all unused Shopping Lists");
-		// do your stuff here
-
-		removeUnusedShoppingLists(function (err, data) {
-			if (err) console.log(err);
-			else console.log(data);
-		})
-
-
-	}, the_interval);
-//}
-
-
+let minutes_remShoppingLists = 5, the_interval_remShoppingLists = minutes_remShoppingLists * 60 * 1000;
+setInterval(function() {
+	console.log("I am doing my 5 minutes check and delete all unused Shopping Lists");
+	// do your stuff here
+	removeUnusedShoppingLists(function (err, data) {
+		if (err) console.log(err);
+		else console.log(data);
+	})
+}, the_interval_remShoppingLists);
 
 /**
  *  Export all functions for the database
@@ -336,5 +358,6 @@ module.exports = {
 	getAllProductsByGroupId:getAllProductsByGroupId,
 	getAllProductGroups:getAllProductGroups,
 	removeProductFromShoppingList: removeProductFromShoppingList,
-	//interval:interval
+	changeProductAmountInShooppingList:changeProductAmountInShooppingList,
+	changeProductMeasureInShooppingList:changeProductMeasureInShooppingList
 };
