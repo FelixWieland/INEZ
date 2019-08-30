@@ -1,5 +1,6 @@
 {
-  "watch": [
-    "src/server/"
-  ]
+	"watch": ["src/server/"],
+	"env": {
+		"JWT_KEY": "secret"
+	}
 }

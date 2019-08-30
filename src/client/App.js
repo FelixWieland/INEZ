@@ -1,25 +1,26 @@
-import React, { Component, useState } from 'react'
-import { Button, MuiThemeProvider, Container } from '@material-ui/core';
-import GroupFAB from './components/GroupFAB';
-import { theme } from './theme';
-import Navbar from './components/Navbar';
-import GroceryList from './components/GroceryList';
-import DownshiftTextfield from './components/DownshiftTexfield';
-import Homepage from './components/Homepage';
+import React, { Component, useState } from "react";
+import { Button, MuiThemeProvider, Container } from "@material-ui/core";
+import GroupFAB from "./components/GroupFAB";
+import { theme } from "./theme";
+import Navbar from "./components/Navbar";
+import GroceryList from "./components/GroceryList";
+import DownshiftTextfield from "./components/DownshiftTexfield";
+import Homepage from "./components/Homepage";
 
-const App = (props) => {
+const App = props => {
 	const [state, setState] = useState({
-		username: "",
+		username: ""
 	});
 
 	if (state.username === "") {
-		fetch('/api/getUsername')
+		fetch("/api/getUsername")
 			.then(res => res.json())
-			.then(user => setState({
-				username: user.username
-			}));
+			.then(user =>
+				setState({
+					username: user.username
+				})
+			);
 	}
-
 
 	//<p>Hello {state.username} <Button color="primary" variant="contained">Test</Button></p>
 	return (
@@ -34,7 +35,7 @@ const App = (props) => {
 			</MuiThemeProvider>
 		</>
 	);
-}
+};
 
 /*
 
