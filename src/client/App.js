@@ -1,43 +1,31 @@
 import React, { Component, useState } from 'react'
-import { Button, MuiThemeProvider, Container } from '@material-ui/core';
-import GroupFAB from './components/GroupFAB';
-import { theme } from './theme';
-import Navbar from './components/Navbar';
-import GroceryList from './components/GroceryList';
-import DownshiftTextfield from './components/DownshiftTexfield';
-import Homepage from './components/Homepage';
+import { Button, MuiThemeProvider, Container } from '@material-ui/core'
+import { theme } from './theme'
+import { BrowserRouter, Route, Link, Switch } from 'react-router-dom'
+import Grocerys from './pages/Grocerys'
+import Homepage from './pages/Homepage'
+import Login from './pages/Login'
+import Register from './pages/Register'
 
-const App = (props) => {
-	const [state, setState] = useState({
-		username: "",
-	});
-
-	if (state.username === "") {
-		fetch('/api/getUsername')
-			.then(res => res.json())
-			.then(user => setState({
-				username: user.username
-			}));
+class App extends Component {
+	constructor(props) {
+		super(props)
 	}
 
-
-	//<p>Hello {state.username} <Button color="primary" variant="contained">Test</Button></p>
-	return (
-		<>
+	render() {
+		return (
 			<MuiThemeProvider theme={theme}>
-				{/* <Homepage /> */}
-				<Navbar />
-				<Container maxWidth="md">
-					<GroceryList />
-				</Container>
-				<GroupFAB />
+				<BrowserRouter>
+					<Switch>
+						<Route path={'/homepage'} component={Homepage} />
+						<Route path={'/login'} component={Login} />
+						<Route path={'/register'} component={Register} />
+						<Route path={'/'} component={Grocerys} />
+					</Switch>
+				</BrowserRouter>
 			</MuiThemeProvider>
-		</>
-	);
+		)
+	}
 }
 
-/*
-
-*/
-
-export default App;
+export default App

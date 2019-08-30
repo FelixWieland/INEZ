@@ -1,22 +1,25 @@
-import express, { static as staticFiles } from 'express';
-import { userInfo } from 'os';
-import { connect } from './config/mongoconf';
-import fs from 'fs';
+import express, { static as staticFiles } from 'express'
 import path from 'path'
+import cors from 'cors'
+import { onConnection } from './routes/autosuggestSocket'
+import socketio from 'socket.io'
+import * as routes from './routes/test'
 
-const app = express();
-let credentials = JSON.parse(fs.readFileSync(path.dirname(require.main.filename) + "/config/credentials.json").toString());
-let conn = undefined;
-(async () => { conn = await connect(credentials.mongo.srv, "INEZ") })();
-credentials = undefined;
+const PORT = process.env.NODE_ENV === 'production' ? 8000 : 3001
 
+const app = express()
+
+app.use(cors())
 app.use(staticFiles('dist'))
+app.options('*', cors())
 
-app.get('/api/getUsername', (req, res) => {
-  console.log(conn)
-  return res.send({
-    username: userInfo().username
-  });
-})
+app.get('/api/getUsername', routes.getUsername)
+app.get('/api/demoCall', routes.demoCall)
 
-app.listen(3001, () => console.log('Listening on port 3000, API on port 3001!'))
+// rewrites non matching routes to index.html
+app.all('/*', (req, res) => res.sendFile(path.resolve(__dirname, '../../dist/index.html')))
+
+const server = app.listen(PORT, () => console.log('Listening on port ' + PORT))
+const io = socketio.listen(server)
+
+io.on('connection', onConnection)

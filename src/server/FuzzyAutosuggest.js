@@ -1,8 +1,7 @@
-import Fuse from "fuse.js"
-import mongodb from "mongodb"
+import Fuse from 'fuse.js'
+import mongodb from 'mongodb'
 
 class FuzzyAutosuggest {
-
     constructor(connectionString) {
         this.options = {}
         this.dataset = []
@@ -12,53 +11,59 @@ class FuzzyAutosuggest {
         this.setOptions()
     }
 
-    loadDataset(ready) {
-        var MongoClient = mongodb.MongoClient
+    loadDataset = (ready) => {
+        const MongoClient = mongodb.MongoClient
         this.loading = true
-        MongoClient.connect(this.connectionString, { useNewUrlParser: true }, function (err, conn) {
+        MongoClient.connect(this.connectionString, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        }, (err, conn) => {
             if (err) {
                 throw err
             }
-            var db = conn.db("INEZ")
-            db.collection("products").find({}).toArray(function (err, result) {
+            const db = conn.db('INEZ')
+            db.collection('products').find({}).toArray((err, result) => {
                 if (err) throw err
                 ready(result)
             })
         })
     }
 
-    setOptions() {
+    setOptions = () => {
         this.options = {
             shouldSort: true,
             threshold: 0.4,
             location: 0,
             distance: 6,
             maxPatternLength: 20,
-            keys: ['name']
-        };
+            keys: ['name'],
+        }
     }
 
-    initializeFuse(dataset) {
+    initializeFuse = (dataset) => {
         this.fuse = new Fuse(dataset, this.options)
         return this.fuse
     }
 
-    runSearch(toSeachFor, respond, limit) {
-        if (this.loading === true) throw "Currently loading"
-        var that = this;
+    runSearch = (toSeachFor, respond, limit) => {
+        if (this.loading === true) throw new Error('Currently loading')
         if (this.fuse === undefined) {
-            this.loadDataset(function (result) {
-                var fuse = that.initializeFuse(result)
-                that.loading = false
-                if (limit === undefined)
+            this.loadDataset((result) => {
+                const fuse = this.initializeFuse(result)
+                this.loading = false
+                if (limit === undefined) {
                     respond(fuse.search(toSeachFor))
-                else
-                    respond(fuse.search(toSeachFor).slice(0, limit))
-
+                    return
+                }
+                respond(fuse.search(toSeachFor).slice(0, limit))
             })
             return
         }
-        respond(this.fuse.search(toSeachFor))
+        if (limit === undefined) {
+            respond(this.fuse.search(toSeachFor))
+            return
+        }
+        respond(this.fuse.search(toSeachFor).slice(0, limit))
     }
 }
 
