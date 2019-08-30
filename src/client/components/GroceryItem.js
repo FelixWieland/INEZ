@@ -112,6 +112,10 @@ class GroceryItem extends Component {
         })
     }
 
+    buildSubheader = () => this.state.amount !== 0 ? this.state.amount + this.state.measure : ''
+
+    toggleExpand = () => this.setState({ expanded: !this.state.expanded })
+
     toggleChecked = () => {
         this.setState({ loading: !this.state.checked })
         setTimeout(() => {
@@ -122,24 +126,16 @@ class GroceryItem extends Component {
         }, 1000)
     }
 
-    toggleExpand = () => {
-        this.setState({ expanded: !this.state.expanded })
-    }
-
     buildItems = (collection) => collection.map((elm) => (
         <MenuItem key={elm.key} value={elm.value}>
             {elm.value}
         </MenuItem>
     ))
 
-    buildMeasureItems = () => {
-        return this.buildItems(this.state.measureItems)
-    }
+    buildMeasureItems = () => this.buildItems(this.state.measureItems)
 
-    buildGroupItems = () => {
-        return this.buildItems(
-            this.props.currentGroups.map((elm, index) => ({ key: index, value: elm.label })))
-    }
+    buildGroupItems = () => this.buildItems(this.props.currentGroups.map(
+        (elm, index) => ({ key: index, value: elm.label })))
 
     handleMeasureChange = (e) => {
         this.setState({ measure: e.target.value })
@@ -169,20 +165,20 @@ class GroceryItem extends Component {
                         className={classes.textField}
                         value={this.state.amount !== 0 ? this.state.amount : ''}
                         onChange={this.handleAmountChange}
-                        margin="normal"
+                        margin={'normal'}
                     />
                 </Grid>
                 <Grid item xs={6} md={4}>
                     <FormControl className={classes.selectionField}>
-                        <InputLabel shrink htmlFor="measure-label-placeholder">
+                        <InputLabel shrink htmlFor={'measure-label-placeholder'}>
                             Einheit
                         </InputLabel>
                         <Select
                             value={this.state.measure}
                             onChange={this.handleMeasureChange}
-                            input={<Input name="measure" id="measure-label-placeholder" />}
+                            input={<Input name={'measure'} id={'measure-label-placeholder'} />}
                             displayEmpty
-                            name="Einheit"
+                            name={'Einheit'}
                             className={classes.selectEmpty}
                         >
                             {this.buildMeasureItems()}
@@ -191,15 +187,15 @@ class GroceryItem extends Component {
                 </Grid>
                 <Grid item xs={8} sm={11} md={3}>
                     <FormControl className={classes.selectionField}>
-                        <InputLabel shrink htmlFor="group-label-placeholder">
+                        <InputLabel shrink htmlFor={'group-label-placeholder'}>
                             Gruppe
                         </InputLabel>
                         <Select
                             value={this.state.group}
                             onChange={this.handleGroupChange}
-                            input={<Input name="group" id="group-label-placeholder" />}
+                            input={<Input name={'group'} id={'group-label-placeholder'} />}
                             displayEmpty
-                            name="Gruppe"
+                            name={'Gruppe'}
                             className={classes.selectEmpty}
                         >
                             {this.buildGroupItems()}
@@ -207,16 +203,17 @@ class GroceryItem extends Component {
                     </FormControl>
                 </Grid>
                 <Grid item xs={4} sm={1} >
-                    <Fab size="small" color="primary" aria-label="add" className={classes.flat} onClick={this.props.onDelete}>
+                    <Fab
+                        size={'small'}
+                        color={'primary'}
+                        aria-label={'add'}
+                        className={classes.flat}
+                        onClick={this.props.onDelete}>
                         <DeleteIcon />
                     </Fab>
                 </Grid>
             </Grid >
         )
-    }
-
-    buildSubheader = () => {
-        return (this.state.amount !== 0 ? this.state.amount : '') + ' ' + this.state.measure
     }
 
     render() {

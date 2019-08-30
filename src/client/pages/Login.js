@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import { Link } from 'react-router-dom'
+import { Paper } from '@material-ui/core'
 
 const Copyright = () => {
     return (
@@ -35,10 +36,12 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        backgroundColor: '#FFFFFF',
+        padding: theme.spacing(4),
     },
     avatar: {
         margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
+        backgroundColor: theme.palette.primary.light,
     },
     form: {
         width: '100%', // Fix IE 11 issue.
@@ -56,12 +59,13 @@ const Login = () => {
         register: 'Du hast noch keinen Account? Registriere dich!',
         uname: 'Benutzername',
         pwd: 'Passwort',
+        back: 'Zurück zur Startseite',
     }
 
     return (
         <Container component={'main'} maxWidth={'xs'}>
             <CssBaseline />
-            <div className={classes.paper}>
+            <Paper className={classes.paper}>
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
                 </Avatar>
@@ -106,9 +110,14 @@ const Login = () => {
                                 {text.register}
                             </Link>
                         </Grid>
+                        <Grid item xs={12}>
+                            <Link to={'/homepage'} className={'clearAll'} >
+                                {text.back}
+                            </Link>
+                        </Grid>
                     </Grid>
                 </form>
-            </div>
+            </Paper>
             <Box mt={8}>
                 {/* <Copyright /> */}
             </Box>

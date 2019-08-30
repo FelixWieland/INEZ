@@ -13,7 +13,8 @@ class GroceryNote extends Component {
     }
 
     addGroceryItem = (measureObj) => {
-        this.state[this.state.activeGroup].addGroceryItem('003', measureObj.product, measureObj.amount, measureObj.measure)
+        this.state[this.state.activeGroup]
+            .addGroceryItem('003', measureObj.product, measureObj.amount, measureObj.measure)
     }
 
     exportGroupAddFunction = (group, fn) => {
