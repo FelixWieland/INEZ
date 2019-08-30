@@ -1,30 +1,25 @@
 import React, { Component } from 'react'
-import { withStyles } from '@material-ui/core';
-import Navbar from '../components/Navbar';
-import GroceryGroups from '../components/GroceryGroups';
-import { Container } from '@material-ui/core';
-
-const styles = theme => ({
-
-});
+import { withStyles } from '@material-ui/core'
+import Navbar from '../components/Navbar'
+import GroceryGroups from '../components/GroceryGroups'
+import { Container } from '@material-ui/core'
 
 class GroceryNote extends Component {
-
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
-            activeGroup: "",
+            activeGroup: '',
         }
     }
 
     addGroceryItem = (measureObj) => {
-        this.state[this.state.activeGroup].addGroceryItem("003", measureObj.product, measureObj.amount, measureObj.measure)
+        this.state[this.state.activeGroup].addGroceryItem('003', measureObj.product, measureObj.amount, measureObj.measure)
     }
 
     exportGroupAddFunction = (group, fn) => {
         this.setState({
             [group]: {
-                addGroceryItem: fn
+                addGroceryItem: fn,
             },
         })
     }
@@ -34,7 +29,6 @@ class GroceryNote extends Component {
     }
 
     render() {
-        const { classes } = this.props;
         return (
             <>
                 <Navbar addGroceryItem={this.addGroceryItem} />
@@ -46,4 +40,5 @@ class GroceryNote extends Component {
     }
 }
 
-export default withStyles(styles)(GroceryNote)
+export default GroceryNote
+

@@ -1,20 +1,19 @@
 import React, { Component } from 'react'
-import { withStyles, SwipeableDrawer } from '@material-ui/core';
+import { withStyles, SwipeableDrawer } from '@material-ui/core'
 
-const styles = theme => ({
+const styles = (theme) => ({
 
-});
+})
 
 class SideProfile extends Component {
-
     constructor(props) {
-        super(props);
+        super(props)
     }
 
     render() {
         return (
             <SwipeableDrawer
-                anchor="right"
+                anchor={'right'}
                 open={false}
                 // open={this.props.open}
                 onClose={this.props.onClose}

@@ -1,19 +1,19 @@
-import React from 'react';
-import deburr from 'lodash/deburr';
-import Autosuggest from 'react-autosuggest';
-import match from 'autosuggest-highlight/match';
-import parse from 'autosuggest-highlight/parse';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
-import MenuItem from '@material-ui/core/MenuItem';
-import Popper from '@material-ui/core/Popper';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { subscribeToAutosuggestion } from '../api';
+import React from 'react'
+import deburr from 'lodash/deburr'
+import Autosuggest from 'react-autosuggest'
+import match from 'autosuggest-highlight/match'
+import parse from 'autosuggest-highlight/parse'
+import TextField from '@material-ui/core/TextField'
+import Paper from '@material-ui/core/Paper'
+import MenuItem from '@material-ui/core/MenuItem'
+import Popper from '@material-ui/core/Popper'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
+import { subscribeToAutosuggestion } from '../api'
 
-const styles = theme => ({
+const styles = (theme) => ({
     root: {
         flexGrow: 1,
-        overflow: "visible",
+        overflow: 'visible',
     },
     container: {
         flexGrow: 1,
@@ -61,37 +61,36 @@ const styles = theme => ({
         height: theme.spacing(2),
     },
     textField: {
-        width: "100%",
-    }
-});
+        width: '100%',
+    },
+})
 
 class ReactAutosuggestTextfield extends React.Component {
-
     constructor(props) {
         super(props)
         this.state = {
-            fullstring: "",
+            fullstring: '',
             emit: undefined,
             suggestions: [],
             single: '',
             popper: '',
-            anchorEl: undefined
+            anchorEl: undefined,
         }
-        //this.getSuggestions = this.getSuggestions.bind(this)
+        // this.getSuggestions = this.getSuggestions.bind(this)
     }
 
     getSuggestionValue(suggestion) {
-        return suggestion.label;
+        return suggestion.label
     }
 
     handleSuggestionsFetchRequested = ({ value }) => {
-        this.setState({ suggestions: this.getSuggestions(value) });
+        this.setState({ suggestions: this.getSuggestions(value) })
         this.props.setClearValue(this.clearValue)
     };
 
     componentDidMount() {
         this.setState({
-            emit: subscribeToAutosuggestion(this.onAutosuggest)
+            emit: subscribeToAutosuggestion(this.onAutosuggest),
         })
     }
 
@@ -105,19 +104,19 @@ class ReactAutosuggestTextfield extends React.Component {
     onAutosuggest = (results) => {
         this.setState({
             suggestions: results.suggestions.map((elm) => {
-                let nelm = elm;
-                var obj = this.extractMeasureObj(this.state.popper)
+                const nelm = elm
+                const obj = this.extractMeasureObj(this.state.popper)
                 if (obj.amount === 0) {
                     return nelm
                 }
-                nelm.label = (obj.amount + " " + elm.portionsizename + " " + elm.label).trim()
+                nelm.label = (obj.amount + ' ' + elm.portionsizename + ' ' + elm.label).trim()
                 return nelm
-            })
+            }),
         })
     }
 
     hasNumbers = (t) => {
-        return /\d/.test(t);
+        return /\d/.test(t)
     }
 
     handleSuggestionsClearRequested = () => {
@@ -125,25 +124,25 @@ class ReactAutosuggestTextfield extends React.Component {
     };
 
     renderSuggestion(suggestion, { query, isHighlighted }) {
-        const matches = match(suggestion.label, query);
-        const parts = parse(suggestion.label, matches);
+        const matches = match(suggestion.label, query)
+        const parts = parse(suggestion.label, matches)
 
         return (
             <MenuItem selected={isHighlighted} component="div">
                 <div>
-                    {parts.map(part => (
+                    {parts.map((part) => (
                         <span key={part.text} style={{ fontWeight: part.highlight ? 500 : 400 }}>
                             {part.text}
                         </span>
                     ))}
                 </div>
             </MenuItem>
-        );
+        )
     }
 
     getSuggestions = (value) => {
-        const inputValue = deburr(value.trim()).toLowerCase();
-        const inputLength = inputValue.length;
+        const inputValue = deburr(value.trim()).toLowerCase()
+        const inputLength = inputValue.length
 
         return inputLength === 0 ?
             [] :
@@ -151,16 +150,16 @@ class ReactAutosuggestTextfield extends React.Component {
     }
 
     renderInputComponent(inputProps) {
-        const { classes, inputRef = () => { }, ref, ...other } = inputProps;
+        const { classes, inputRef = () => { }, ref, ...other } = inputProps
 
         return (
             <TextField
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 fullWidth={true}
                 InputProps={{
-                    inputRef: node => {
-                        ref(node);
-                        inputRef(node);
+                    inputRef: (node) => {
+                        ref(node)
+                        inputRef(node)
                     },
                     classes: {
                         input: classes.input,
@@ -168,76 +167,75 @@ class ReactAutosuggestTextfield extends React.Component {
                 }}
                 {...other}
             />
-        );
+        )
     }
 
     extractMeasureObj = (string) => {
-        //(\D*) -> Liter
-        //(.* )
+        // (\D*) -> Liter
+        // (.* )
         try {
             try {
-                let measureAndAmount = string.match(/(.* )/g)[0];
-                let product = string.replace(measureAndAmount, "").trim();
-                let amount = parseInt(measureAndAmount)
-                let measure = measureAndAmount.replace(/[0-9]/g, '').trim();
+                const measureAndAmount = string.match(/(.* )/g)[0]
+                const product = string.replace(measureAndAmount, '').trim()
+                const amount = parseInt(measureAndAmount)
+                const measure = measureAndAmount.replace(/[0-9]/g, '').trim()
 
                 return {
                     amount: amount,
                     measure: measure,
-                    product: product
+                    product: product,
                 }
-
             } catch {
-                if (!hasNumbers(string))
+                if (!hasNumbers(string)) {
                     return {
                         amount: 0,
-                        measure: "",
-                        product: string
+                        measure: '',
+                        product: string,
                     }
-                else
+                } else {
                     return {
                         amount: 0,
-                        measure: "",
-                        product: ""
+                        measure: '',
+                        product: '',
                     }
+                }
             }
         } catch {
             return {
                 amount: 0,
-                measure: "",
-                product: string
+                measure: '',
+                product: string,
             }
         }
-
     }
 
     stringFromMeasureObj = (obj) => {
         if (obj.amount != 0 && obj.measure.length != 0 && obj.product.length != 0) {
-            return obj.amount + " " + obj.measure + " " + obj.product
+            return obj.amount + ' ' + obj.measure + ' ' + obj.product
         } else if (obj.amount != 0 && obj.product.length != 0) {
-            return obj.amount + " " + obj.product
+            return obj.amount + ' ' + obj.product
         } else {
             return obj.product
         }
     }
 
-    handleChange = name => (event, { newValue }) => {
-        let obj = this.extractMeasureObj(newValue)
+    handleChange = (name) => (event, { newValue }) => {
+        const obj = this.extractMeasureObj(newValue)
         console.log(obj)
         this.setState({
-            popper: this.stringFromMeasureObj(obj)
-        });
-        if (event.type != "keydown" && event.type != "click") {
+            popper: this.stringFromMeasureObj(obj),
+        })
+        if (event.type != 'keydown' && event.type != 'click') {
             this.state.emit(obj)
         }
         this.props.setValue(obj)
         this.setState({
             popper: newValue,
-        });
+        })
     };
 
     render() {
-        const { classes } = this.props;
+        const { classes } = this.props
         const autosuggestProps = {
             renderInputComponent: this.renderInputComponent,
             suggestions: this.state.suggestions,
@@ -245,7 +243,7 @@ class ReactAutosuggestTextfield extends React.Component {
             onSuggestionsClearRequested: this.handleSuggestionsClearRequested,
             getSuggestionValue: this.getSuggestionValue,
             renderSuggestion: this.renderSuggestion,
-        };
+        }
 
         return (
             <div className={classes.root}>
@@ -257,9 +255,10 @@ class ReactAutosuggestTextfield extends React.Component {
                         placeholder: 'Gewünschtes Produkt (z.B. 1 Liter Milch)',
                         value: this.state.popper,
                         onChange: this.handleChange('popper'),
-                        inputRef: node => {
-                            if (this.state.anchorEl == undefined)
+                        inputRef: (node) => {
+                            if (this.state.anchorEl == undefined) {
                                 this.setState({ anchorEl: node })
+                            }
                         },
                         InputLabelProps: {
                             shrink: true,
@@ -270,7 +269,7 @@ class ReactAutosuggestTextfield extends React.Component {
                         suggestionsList: classes.suggestionsList,
                         suggestion: classes.suggestion,
                     }}
-                    renderSuggestionsContainer={options => (
+                    renderSuggestionsContainer={(options) => (
                         <Popper anchorEl={this.state.anchorEl} open={Boolean(options.children)}>
                             <Paper
                                 square
@@ -283,9 +282,8 @@ class ReactAutosuggestTextfield extends React.Component {
                     )}
                 />
             </div>
-        );
+        )
     }
-
 }
 
 export default withStyles(styles)(ReactAutosuggestTextfield)

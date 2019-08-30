@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
-import { withStyles, Card, IconButton, Avatar, CardHeader, Collapse, CardContent, Typography, TextField, MenuItem, CircularProgress, Grid, Fab, Select, FormControl, InputLabel, Input } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import CheckIcon from '@material-ui/icons/Check';
-import { green } from '@material-ui/core/colors';
-import DeleteIcon from '@material-ui/icons/Delete';
+import {
+    withStyles, Card, IconButton, Avatar, CardHeader,
+    Collapse, CardContent, Typography, TextField, MenuItem,
+    CircularProgress, Grid, Fab, Select, FormControl,
+    InputLabel, Input,
+} from '@material-ui/core'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import ExpandLessIcon from '@material-ui/icons/ExpandLess'
+import CheckIcon from '@material-ui/icons/Check'
+import { green } from '@material-ui/core/colors'
+import DeleteIcon from '@material-ui/icons/Delete'
 
-const styles = theme => ({
+const styles = (theme) => ({
     card: {
         marginTop: 10,
     },
@@ -23,22 +28,22 @@ const styles = theme => ({
     amountcontainer: {
         marginBottom: 30,
         marginTop: -20,
-        width: "100%",
+        width: '100%',
         paddingBottom: 30,
     },
     amount: {
-        float: "left"
+        float: 'left',
     },
     amountMeasure: {
-        float: "left"
+        float: 'left',
     },
     amountInteraction: {
-        float: "left"
+        float: 'left',
     },
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: "100%",
+        width: '100%',
     },
     fabProgress: {
         color: green[500],
@@ -46,20 +51,20 @@ const styles = theme => ({
         zIndex: 1000,
     },
     avatar: {
-        overflow: "visible",
+        'overflow': 'visible',
         '&:hover': {
-            cursor: "pointer"
-        }
+            cursor: 'pointer',
+        },
     },
     greenAvatar: {
-        overflow: "visible",
-        backgroundColor: green[500],
+        'overflow': 'visible',
+        'backgroundColor': green[500],
         '&:hover': {
-            cursor: "pointer"
-        }
+            cursor: 'pointer',
+        },
     },
     flat: {
-        boxShadow: "none",
+        boxShadow: 'none',
         marginTop: 25,
     },
     container: {
@@ -68,15 +73,14 @@ const styles = theme => ({
     selectionField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: "100%",
+        width: '100%',
         marginTop: 16,
-    }
-});
+    },
+})
 
 class GroceryItem extends Component {
-
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             expanded: false,
             loading: false,
@@ -89,12 +93,12 @@ class GroceryItem extends Component {
             measureItems: [
                 {
                     key: 1,
-                    value: "gramm"
+                    value: 'gramm',
                 },
                 {
                     key: 2,
-                    value: "kilo"
-                }
+                    value: 'kilo',
+                },
             ],
         }
     }
@@ -103,8 +107,8 @@ class GroceryItem extends Component {
         this.setState({
             checked: this.props.checked !== undefined ? this.props.checked : false,
             amount: this.props.amount !== undefined ? this.props.amount : 0,
-            measure: this.props.measure !== undefined ? this.props.measure : "",
-            group: this.props.group !== undefined ? this.props.group : "",
+            measure: this.props.measure !== undefined ? this.props.measure : '',
+            group: this.props.group !== undefined ? this.props.group : '',
         })
     }
 
@@ -133,7 +137,8 @@ class GroceryItem extends Component {
     }
 
     buildGroupItems = () => {
-        return this.buildItems(this.props.currentGroups.map((elm, index) => ({ key: index, value: elm.label })))
+        return this.buildItems(
+            this.props.currentGroups.map((elm, index) => ({ key: index, value: elm.label })))
     }
 
     handleMeasureChange = (e) => {
@@ -145,19 +150,24 @@ class GroceryItem extends Component {
     }
 
     handleGroupChange = (e) => {
-        this.props.onGroupChange({ id: this.props.id, name: this.props.name, amount: this.state.amount, measure: this.state.measure }, e.target.value)
+        this.props.onGroupChange({
+            id: this.props.id,
+            name: this.props.name,
+            amount: this.state.amount,
+            measure: this.state.measure,
+        }, e.target.value)
         this.setState({ group: e.target.value })
     }
 
     buildAmountInteraction = () => {
-        const { classes } = this.props;
+        const { classes } = this.props
         return (
             <Grid container justify="center" spacing={4} className={classes.container}>
                 <Grid item xs={6} md={4}>
                     <TextField
-                        label={"Menge"}
+                        label={'Menge'}
                         className={classes.textField}
-                        value={this.state.amount !== 0 ? this.state.amount : ""}
+                        value={this.state.amount !== 0 ? this.state.amount : ''}
                         onChange={this.handleAmountChange}
                         margin="normal"
                     />
@@ -202,33 +212,38 @@ class GroceryItem extends Component {
                     </Fab>
                 </Grid>
             </Grid >
-        );
+        )
     }
 
     buildSubheader = () => {
-        return (this.state.amount !== 0 ? this.state.amount : "") + " " + this.state.measure
+        return (this.state.amount !== 0 ? this.state.amount : '') + ' ' + this.state.measure
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes } = this.props
         return (
             <Card className={classes.card}>
                 <CardHeader
                     avatar={
-                        <Avatar aria-label="recipe" className={this.state.checked ? classes.greenAvatar : classes.avatar} onClick={this.toggleChecked}>
-                            {this.state.loading && <CircularProgress size={43} className={classes.fabProgress} />}
-                            {this.state.checked ? <CheckIcon /> : "R"}
+                        <Avatar
+                            aria-label={'recipe'}
+                            className={this.state.checked ? classes.greenAvatar : classes.avatar}
+                            onClick={this.toggleChecked}
+                        >
+                            {this.state.loading &&
+                                <CircularProgress size={43} className={classes.fabProgress} />}
+                            {this.state.checked ? <CheckIcon /> : 'R'}
                         </Avatar>
                     }
                     action={
-                        <IconButton aria-label="settings" onClick={this.toggleExpand}>
+                        <IconButton aria-label={'settings'} onClick={this.toggleExpand}>
                             {this.state.expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                         </IconButton>
                     }
                     title={this.props.name}
                     subheader={this.buildSubheader()}
                 />
-                <Collapse in={this.state.expanded} timeout="auto">
+                <Collapse in={this.state.expanded} timeout={'auto'}>
                     <CardContent>
                         {this.buildAmountInteraction()}
                     </CardContent>

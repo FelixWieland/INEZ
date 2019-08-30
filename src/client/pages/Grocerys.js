@@ -1,22 +1,22 @@
 import React, { Component } from 'react'
-import { withStyles, Grow } from '@material-ui/core';
-import Navbar from '../components/Navbar';
-import { Container } from '@material-ui/core';
-import { BrowserRouter, Route, Link, Switch } from "react-router-dom";
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
-import GroceryNote from '../components/GroceryNote';
-import GroupFAB from '../components/GroupFAB';
-import GroupDeleteFAB from '../components/GroupDeleteFab';
-import DialogPopup from '../components/DialogPopup';
-import SelectionPopup from '../components/SelectionPopup';
-import { Delete } from '@material-ui/icons';
-import { ddmmyyyy } from '../utility';
-import SideProfile from '../components/SideProfile';
+import { withStyles, Grow } from '@material-ui/core'
+import Navbar from '../components/Navbar'
+import { Container } from '@material-ui/core'
+import { BrowserRouter, Route, Link, Switch } from 'react-router-dom'
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
+import CardMedia from '@material-ui/core/CardMedia'
+import Typography from '@material-ui/core/Typography'
+import GroceryNote from '../components/GroceryNote'
+import GroupFAB from '../components/GroupFAB'
+import GroupDeleteFAB from '../components/GroupDeleteFab'
+import DialogPopup from '../components/DialogPopup'
+import SelectionPopup from '../components/SelectionPopup'
+import { Delete } from '@material-ui/icons'
+import { ddmmyyyy } from '../utility'
+import SideProfile from '../components/SideProfile'
 
-const styles = theme => ({
+const styles = (theme) => ({
     card: {
         display: 'flex',
         margin: 15,
@@ -31,7 +31,7 @@ const styles = theme => ({
     },
     cover: {
         width: 150,
-        float: "right"
+        float: 'right',
     },
     controls: {
         display: 'flex',
@@ -43,36 +43,35 @@ const styles = theme => ({
         height: 38,
         width: 38,
     },
-});
+})
 
 class Grocerys extends Component {
-
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             addGroceryNote: false,
             deleteGroceryNote: false,
             groceryNotes: [
                 {
-                    label: "TestNote",
-                    time: "12.05.09",
+                    label: 'TestNote',
+                    time: '12.05.09',
                 },
                 {
-                    label: "Demo",
-                    time: "12.05.18"
-                }
-            ]
-        };
+                    label: 'Demo',
+                    time: '12.05.18',
+                },
+            ],
+        }
     }
 
     toggleAddGroceryNote = (e) => this.setState({ addGroceryNote: true })
     toggleDeleteGroceryNote = (e) => this.setState({ deleteGroceryNote: true })
 
     addGroceryNote = (name) => {
-        let newNotes = this.state.groceryNotes
+        const newNotes = this.state.groceryNotes
         newNotes.unshift({
             label: name,
-            time: ddmmyyyy()
+            time: ddmmyyyy(),
         })
         this.setState({ groceryNotes: newNotes })
     }
@@ -89,9 +88,9 @@ class Grocerys extends Component {
         return (
             <DialogPopup
                 open={open}
-                title={"Einkaufszettel hinzufügen"}
-                text={"Name des Zettels"}
-                labels={{ ok: "ok", close: "close" }}
+                title={'Einkaufszettel hinzufügen'}
+                text={'Name des Zettels'}
+                labels={{ ok: 'ok', close: 'close' }}
                 onOk={this.addGroceryNote}
                 handleClose={() => this.setState({ addGroceryNote: false })}
             />
@@ -102,7 +101,7 @@ class Grocerys extends Component {
         return (
             <SelectionPopup
                 open={open}
-                title={"Einkaufszettel löschen"}
+                title={'Einkaufszettel löschen'}
                 icon={<Delete />}
                 list={this.state.groceryNotes}
                 onOk={this.deleteGroceryNote}
@@ -116,17 +115,21 @@ class Grocerys extends Component {
         return (
             <>
                 <Navbar addGroceryItem={this.addGroceryItem} disableAutosuggest />
-                <Container maxWidth="md">
+                <Container maxWidth={'md'}>
                     {this.state.groceryNotes.map((elm) => {
                         return (
-                            <Link to={"/" + elm.label} className="clearAll" style={{ color: 'inherit', textDecoration: 'inherit' }}>
+                            <Link
+                                to={'/' + elm.label}
+                                className={'clearAll'}
+                                style={{ color: 'inherit', textDecoration: 'inherit' }}
+                            >
                                 <Card className={classes.card}>
                                     <div className={classes.details}>
                                         <CardContent className={classes.content}>
-                                            <Typography component="h5" variant="h5">
+                                            <Typography component="h5" variant={'h5'}>
                                                 {elm.label}
                                             </Typography>
-                                            <Typography variant="subtitle1" color="textSecondary">
+                                            <Typography variant={'subtitle1'} color={'textSecondary'}>
                                                 {elm.time}
                                             </Typography>
                                         </CardContent>
@@ -136,8 +139,8 @@ class Grocerys extends Component {
                                     </div>
                                     <CardMedia
                                         className={classes.cover}
-                                        image="https://www.in-form.de/typo3temp/fl_realurl_image/lebensmittel-wertschaetzung-cd.jpeg"
-                                        title="Live from space album cover"
+                                        image={'https://www.in-form.de/typo3temp/fl_realurl_image/lebensmittel-wertschaetzung-cd.jpeg'}
+                                        title={'Live from space album cover'}
                                     />
                                 </Card>
                             </Link>
@@ -153,11 +156,11 @@ class Grocerys extends Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes } = this.props
         return (
             <Switch>
-                <Route path="/" exact component={() => this.renderGroceryNotes()} />
-                <Route path="/:id" component={GroceryNote} />
+                <Route path={'/'} exact component={() => this.renderGroceryNotes()} />
+                <Route path={'/:id'} component={GroceryNote} />
             </Switch>
         )
     }

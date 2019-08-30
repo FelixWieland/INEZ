@@ -1,28 +1,28 @@
 import React, { Component } from 'react'
-import { withStyles } from '@material-ui/core';
-import GroceryList from './GroceryList';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import { TimerSharp, Delete } from '@material-ui/icons';
-import GroupFAB from './GroupFAB';
+import { withStyles } from '@material-ui/core'
+import GroceryList from './GroceryList'
+import AppBar from '@material-ui/core/AppBar'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
+import Typography from '@material-ui/core/Typography'
+import Box from '@material-ui/core/Box'
+import { TimerSharp, Delete } from '@material-ui/icons'
+import GroupFAB from './GroupFAB'
 import DialogPopup from './DialogPopup'
-import GroupDeleteFAB from './GroupDeleteFab';
-import SelectionPopup from './SelectionPopup';
+import GroupDeleteFAB from './GroupDeleteFab'
+import SelectionPopup from './SelectionPopup'
 
-const styles = theme => ({
+const styles = (theme) => ({
     root: {
         marginTop: 15,
     },
     tabbar: {
         marginTop: 25,
-    }
-});
+    },
+})
 
-function TabPanel(props) {
-    const { children, value, index, hidden, ...other } = props;
+const TabPanel = (props) => {
+    const { children, value, index, hidden, ...other } = props
 
     return (
         <Typography
@@ -35,36 +35,35 @@ function TabPanel(props) {
         >
             <Box p={0}>{children}</Box>
         </Typography>
-    );
+    )
 }
 
-function a11yProps(index) {
+const a11yProps = (index) => {
     return {
-        id: `scrollable-auto-tab-${index}`,
+        'id': `scrollable-auto-tab-${index}`,
         'aria-controls': `scrollable-auto-tabpanel-${index}`,
-    };
+    }
 }
 
 class GroceryGroups extends Component {
-
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             activeTab: 0,
-            groceryList: "",
+            groceryList: '',
             addGroup: false,
             deleteGroup: false,
             groups: [
                 {
-                    label: "Edeka"
+                    label: 'Edeka',
                 },
                 {
-                    label: "Lidl"
+                    label: 'Lidl',
                 },
                 {
-                    label: "Sonstiges"
-                }
-            ]
+                    label: 'Sonstiges',
+                },
+            ],
         }
     }
 
@@ -86,7 +85,7 @@ class GroceryGroups extends Component {
     }
 
     changeGroup = (obj, newgroup) => {
-        this.state[newgroup + "AddFn"](obj.id, obj.name, obj.amount, obj.measure)
+        this.state[newgroup + 'AddFn'](obj.id, obj.name, obj.amount, obj.measure)
     }
 
     handleChange(event, newValue) {
@@ -98,12 +97,18 @@ class GroceryGroups extends Component {
         return this.state.groups.map((elm, index) => {
             return (
                 <TabPanel value={elm.label} index={index} hidden={this.state.activeTab != index}>
-                    <GroceryList group={elm.label} groceryList={this.state.groceryList} onGroupChange={this.changeGroup} currentGroups={this.state.groups} exportAdd={(fn) => {
-                        this.setState({ [elm.label + "AddFn"]: fn })
-                        this.props.exportAdd(elm.label, fn)
-                    }} />
+                    <GroceryList
+                        group={elm.label}
+                        groceryList={this.state.groceryList}
+                        onGroupChange={this.changeGroup}
+                        currentGroups={this.state.groups}
+                        exportAdd={(fn) => {
+                            this.setState({ [elm.label + 'AddFn']: fn })
+                            this.props.exportAdd(elm.label, fn)
+                        }}
+                    />
                 </TabPanel>
-            );
+            )
         })
     }
 
@@ -111,9 +116,9 @@ class GroceryGroups extends Component {
         return (
             <DialogPopup
                 open={open}
-                title={"Gruppe hinzufügen"}
-                text={"Name der Gruppe"}
-                labels={{ ok: "ok", close: "close" }}
+                title={'Gruppe hinzufügen'}
+                text={'Name der Gruppe'}
+                labels={{ ok: 'ok', close: 'close' }}
                 onOk={this.addGroup}
                 handleClose={() => this.setState({ addGroup: false })}
             />
@@ -124,7 +129,7 @@ class GroceryGroups extends Component {
         return (
             <SelectionPopup
                 open={open}
-                title={"Gruppe löschen"}
+                title={'Gruppe löschen'}
                 icon={<Delete />}
                 list={this.state.groups}
                 onOk={this.deleteGroup}
@@ -135,13 +140,12 @@ class GroceryGroups extends Component {
 
 
     addGroup = (groupname) => {
-        let newGroups = this.state.groups;
+        const newGroups = this.state.groups
         newGroups.push({ label: groupname })
         this.setState({ groups: newGroups, activeGroup: newGroups.length })
     }
 
     deleteGroup = (groupobj) => {
-        console.log(groupobj)
         this.setState({ groups: this.state.groups.filter((elm) => elm.label !== groupobj.label) })
     }
 
@@ -154,7 +158,7 @@ class GroceryGroups extends Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes } = this.props
         return (
             <div className={classes.root}>
                 <AppBar position="static" color="default" className={classes.tabbar}>

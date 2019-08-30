@@ -1,26 +1,26 @@
 import React, { Component } from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import { TextField, Button } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
+import { makeStyles } from '@material-ui/core/styles'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import IconButton from '@material-ui/core/IconButton'
+import MenuIcon from '@material-ui/icons/Menu'
+import AccountCircle from '@material-ui/icons/AccountCircle'
+import Switch from '@material-ui/core/Switch'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormGroup from '@material-ui/core/FormGroup'
+import MenuItem from '@material-ui/core/MenuItem'
+import Menu from '@material-ui/core/Menu'
+import { TextField, Button } from '@material-ui/core'
+import AddIcon from '@material-ui/icons/Add'
 import { withStyles } from '@material-ui/styles'
-import DownshiftTextfield from './DownshiftTexfield';
-import ReactAutosuggestTextfield from './ReactAutosuggestTextfield';
+import DownshiftTextfield from './DownshiftTexfield'
+import ReactAutosuggestTextfield from './ReactAutosuggestTextfield'
 import { withRouter } from 'react-router-dom'
 import { ArrowBack } from '@material-ui/icons'
-import SideProfile from './SideProfile';
+import SideProfile from './SideProfile'
 
-const styles = theme => ({
+const styles = (theme) => ({
     root: {
         flexGrow: 1,
     },
@@ -31,32 +31,26 @@ const styles = theme => ({
         flexGrow: 1,
     },
     textField: {
-        width: "100%",
+        width: '100%',
     },
     addButton: {
         marginLeft: 10,
     },
     toolbar: {
-        backgroundColor: "#FFFFFF"
-    }
-});
+        backgroundColor: '#FFFFFF',
+    },
+})
 
 class Navbar extends Component {
-
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
-            fullstring: "",
+            fullstring: '',
             textfieldValue: {},
             clearValue: () => undefined,
             anchorEl: null,
             sideProfileOpen: false,
         }
-    }
-
-    handleClick = (e) => {
-        this.props.addGroceryItem(this.state.textfieldValue)
-        this.state.clearValue()
     }
 
     setValue = (value) => this.setState({ textfieldValue: value })
@@ -67,36 +61,41 @@ class Navbar extends Component {
 
     handleMenu = (event) => this.setState({ anchorEl: event.currentTarget });
 
+    handleClick = (e) => {
+        this.props.addGroceryItem(this.state.textfieldValue)
+        this.state.clearValue()
+    }
+
     toggleSideProfile = (event) => this.setState({
         sideProfileOpen: true,
-        anchorEl: null
+        anchorEl: null,
     })
 
     render() {
-        const { classes } = this.props;
+        const { classes } = this.props
 
         return (
             <>
-                <AppBar position="static">
-                    <Toolbar variant="dense" classes={{ root: classes.toolbar }}>
-                        <IconButton edge="start" className={classes.menuButton} onClick={this.goBack} color="inherit" aria-label="menu">
-                            {window.location.pathname === "/" ? <></> : <ArrowBack /> /*<MenuIcon />*/}
+                <AppBar position={'static'}>
+                    <Toolbar variant={'dense'} classes={{ root: classes.toolbar }}>
+                        <IconButton edge={'start'} className={classes.menuButton} onClick={this.goBack} color={'inherit'} aria-label={'menu'}>
+                            {window.location.pathname === '/' ? <></> : <ArrowBack />}
                         </IconButton>
-                        <Typography variant="h6" className={classes.title}>
-                            {""}
+                        <Typography variant={'h6'} className={classes.title}>
+                            {''}
                         </Typography>
                         <div>
                             <IconButton
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                color="inherit"
+                                aria-label={'account of current user'}
+                                aria-controls={'menu-appbar'}
+                                aria-haspopup={'true'}
+                                color={'inherit'}
                                 onClick={this.handleMenu}
                             >
                                 <AccountCircle />
                             </IconButton>
                             <Menu
-                                id="menu-appbar"
+                                id={'menu-appbar'}
                                 anchorEl={this.state.anchorEl}
                                 anchorOrigin={{
                                     vertical: 'top',
@@ -115,11 +114,11 @@ class Navbar extends Component {
                             </Menu>
                         </div>
                     </Toolbar>
-                    <Toolbar variant="dense">
+                    <Toolbar variant={'dense'}>
                         {(this.props.disableAutosuggest === undefined || this.props.disableAutosuggest === false) && (
                             <>
                                 <ReactAutosuggestTextfield setValue={this.setValue} setClearValue={this.setClearValue} />
-                                <Button className={classes.addButton} variant="outlined" onClick={this.handleClick}>
+                                <Button className={classes.addButton} variant={'outlined'} onClick={this.handleClick}>
                                     <AddIcon />
                                 </Button>
                             </>

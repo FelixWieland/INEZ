@@ -1,18 +1,17 @@
 import React from 'react'
-import { List, ListItem, ListItemIcon, ListItemText, withStyles, Collapse } from '@material-ui/core';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Checkbox from '@material-ui/core/Checkbox';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Draggable from 'react-draggable';
-import GroceryItem from './GroceryItem';
+import { List, ListItem, ListItemIcon, ListItemText, withStyles, Collapse } from '@material-ui/core'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import Checkbox from '@material-ui/core/Checkbox'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
+import Draggable from 'react-draggable'
+import GroceryItem from './GroceryItem'
 
-const styles = theme => ({
+const styles = (theme) => ({
     list: {
         marginTop: 10,
     },
     listItem: {
-        //border: "1px solid black",
         borderRadius: 10,
         marginTop: 5,
     },
@@ -22,24 +21,23 @@ const styles = theme => ({
     groupList: {
         padding: 20,
         paddingTop: 0,
-    }
+    },
 })
 
 class GroceryList extends React.Component {
-
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             listItems: [
                 {
-                    id: "01",
-                    name: "Milch"
+                    id: '01',
+                    name: 'Milch',
                 },
                 {
-                    id: "02",
-                    name: "Milch"
-                }
-            ]
+                    id: '02',
+                    name: 'Milch',
+                },
+            ],
         }
     }
 
@@ -48,15 +46,15 @@ class GroceryList extends React.Component {
     }
 
     addItem = (id, name, amount, measure) => {
-        let newItems = this.state.listItems;
+        const newItems = this.state.listItems
         newItems.push({
             id: id,
             name: name,
             amount: amount,
-            measure: measure
-        });
+            measure: measure,
+        })
         this.setState({
-            listItems: newItems
+            listItems: newItems,
         })
     }
 
@@ -69,7 +67,7 @@ class GroceryList extends React.Component {
     }
 
     buildText = (text, amount, measure) => {
-        return amount + " " + measure + " " + text
+        return amount + ' ' + measure + ' ' + text
     }
 
     buildListItem = (icon, text) => {
@@ -98,7 +96,6 @@ class GroceryList extends React.Component {
         } else {
             this.setState({ [name]: false })
         }
-
     }
 
     groupChange = (obj, newgroup) => {
@@ -117,7 +114,7 @@ class GroceryList extends React.Component {
                 measure={measure}
                 group={this.props.group}
                 currentGroups={this.props.currentGroups} />
-        );
+        )
     }
 
     render() {
@@ -130,7 +127,6 @@ class GroceryList extends React.Component {
             </List>
         )
     }
-
 }
 
-export default withStyles(styles)(GroceryList);
+export default withStyles(styles)(GroceryList)
