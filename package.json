@@ -50,14 +50,6 @@
 		"@babel/plugin-proposal-class-properties": "^7.5.5",
 		"@babel/preset-env": "^7.5.5",
 		"@babel/preset-react": "^7.0.0-beta.49",
-<<<<<<< HEAD
-		"@babel/register": "^7.5.5",
-		"babel-loader": "^8.0.0-beta.3",
-		"clean-webpack-plugin": "^0.1.19",
-		"concurrently": "^3.5.1",
-		"css-loader": "^3.2.0",
-		"eslint": "^6.2.1",
-=======
 		"babel-eslint": "^10.0.3",
 		"babel-loader": "^8.0.0-beta.3",
 		"clean-webpack-plugin": "^0.1.19",
@@ -67,7 +59,6 @@
 		"eslint-config-google": "^0.13.0",
 		"eslint-plugin-react": "^7.14.3",
 		"file-loader": "^4.2.0",
->>>>>>> FuzzyAutosuggest
 		"html-webpack-plugin": "^3.2.0",
 		"nodemon": "^1.17.5",
 		"style-loader": "^0.21.0",
