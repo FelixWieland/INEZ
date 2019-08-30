@@ -11,6 +11,7 @@ import GroupFAB from './GroupFAB'
 import DialogPopup from './DialogPopup'
 import GroupDeleteFAB from './GroupDeleteFab'
 import SelectionPopup from './SelectionPopup'
+import * as api from './../api'
 
 const styles = (theme) => ({
     root: {
@@ -85,7 +86,7 @@ class GroceryGroups extends Component {
     }
 
     changeGroup = (obj, newgroup) => {
-        this.state[newgroup + 'AddFn'](obj.id, obj.name, obj.amount, obj.measure)
+        this.state[newgroup + 'AddFn'](obj.id, obj.name, obj.amount, obj.measure, obj.productgroupid)
     }
 
     handleChange(event, newValue) {
@@ -140,13 +141,17 @@ class GroceryGroups extends Component {
 
 
     addGroup = (groupname) => {
-        const newGroups = this.state.groups
-        newGroups.push({ label: groupname })
-        this.setState({ groups: newGroups, activeGroup: newGroups.length })
+        api.createGroceryListGroup(this.props.listName, groupname, (jsonResponse) => {
+            const newGroups = this.state.groups
+            newGroups.push({ label: groupname })
+            this.setState({ groups: newGroups, activeGroup: newGroups.length })
+        }, (err) => { })
     }
 
     deleteGroup = (groupobj) => {
-        this.setState({ groups: this.state.groups.filter((elm) => elm.label !== groupobj.label) })
+        api.deleteGroceryListGroup(this.props.listName, groupobj.label, (jsonResponse) => {
+            this.setState({ groups: this.state.groups.filter((elm) => elm.label !== groupobj.label) })
+        }, (err) => { })
     }
 
     toggleAddGroupPopup = (e) => {

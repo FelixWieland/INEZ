@@ -1,3 +1,8 @@
+export const measures = [
+    'g', 'gramm', 'l', 'ml', 'liter', 'pack', 'tüte',
+    'tetrapack', 'packung', 'portion', 'flasche', 'becher',
+    'wurst',
+]
 
 export const ddmmyyyy = () => {
     const dt = new Date()
@@ -15,11 +20,19 @@ export const extractFirstMeasure = (measureString) => {
     if (typeof measureString !== 'string') throw new Error('measureString is not a string')
 
     const lowerMeasureString = measureString.toLowerCase()
-    const measures = ['g', 'gramm', 'l', 'ml', 'liter', 'pack', 'tüte', 'tetrapack']
 
+    // eslint-disable-next-line guard-for-in
     for (const key in measures) {
-        if (lowerMeasureString.toLowerCase().includes(measures[key] + ' ')) {
-            return measures[key]
+        const pluralMeasure = getPluralBasedOnMeasure(measures[key])
+        if (lowerMeasureString.includes(pluralMeasure + ' ')) {
+            if (new RegExp('(\d| | |\d |^)' + pluralMeasure, 'g').test(lowerMeasureString)) {
+                return pluralMeasure
+            }
+        }
+        if (lowerMeasureString.includes(measures[key] + ' ')) {
+            if (new RegExp('(\d| | |\d |^)' + measures[key], 'g').test(lowerMeasureString)) {
+                return measures[key]
+            }
         }
     }
     return false
@@ -35,6 +48,11 @@ export const extractMeasureObj = (measureString) => {
     if (measureString === undefined) return measureObj
     if (typeof measureString !== 'string') return measureObj
     if (measureString.length === 0) return measureObj
+
+    if (/^\d+$/.test(measureString.trim())) {
+        measureObj.amount = parseInt(measureString)
+        return measureObj
+    }
 
     const extractedMeasure = extractFirstMeasure(measureString)
 
@@ -54,9 +72,76 @@ export const extractMeasureObj = (measureString) => {
 
     if (!extractedMeasure) return measureObj
 
-    measureObj.measure = extractedMeasure
+    measureObj.measure = getSingularBasedOnMeasure(extractedMeasure)
     measureObj.product = measureObj.product
         .replace(new RegExp(extractedMeasure, 'i'), '')
+        .trim()
 
-    return extractedMeasure
+    return measureObj
 }
+
+export const buildStringFromMeasureObj = (measureObj) => {
+    if (measureObj === undefined) return ''
+
+    return ((measureObj.amount + ' ' + measureObj.measure).trim() + ' ' + measureObj.product).trim()
+}
+
+export const capitalizeFirstLetter = (s) => {
+    if (s === undefined) return ''
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
+export const capitalizeMeasure = (measure) => {
+    if (measure === undefined) return ''
+    if (typeof measure !== 'string') return ''
+
+    return measure.length > 2
+        ? capitalizeFirstLetter(measure)
+        : measure
+}
+
+export const suggestPortionMeasure = (amount, portionMeasure) => {
+    const isSmaller = (toCheck, measureInstead) => {
+        return amount < toCheck ? {
+            amount: amount,
+            measure: measureInstead,
+        } : {
+                amount: amount,
+                measure: portionMeasure,
+            }
+    }
+
+    switch (portionMeasure.toLowerCase()) {
+        case 'g': return isSmaller(20, 'Packung')
+        case 'ml': return isSmaller(20, 'Flasche')
+        case 'glas': return { amount: amount, measure: 'Flasche' }
+        default: return false
+    }
+}
+
+
+export const getPluralBasedOnAmount = (amount, measure) => {
+    const isGreaterOne = (instead) => amount > 1 ? instead : measure
+    switch (measure.toLowerCase()) {
+        case 'flasche': return isGreaterOne('flaschen')
+        case 'packung': return isGreaterOne('packungen')
+        case 'portion': return isGreaterOne('portionen')
+    }
+    return measure
+}
+
+export const getPluralBasedOnMeasure = (measure) => {
+    return getPluralBasedOnAmount(2, measure)
+}
+
+export const getSingularBasedOnMeasure = (measure) => {
+    switch (measure.toLowerCase()) {
+        case 'flaschen': return 'flasche'
+        case 'packungen': return 'packung'
+        case 'portionen': return 'portion'
+    }
+    return measure.toLowerCase()
+}
+
+

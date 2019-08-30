@@ -6,6 +6,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import Draggable from 'react-draggable'
 import GroceryItem from './GroceryItem'
+import * as api from './../api'
 
 const styles = (theme) => ({
     list: {
@@ -29,14 +30,6 @@ class GroceryList extends React.Component {
         super(props)
         this.state = {
             listItems: [
-                {
-                    id: '01',
-                    name: 'Milch',
-                },
-                {
-                    id: '02',
-                    name: 'Milch',
-                },
             ],
         }
     }
@@ -45,13 +38,14 @@ class GroceryList extends React.Component {
         this.props.exportAdd(this.addItem)
     }
 
-    addItem = (id, name, amount, measure) => {
+    addItem = (id, name, amount, measure, productgroupid) => {
         const newItems = this.state.listItems
         newItems.push({
             id: id,
             name: name,
             amount: amount,
             measure: measure,
+            productgroupid: productgroupid,
         })
         this.setState({
             listItems: newItems,
@@ -59,6 +53,7 @@ class GroceryList extends React.Component {
     }
 
     deleteItem = (id) => {
+        console.log(id)
         this.setState({ listItems: this.state.listItems.filter((elm) => elm.id != id) })
     }
 
@@ -99,13 +94,16 @@ class GroceryList extends React.Component {
     }
 
     groupChange = (obj, newgroup) => {
+        // api.updateGroceryItem()
+
         this.deleteItemComponentOnly(obj.id)
         this.props.onGroupChange(obj, newgroup)
     }
 
-    buildGroceryItem = (id, name, amount, measure) => {
+    buildGroceryItem = (id, name, amount, measure, productgroupid) => {
         return (
             <GroceryItem
+                key={id}
                 id={id}
                 onDelete={() => this.deleteItem(id)}
                 onGroupChange={this.groupChange}
@@ -113,16 +111,19 @@ class GroceryList extends React.Component {
                 amount={amount}
                 measure={measure}
                 group={this.props.group}
-                currentGroups={this.props.currentGroups} />
+                currentGroups={this.props.currentGroups}
+                productgroupid={productgroupid}
+            />
         )
     }
 
     render() {
         const { classes } = this.props
+
         return (
             <List className={classes.list}>
                 {this.state.listItems.map((elm) => {
-                    return this.buildGroceryItem(elm.id, elm.name, elm.amount, elm.measure)
+                    return this.buildGroceryItem(elm.id, elm.name, elm.amount, elm.measure, elm.productgroupid)
                 })}
             </List>
         )

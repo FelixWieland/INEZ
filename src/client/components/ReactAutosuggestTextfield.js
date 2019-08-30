@@ -9,6 +9,10 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Popper from '@material-ui/core/Popper'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { subscribeToAutosuggestion } from '../api'
+import {
+    extractMeasureObj, buildStringFromMeasureObj, suggestPortionMeasure,
+    getPluralBasedOnAmount, capitalizeMeasure,
+} from './../utility'
 
 const styles = (theme) => ({
     root: {
@@ -105,11 +109,20 @@ class ReactAutosuggestTextfield extends React.Component {
         this.setState({
             suggestions: results.suggestions.map((elm) => {
                 const nelm = elm
-                const obj = this.extractMeasureObj(this.state.popper)
+                const obj = extractMeasureObj(this.state.popper)
                 if (obj.amount === 0) {
                     return nelm
                 }
-                nelm.label = (obj.amount + ' ' + elm.portionsizename + ' ' + elm.label).trim()
+                const suggestedMeasure = suggestPortionMeasure(obj.amount, elm.portionsizename)
+                if (suggestedMeasure) {
+                    nelm.label =
+                        (obj.amount + ' ' + capitalizeMeasure(
+                            getPluralBasedOnAmount(obj.amount, suggestedMeasure.measure)) + ' ' + elm.label).trim()
+                } else {
+                    nelm.label =
+                        (obj.amount + ' ' + capitalizeMeasure(
+                            getPluralBasedOnAmount(obj.amount, elm.portionsizename)) + ' ' + elm.label).trim()
+                }
                 return nelm
             }),
         })
@@ -126,9 +139,8 @@ class ReactAutosuggestTextfield extends React.Component {
     renderSuggestion(suggestion, { query, isHighlighted }) {
         const matches = match(suggestion.label, query)
         const parts = parse(suggestion.label, matches)
-
         return (
-            <MenuItem selected={isHighlighted} component="div">
+            <MenuItem selected={isHighlighted} component="div" productgroupid={suggestion.productgroupid}>
                 <div>
                     {parts.map((part) => (
                         <span key={part.text} style={{ fontWeight: part.highlight ? 500 : 400 }}>
@@ -170,63 +182,19 @@ class ReactAutosuggestTextfield extends React.Component {
         )
     }
 
-    extractMeasureObj = (string) => {
-        // (\D*) -> Liter
-        // (.* )
-        try {
-            try {
-                const measureAndAmount = string.match(/(.* )/g)[0]
-                const product = string.replace(measureAndAmount, '').trim()
-                const amount = parseInt(measureAndAmount)
-                const measure = measureAndAmount.replace(/[0-9]/g, '').trim()
-
-                return {
-                    amount: amount,
-                    measure: measure,
-                    product: product,
-                }
-            } catch {
-                if (!hasNumbers(string)) {
-                    return {
-                        amount: 0,
-                        measure: '',
-                        product: string,
-                    }
-                } else {
-                    return {
-                        amount: 0,
-                        measure: '',
-                        product: '',
-                    }
-                }
-            }
-        } catch {
-            return {
-                amount: 0,
-                measure: '',
-                product: string,
-            }
-        }
-    }
-
-    stringFromMeasureObj = (obj) => {
-        if (obj.amount != 0 && obj.measure.length != 0 && obj.product.length != 0) {
-            return obj.amount + ' ' + obj.measure + ' ' + obj.product
-        } else if (obj.amount != 0 && obj.product.length != 0) {
-            return obj.amount + ' ' + obj.product
-        } else {
-            return obj.product
-        }
-    }
-
     handleChange = (name) => (event, { newValue }) => {
-        const obj = this.extractMeasureObj(newValue)
-        console.log(obj)
+        const obj = {
+            ...extractMeasureObj(newValue),
+            productgroupid: null,
+        }
         this.setState({
-            popper: this.stringFromMeasureObj(obj),
+            popper: buildStringFromMeasureObj(obj),
         })
         if (event.type != 'keydown' && event.type != 'click') {
             this.state.emit(obj)
+        }
+        if (event.type === 'click') {
+            obj.productgroupid = event.target.getAttribute('productgroupid')
         }
         this.props.setValue(obj)
         this.setState({

@@ -11,8 +11,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
+import * as api from './../api'
 
 const Copyright = () => {
     return (
@@ -52,14 +53,36 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const Login = () => {
+const Login = (props) => {
     const classes = useStyles()
+    const [state, setstate] = React.useState({
+        username: '',
+        password: '',
+    })
+
     const text = {
         login: 'Anmelden',
         register: 'Du hast noch keinen Account? Registriere dich!',
         uname: 'Benutzername',
         pwd: 'Passwort',
         back: 'Zurück zur Startseite',
+    }
+
+    const login = () => {
+        api.login(state.username, state.password, () => {
+            // SUCCESS
+            this.props.history.push('/')
+        }, (err) => {
+            // ERRROR
+            console.log(err)
+        })
+    }
+
+    const handleChange = (field, value) => {
+        setstate({
+            ...state,
+            [field]: value,
+        })
     }
 
     return (
@@ -72,7 +95,7 @@ const Login = () => {
                 <Typography component={'h1'} variant={'h5'}>
                     {text.login}
                 </Typography>
-                <form className={classes.form} noValidate>
+                <div className={classes.form}>
                     <TextField
                         variant={'outlined'}
                         margin={'normal'}
@@ -83,6 +106,8 @@ const Login = () => {
                         name={'username'}
                         autoComplete={false}
                         autoFocus
+                        value={state.username}
+                        onChange={(e) => handleChange('username', e.target.value)}
                     />
                     <TextField
                         variant={'outlined'}
@@ -94,6 +119,8 @@ const Login = () => {
                         type={'password'}
                         id={'password'}
                         autoComplete={'current-password'}
+                        value={state.password}
+                        onChange={(e) => handleChange('password', e.target.value)}
                     />
                     <Button
                         type={'submit'}
@@ -101,6 +128,7 @@ const Login = () => {
                         variant={'contained'}
                         color={'primary'}
                         className={classes.submit}
+                        onClick={login}
                     >
                         {text.login}
                     </Button>
@@ -116,7 +144,7 @@ const Login = () => {
                             </Link>
                         </Grid>
                     </Grid>
-                </form>
+                </div>
             </Paper>
             <Box mt={8}>
                 {/* <Copyright /> */}
@@ -125,4 +153,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default withRouter(Login)

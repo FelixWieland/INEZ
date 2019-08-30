@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core'
 import Navbar from '../components/Navbar'
 import GroceryGroups from '../components/GroceryGroups'
 import { Container } from '@material-ui/core'
+import * as api from '../api'
 
 class GroceryNote extends Component {
     constructor(props) {
@@ -13,8 +14,14 @@ class GroceryNote extends Component {
     }
 
     addGroceryItem = (measureObj) => {
-        this.state[this.state.activeGroup]
-            .addGroceryItem('003', measureObj.product, measureObj.amount, measureObj.measure)
+        api.createGroceryItem('list', measureObj, (jsonResponse) => {
+            this.state[this.state.activeGroup]
+                .addGroceryItem(
+                    jsonResponse.id,
+                    measureObj.product, measureObj.amount, measureObj.measure, measureObj.productgroupid)
+        }, (err) => {
+
+        })
     }
 
     exportGroupAddFunction = (group, fn) => {
@@ -34,7 +41,11 @@ class GroceryNote extends Component {
             <>
                 <Navbar addGroceryItem={this.addGroceryItem} />
                 <Container maxWidth="md">
-                    <GroceryGroups exportAdd={this.exportGroupAddFunction} activeGroup={this.setActiveGroup} id={this.props.match.id} />
+                    <GroceryGroups
+                        listName={''}
+                        exportAdd={this.exportGroupAddFunction}
+                        activeGroup={this.setActiveGroup}
+                        id={this.props.match.id} />
                 </Container>
             </>
         )

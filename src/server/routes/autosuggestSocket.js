@@ -12,6 +12,7 @@ const emitAutosuggestResponse = (socket, result) => socket.emit('autosuggest', {
         return {
             label: elm.name,
             portionsizename: elm.portionsizename,
+            productgroupid: elm.productgroupid,
         }
     }),
 })

@@ -70,8 +70,6 @@ class Navbar extends Component {
     render() {
         const { classes } = this.props
 
-        console.log(this.state.textfieldValue)
-
         return (
             <>
                 <AppBar position={'static'}>

@@ -15,6 +15,7 @@ import SelectionPopup from '../components/SelectionPopup'
 import { Delete } from '@material-ui/icons'
 import { ddmmyyyy } from '../utility'
 import SideProfile from '../components/SideProfile'
+import * as api from './../api'
 
 const styles = (theme) => ({
     card: {
@@ -68,18 +69,26 @@ class Grocerys extends Component {
     toggleDeleteGroceryNote = (e) => this.setState({ deleteGroceryNote: true })
 
     addGroceryNote = (name) => {
-        const newNotes = this.state.groceryNotes
-        newNotes.unshift({
-            label: name,
-            time: ddmmyyyy(),
+        api.createGroceryList(name, (jsonResponse) => {
+            const newNotes = this.state.groceryNotes
+            newNotes.unshift({
+                label: name,
+                time: ddmmyyyy(),
+            })
+            this.setState({ groceryNotes: newNotes })
+        }, (err) => {
+
         })
-        this.setState({ groceryNotes: newNotes })
     }
 
     deleteGroceryNote = (groceryNoteObj) => {
-        this.setState({
-            groceryNotes: this.state.groceryNotes.filter((elm) => elm.label !== groceryNoteObj.label),
-            deleteGroceryNote: false,
+        api.deleteGroceryList(groceryNoteObj.label, (jsonResponse) => {
+            this.setState({
+                groceryNotes: this.state.groceryNotes.filter((elm) => elm.label !== groceryNoteObj.label),
+                deleteGroceryNote: false,
+            })
+        }, (err) => {
+
         })
     }
 

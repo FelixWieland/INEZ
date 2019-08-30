@@ -10,6 +10,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess'
 import CheckIcon from '@material-ui/icons/Check'
 import { green } from '@material-ui/core/colors'
 import DeleteIcon from '@material-ui/icons/Delete'
+import { capitalizeFirstLetter, getPluralBasedOnAmount } from '../utility'
 
 const styles = (theme) => ({
     card: {
@@ -55,6 +56,11 @@ const styles = (theme) => ({
         '&:hover': {
             cursor: 'pointer',
         },
+        'backgroundColor': theme.palette.primary.main,
+    },
+    groupImage: {
+        height: '75%',
+        // marginTop: '5%',
     },
     greenAvatar: {
         'overflow': 'visible',
@@ -69,6 +75,7 @@ const styles = (theme) => ({
     },
     container: {
         marginTop: -40,
+        paddingRight: 20,
     },
     selectionField: {
         marginLeft: theme.spacing(1),
@@ -89,6 +96,7 @@ class GroceryItem extends Component {
             amount: 0,
             measure: undefined,
             group: undefined,
+            productgroupid: null,
 
             measureItems: [
                 {
@@ -109,10 +117,21 @@ class GroceryItem extends Component {
             amount: this.props.amount !== undefined ? this.props.amount : 0,
             measure: this.props.measure !== undefined ? this.props.measure : '',
             group: this.props.group !== undefined ? this.props.group : '',
+            productgroupid: this.props.productgroupid !== undefined ? this.props.productgroupid : null,
         })
     }
 
-    buildSubheader = () => this.state.amount !== 0 ? this.state.amount + this.state.measure : ''
+    buildSubheader = () => {
+        if (this.state.measure === undefined) return ''
+
+        const measure = this.state.measure.length > 2
+            ? capitalizeFirstLetter(getPluralBasedOnAmount(this.state.amount, this.state.measure))
+            : this.state.measure
+
+        return this.state.amount !== 0
+            ? (this.state.amount + ' ' + measure).trim()
+            : ''
+    }
 
     toggleExpand = () => this.setState({ expanded: !this.state.expanded })
 
@@ -216,10 +235,13 @@ class GroceryItem extends Component {
         )
     }
 
+    getImageName = (id) => id !== null ? id + '.png' : '5d625be7bb9fb093bf5fa522.png'
+    getImage = (id) => require('../../../public/images/group_icons/' + this.getImageName(id))
+
     render() {
         const { classes } = this.props
         return (
-            <Card className={classes.card}>
+            <Card className={classes.card} key={this.props.key}>
                 <CardHeader
                     avatar={
                         <Avatar
@@ -229,7 +251,12 @@ class GroceryItem extends Component {
                         >
                             {this.state.loading &&
                                 <CircularProgress size={43} className={classes.fabProgress} />}
-                            {this.state.checked ? <CheckIcon /> : 'R'}
+                            {this.state.checked
+                                ? <CheckIcon />
+                                : <img
+                                    className={classes.groupImage}
+                                    src={this.getImage(this.state.productgroupid)}
+                                />}
                         </Avatar>
                     }
                     action={
