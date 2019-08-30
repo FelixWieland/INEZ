@@ -14,7 +14,6 @@ import Menu from '@material-ui/core/Menu'
 import { TextField, Button } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import { withStyles } from '@material-ui/styles'
-import DownshiftTextfield from './DownshiftTexfield'
 import ReactAutosuggestTextfield from './ReactAutosuggestTextfield'
 import { withRouter } from 'react-router-dom'
 import { ArrowBack } from '@material-ui/icons'
@@ -78,7 +77,12 @@ class Navbar extends Component {
             <>
                 <AppBar position={'static'}>
                     <Toolbar variant={'dense'} classes={{ root: classes.toolbar }}>
-                        <IconButton edge={'start'} className={classes.menuButton} onClick={this.goBack} color={'inherit'} aria-label={'menu'}>
+                        <IconButton
+                            edge={'start'}
+                            className={classes.menuButton}
+                            onClick={this.goBack}
+                            color={'inherit'}
+                            aria-label={'menu'}>
                             {window.location.pathname === '/' ? <></> : <ArrowBack />}
                         </IconButton>
                         <Typography variant={'h6'} className={classes.title}>
@@ -117,7 +121,10 @@ class Navbar extends Component {
                     <Toolbar variant={'dense'}>
                         {(this.props.disableAutosuggest === undefined || this.props.disableAutosuggest === false) && (
                             <>
-                                <ReactAutosuggestTextfield setValue={this.setValue} setClearValue={this.setClearValue} />
+                                <ReactAutosuggestTextfield
+                                    setValue={this.setValue}
+                                    setClearValue={this.setClearValue}
+                                />
                                 <Button className={classes.addButton} variant={'outlined'} onClick={this.handleClick}>
                                     <AddIcon />
                                 </Button>
