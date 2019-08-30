@@ -1,6 +1,7 @@
 import {
     extractFirstMeasure, extractMeasureObj, buildStringFromMeasureObj,
-    capitalizeFirstLetter, capitalizeMeasure, getSingularBasedOnMeasure, getPluralBasedOnMeasure,
+    capitalizeFirstLetter, capitalizeMeasure, getSingularBasedOnMeasure,
+    getPluralBasedOnMeasure, suggestPortionMeasure, getPluralBasedOnAmount, normalizeMeasure,
 } from '../utility'
 import chai, { expect } from 'chai'
 import resnap from 'resnap'
@@ -220,6 +221,85 @@ describe('#getPluralBasedOnMeasure', () => {
     context('with plural', () => {
         it('should return input', () => {
             expect(getPluralBasedOnMeasure('packungen')).to.eql('packungen')
+        })
+    })
+})
+
+describe('#suggestPortionMeasure', () => {
+    context('10 g', () => {
+        it('should return 10 Packung', () => {
+            expect(suggestPortionMeasure(10, 'g')).to.eql({ amount: 10, measure: 'Packung' })
+        })
+    })
+    context('20 g', () => {
+        it('should return 20 g', () => {
+            expect(suggestPortionMeasure(20, 'g')).to.eql({ amount: 20, measure: 'g' })
+        })
+    })
+    context('10 ml', () => {
+        it('should return 10 Flasche', () => {
+            expect(suggestPortionMeasure(10, 'ml')).to.eql({ amount: 10, measure: 'Flasche' })
+        })
+    })
+    context('20 ml', () => {
+        it('should return 20 ml', () => {
+            expect(suggestPortionMeasure(20, 'ml')).to.eql({ amount: 20, measure: 'ml' })
+        })
+    })
+})
+
+describe('#getPluralBasedOnAmount', () => {
+    context('10 Flasche', () => {
+        it('should return flaschen', () => {
+            expect(getPluralBasedOnAmount(10, 'Flasche')).to.eql('flaschen')
+        })
+    })
+    context('1 Flasche', () => {
+        it('should return flasche', () => {
+            expect(getPluralBasedOnAmount(1, 'Flasche')).to.eql('flasche')
+        })
+    })
+    context('10 Packung', () => {
+        it('should return packungen', () => {
+            expect(getPluralBasedOnAmount(10, 'Packung')).to.eql('packungen')
+        })
+    })
+    context('1 Packung', () => {
+        it('should return packung', () => {
+            expect(getPluralBasedOnAmount(1, 'Packung')).to.eql('packung')
+        })
+    })
+    context('10 Portionen', () => {
+        it('should return portionen', () => {
+            expect(getPluralBasedOnAmount(10, 'Portion')).to.eql('portionen')
+        })
+    })
+    context('1 Portion', () => {
+        it('should portion', () => {
+            expect(getPluralBasedOnAmount(1, 'Portion')).to.eql('portion')
+        })
+    })
+})
+
+describe('#normalizeMeasure', () => {
+    context('Gramm', () => {
+        it('should return g', () => {
+            expect(normalizeMeasure('Gramm')).to.eql('g')
+        })
+    })
+    context('Kilo', () => {
+        it('should return kg', () => {
+            expect(normalizeMeasure('Kilo')).to.eql('kg')
+        })
+    })
+    context('Liter', () => {
+        it('should return l', () => {
+            expect(normalizeMeasure('Liter')).to.eql('l')
+        })
+    })
+    context('Packung', () => {
+        it('should return input', () => {
+            expect(normalizeMeasure('Packung')).to.eql('Packung')
         })
     })
 })

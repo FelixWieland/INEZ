@@ -15,6 +15,7 @@ import ReactAutosuggestTextfield from './ReactAutosuggestTextfield'
 import { withRouter } from 'react-router-dom'
 import { ArrowBack } from '@material-ui/icons'
 import SideProfile from './SideProfile'
+import * as api from './../api'
 
 const styles = (theme) => ({
     root: {
@@ -67,6 +68,15 @@ class Navbar extends Component {
         anchorEl: null,
     })
 
+    logout = (e) => {
+        api.logout(() => {
+            // SUCCESS
+            window.location = '/'
+        }, () => {
+            // ERROR
+        })
+    }
+
     render() {
         const { classes } = this.props
 
@@ -74,14 +84,16 @@ class Navbar extends Component {
             <>
                 <AppBar position={'static'}>
                     <Toolbar variant={'dense'} classes={{ root: classes.toolbar }}>
-                        <IconButton
-                            edge={'start'}
-                            className={classes.menuButton}
-                            onClick={this.goBack}
-                            color={'inherit'}
-                            aria-label={'menu'}>
-                            {window.location.pathname === '/' ? <></> : <ArrowBack />}
-                        </IconButton>
+                        {window.location.pathname === '/' ? <></> : (
+                            <IconButton
+                                edge={'start'}
+                                className={classes.menuButton}
+                                onClick={this.goBack}
+                                color={'inherit'}
+                                aria-label={'menu'}>
+                                <ArrowBack />
+                            </IconButton>
+                        )}
                         <Typography variant={'h6'} className={classes.title}>
                             {''}
                         </Typography>
@@ -111,7 +123,7 @@ class Navbar extends Component {
                                 onClose={() => this.setState({ anchorEl: null })}
                             >
                                 <MenuItem onClick={this.toggleSideProfile}>Profil</MenuItem>
-                                <MenuItem>Logout</MenuItem>
+                                <MenuItem onClick={this.logout}>Logout</MenuItem>
                             </Menu>
                         </div>
                     </Toolbar>
