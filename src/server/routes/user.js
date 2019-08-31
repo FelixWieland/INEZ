@@ -57,19 +57,25 @@ export const login = (req, res, next) => {
 };
 
 export const getUser = (req, res, next) => {
-	//quick and dirty, aber läuft :D
-	const token = req.headers.authorization.split(" ")[1];
-	const decoded = jwt.verify(token, process.env.JWT_KEY);
-	req.userData = decoded;
-	const decodedUser = decoded.userName;
-	res.status(200).json({ userName: decodedUser });
+	const decodedUser = extractUser(req);
+	dbRequests.getShoppingLists(decodedUser, (err, data) => {
+		if (data) {
+			return res.status(200).json({ userName: decodedUser, lists: data });
+		}
+
+		if (err) {
+			return res.status(500).json({
+				error: err
+			});
+		}
+	});
 };
 
-export const extractUser = (req) => {
+export const extractUser = req => {
 	const token = req.headers.authorization.split(" ")[1];
 	const decoded = jwt.verify(token, process.env.JWT_KEY);
 	return decoded.userName;
-}
+};
 
 //function that provides the jwt
 const responseJWT = (res, message, resCode, userName) => {
