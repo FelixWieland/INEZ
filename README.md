@@ -1,3 +1,5 @@
+!['Eddi-Digital'](https://digital.edeka/verbund-frontend-build/assets/images/logo_eddi.png)
+
 # INEZ - Der INtelligente EinkaufsZettel
 
 # Projektbeschreibung
