@@ -5,6 +5,10 @@ const socket = openSocket(process.env.API_URL, {
 })
 
 const uri = 'http://' + process.env.API_URL
+const header = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+}
 
 export const subscribeToAutosuggestion = (callback) => {
     const event = 'autosuggest'
@@ -35,11 +39,18 @@ export const login = (username, password, onSuccess, onError) => {
 }
 
 export const register = (username, password, onSuccess, onError) => {
-    fetch(uri + 'api/demoCall', {
+    fetch(uri + 'api/user/register', {
         method: 'POST',
+        headers: header,
+        body: JSON.stringify(
+            {
+                userName: username,
+                password: password
+            }
+        )
     }).then((response) => {
         switch (response.status) {
-            case 200: return response.json()
+            case 201: return response.json()
             case 401: ;
             case 505: ;
         }
