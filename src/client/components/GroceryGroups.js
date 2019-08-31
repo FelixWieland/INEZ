@@ -153,6 +153,9 @@ class GroceryGroups extends Component {
 
     deleteGroup = (groupobj) => {
         api.deleteGroceryListGroup(this.props.listName, groupobj.label, (jsonResponse) => {
+            if (!jsonResponse) {
+                return
+            }
             this.setState({ groups: this.state.groups.filter((elm) => elm.label !== groupobj.label) })
         }, (err) => { })
     }

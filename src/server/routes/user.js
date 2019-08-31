@@ -71,8 +71,10 @@ export const getUser = (req, res, next) => {
 };
 
 export const extractUser = req => {
-	const token = req.headers.authorization.split(" ")[1];
+	//const token = req.headers.authorization.split(" ")[1];
+	const token = req.query.jwt.split(" ")[1]
 	const decoded = jwt.verify(token, process.env.JWT_KEY);
+	console.log(decoded)
 	return decoded.userName;
 };
 

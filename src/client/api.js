@@ -10,11 +10,23 @@ const header = {
     'Content-Type': 'application/json'
 }
 
-const authHeader = () => ({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': window.sessionStorage.getItem('jwt'),
-})
+// const authHeader = () => ({
+//     'Accept': 'application/json',
+//     'Content-Type': 'application/json',
+//     'Authorization': window.sessionStorage.getItem('jwt'),
+// })
+
+const createAuthParam = () => {
+    return '?jwt=' + window.sessionStorage.getItem('jwt')
+}
+
+const authHeader = () => {
+    let h = new Headers()
+    h.append('Accept', 'application/json')
+    h.append('Content-Type', 'application/json')
+    h.append('Authorization', window.sessionStorage.getItem('jwt'))
+    return h
+}
 
 export const subscribeToAutosuggestion = (callback) => {
     const event = 'autosuggest'
@@ -111,9 +123,13 @@ export const createGroceryItem = (grocerylistid, item, onSuccess, onError) => {
     }).then((data) => onSuccess(data)).catch((err) => onError(err))
 }
 
-export const deleteGroceryListGroup = (grocerylistid, groupname, onSuccess, onError) => {
-    fetch(uri + 'api/demoCall', {
-        method: 'DELETE',
+export const deleteGroceryListGroup = (listname, groupname, onSuccess, onError) => {
+    fetch(uri + 'api/lists/' + listname + '/delete' + createAuthParam(), {
+        method: 'PUT',
+        header: header,
+        body: JSON.stringify({
+            groupname: groupname
+        })
     }).then((response) => {
         switch (response.status) {
             case 200: return response.json()
@@ -125,9 +141,9 @@ export const deleteGroceryListGroup = (grocerylistid, groupname, onSuccess, onEr
 }
 
 export const createGroceryListGroup = (listname, groupname, onSuccess, onError) => {
-    fetch(uri + 'api/lists/' + listname + '/create', {
+    fetch(uri + 'api/lists/' + listname + '/create' + createAuthParam(), {
         method: 'PUT',
-        header: authHeader(),
+        header: header,
         body: JSON.stringify({
             groupname: groupname
         })
@@ -137,7 +153,6 @@ export const createGroceryListGroup = (listname, groupname, onSuccess, onError) 
             case 401: handleJWTUpdate()
             case 505: ;
         }
-        console.log(authHeader())
         onError()
     }).then((data) => onSuccess(data)).catch((err) => onError(err))
 }

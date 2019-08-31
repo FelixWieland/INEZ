@@ -35,41 +35,6 @@ export const createGroceryList = (req, res, next) => {
 	});
 };
 
-export const deleteGroceryList = (req, res, next) => {
-	const decodedUser = extractUser(req);
-	dbRequests.getShoppingLists(decodedUser, (err, data) => {
-		if (data) {
-			data.forEach(dataElement => {
-				if (dataElement.list_name == req.body.listname) {
-					const deleteListID = dataElement._id;
-					dbRequests.deleteShoppingList(
-						decodedUser,
-						deleteListID,
-						(err, data) => {
-							if (data) {
-								return res.status(200).json({
-									message: "succesfully deleted",
-									listname: req.body.listname
-								});
-							}
-							if (err) {
-								return res.status(500).json({
-									error: err
-								});
-							}
-						}
-					);
-				}
-			});
-		}
-		if (err) {
-			return res.status(500).json({
-				error: err
-			});
-		}
-	});
-};
-
 export const getGroceryListGroups = (req, res, next) => {
 	const username = extractUser(req);
 	db.getShoppingLists(username, (err, result) => {
@@ -91,6 +56,7 @@ export const getGroceryListGroups = (req, res, next) => {
 
 export const createProductGroup = (req, res, next) => {
 	const username = extractUser(req);
+	console.log(username);
 	db.getShoppingLists(username, (err, result) => {
 		if (err) {
 			return res.status(500).json({ message: "liste existiert nicht" });
@@ -132,6 +98,41 @@ export const deleteProductGroup = (req, res, next) => {
 				);
 			}
 		});
+	});
+};
+
+export const deleteGroceryList = (req, res, next) => {
+	const decodedUser = extractUser(req);
+	dbRequests.getShoppingLists(decodedUser, (err, data) => {
+		if (data) {
+			data.forEach(dataElement => {
+				if (dataElement.list_name == req.body.listname) {
+					const deleteListID = dataElement._id;
+					dbRequests.deleteShoppingList(
+						decodedUser,
+						deleteListID,
+						(err, data) => {
+							if (data) {
+								return res.status(200).json({
+									message: "succesfully deleted",
+									listname: req.body.listname
+								});
+							}
+							if (err) {
+								return res.status(500).json({
+									error: err
+								});
+							}
+						}
+					);
+				}
+			});
+		}
+		if (err) {
+			return res.status(500).json({
+				error: err
+			});
+		}
 	});
 };
 
