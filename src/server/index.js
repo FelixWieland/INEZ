@@ -18,8 +18,9 @@ app.use(staticFiles("dist"));
 app.options("*", cors());
 
 app.get("/api/getUsername", routes.getUsername);
-console.log(userRoutes);
+
 app.post("/api/user/register", userRoutes.register);
+app.post("/api/user/login", userRoutes.login);
 
 app.all("/api/demoCall", routes.demoCall);
 

@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 import dbRequests from "../dbRequests";
 
 export const register = (req, res, next) => {
-	console.log(req.body);
 	dbRequests.getUser(req.body.userName, (err, data) => {
 		if (data) {
 			return res.status(409).json({
@@ -31,6 +30,36 @@ export const register = (req, res, next) => {
 	});
 };
 
+export const login = (req, res, next) => {
+	dbRequests.getUser(req.body.userName, (err, data) => {
+		if (!data) {
+			return res.status(404).json({
+				message: "user nicht gefunden!"
+			});
+		}
+		dbRequests.getPasswordhash(req.body.userName, (pwError, pwData) => {
+			if (pwError) {
+				return res.status(401).json({ message: "Auth failed" });
+			}
+			bcrypt.compare(req.body.password, pwData, (bcryptErr, result) => {
+				if (bcryptErr) {
+					return res.status(401).json({
+						message: "Auth failed"
+					});
+				}
+
+				return responseJWT(
+					res,
+					"User succesfully logged in",
+					200,
+					req.body.userName
+				);
+			});
+		});
+	});
+};
+
+//function that provides the jwt
 const responseJWT = (res, message, resCode, userName) => {
 	const token = jwt.sign(
 		{
@@ -43,53 +72,9 @@ const responseJWT = (res, message, resCode, userName) => {
 	);
 	return res.status(resCode).json({
 		message: message,
-		token: token
+		jwt: token
 	});
 };
-
-router.post("/login", (req, res, next) => {
-	User.find({ userName: req.body.userName })
-		.exec()
-		.then(user => {
-			if (user.length < 1) {
-				return res.status(401).json({
-					message: "Auth failed"
-				});
-			}
-			bcrypt.compare(req.body.password, user[0].password, (err, result) => {
-				if (err) {
-					return res.status(401).json({
-						message: "Auth failed"
-					});
-				}
-				if (result) {
-					const token = jwt.sign(
-						{
-							userName: user[0].userName
-						},
-						process.env.JWT_KEY,
-						{
-							expiresIn: "1h"
-						}
-					);
-					return res.status(200).json({
-						message: "Auth succesful",
-						token: token
-					});
-				}
-				//if I make it till here, auth failed again
-				res.status(401).json({
-					message: "Auth failed"
-				});
-			});
-		})
-		.catch(err => {
-			console.log(err);
-			res.status(500).json({
-				error: err
-			});
-		});
-});
 
 // router.delete("/:userId", (req, res, next) => {
 // 	User.deleteOne({ _id: req.params.userId })
