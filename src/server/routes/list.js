@@ -36,7 +36,6 @@ export const createGroceryList = (req, res, next) => {
 
 export const deleteGroceryList = (req, res, next) => {
 	const decodedUser = extractUser(req);
-
 	dbRequests.getShoppingLists(decodedUser, (err, data) => {
 		if (data) {
 			data.forEach(dataElement => {
