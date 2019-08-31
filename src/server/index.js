@@ -18,13 +18,8 @@ app.get('/api/getUsername', routes.getUsername)
 app.all('/api/demoCall', routes.demoCall)
 
 // rewrites non matching routes to index.html
-<<<<<<< HEAD
-app.all('/*', (req, res) =>
-	res.sendFile(path.resolve(__dirname, '../../dist/index.html'))
-)
-=======
+
 if (PORT === 8000) app.all('/*', (req, res) => res.sendFile(path.resolve(__dirname, '../../dist/index.html')))
->>>>>>> master
 
 const server = app.listen(PORT, () => console.log('Listening on port ' + PORT))
 const io = socketio.listen(server)
