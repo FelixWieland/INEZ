@@ -14,6 +14,7 @@ import Container from '@material-ui/core/Container'
 import { Link } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import * as api from './../api'
+import CSessionEvents from '../components/CSessionEvents';
 
 const Copyright = () => {
     return (
@@ -149,6 +150,7 @@ const Login = (props) => {
             <Box mt={8}>
                 {/* <Copyright /> */}
             </Box>
+            <CSessionEvents variant={'ERROR'} open={true} noevent />
         </Container>
     )
 }
