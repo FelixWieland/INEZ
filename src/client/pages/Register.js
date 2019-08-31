@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import { Link } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
+import * as api from './../api'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -38,12 +39,34 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Register() {
     const classes = useStyles()
+    const [state, setstate] = React.useState({
+        username: '',
+        password: '',
+    })
+
     const text = {
         login: 'Du hast bereits einen Account? Melde dich an!',
         register: 'Registrieren',
         uname: 'Benutzername',
         pwd: 'Passwort',
         back: 'Zurück zur Startseite',
+    }
+
+    const register = () => {
+        api.register(state.username, state.password, () => {
+            // SUCCESS
+            window.location = '/'
+        }, (err) => {
+            // ERRROR
+            console.log(err)
+        })
+    }
+
+    const handleChange = (field, value) => {
+        setstate({
+            ...state,
+            [field]: value,
+        })
     }
 
     return (
@@ -56,7 +79,7 @@ export default function Register() {
                 <Typography component={'h1'} variant={'h5'}>
                     {text.register}
                 </Typography>
-                <form className={classes.form} noValidate>
+                <div className={classes.form} noValidate>
                     <Grid container spacing={2}>
                         <Grid item xs={12} >
                             <TextField
@@ -68,6 +91,8 @@ export default function Register() {
                                 id={'username'}
                                 label={text.uname}
                                 autoFocus
+                                value={state.username}
+                                onChange={(e) => handleChange('username', e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -80,6 +105,8 @@ export default function Register() {
                                 type={'password'}
                                 id={'password'}
                                 autoComplete={'current-password'}
+                                value={state.password}
+                                onChange={(e) => handleChange('password', e.target.value)}
                             />
                         </Grid>
                     </Grid>
@@ -89,6 +116,7 @@ export default function Register() {
                         variant={'contained'}
                         color={'primary'}
                         className={classes.submit}
+                        onClick={register}
                     >
                         {text.register}
                     </Button>
@@ -104,7 +132,7 @@ export default function Register() {
                             </Link>
                         </Grid>
                     </Grid>
-                </form>
+                </div>
             </Paper>
             <Box mt={5}>
                 {/* <Copyright /> */}
