@@ -16,7 +16,8 @@
 		"server": "NODE_ENV=development nodemon --exec babel-node src/server/index.js",
 		"start": "concurrently \"npm run server\" \"npm run client\"",
 		"production": "NODE_ENV=production babel-node src/server/index.js",
-		"test_client": "./node_modules/mocha/bin/mocha --require @babel/register 'src/client/test/*.test.js' || true"
+		"test_client": "./node_modules/mocha/bin/mocha --require @babel/register 'src/client/test/*.test.js' || true",
+		"test_server": "./node_modules/mocha/bin/mocha --require @babel/register 'src/server/test/*.test.js' || true"
 	},
 	"dependencies": {
 		"@babel/cli": "^7.5.5",
