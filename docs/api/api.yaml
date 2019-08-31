@@ -1,711 +1,508 @@
-openapi: 3.0.1
+swagger: "2.0"
 info:
   title: INEZ-API - Der INtelligente EinkaufsZettel
-  description: 'Beschreibung'
+  description: 'Dokumentation der API des INtelligenten EinkaufsZettel (INEZ)'
   contact:
-    email: apiteam@swagger.io
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+    email: "w.d@mail.de"
   version: 1.0.0
-externalDocs:
-  description: Link to INEZ
-  url: http:demolink.de
+basePath: "/api"
 tags:
-- name: pet
-  description: Everything about your Pets
-- name: store
-  description: Access to Petstore orders
-- name: user
-  description: Operations about user
+- name: "user"
+  description: "User"
+- name: "grocerylists"
+  description: "Grocerylists"
+- name: "list"
+  description: "list"
+schemes:
+- "https"
+- "http"
 paths:
-  /pet:
-    put:
-      tags:
-      - pet
-      summary: Update an existing pet
-      operationId: updatePet
-      requestBody:
-        description: Pet object that needs to be added to the store
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Pet'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Pet'
-        required: true
-      responses:
-        400:
-          description: Invalid ID supplied
-          content: {}
-        404:
-          description: Pet not found
-          content: {}
-        405:
-          description: Validation exception
-          content: {}
-      security:
-      - petstore_auth:
-        - write:pets
-        - read:pets
-    post:
-      tags:
-      - pet
-      summary: Add a new pet to the store
-      operationId: addPet
-      requestBody:
-        description: Pet object that needs to be added to the store
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Pet'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Pet'
-        required: true
-      responses:
-        405:
-          description: Invalid input
-          content: {}
-      security:
-      - petstore_auth:
-        - write:pets
-        - read:pets
-  /pet/findByStatus:
-    get:
-      tags:
-      - pet
-      summary: Finds Pets by status
-      description: Multiple status values can be provided with comma separated strings
-      operationId: findPetsByStatus
-      parameters:
-      - name: status
-        in: query
-        description: Status values that need to be considered for filter
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-            default: available
-            enum:
-            - available
-            - pending
-            - sold
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
-        400:
-          description: Invalid status value
-          content: {}
-      security:
-      - petstore_auth:
-        - write:pets
-        - read:pets
-  /pet/findByTags:
-    get:
-      tags:
-      - pet
-      summary: Finds Pets by tags
-      description: Muliple tags can be provided with comma separated strings. Use         tag1,
-        tag2, tag3 for testing.
-      operationId: findPetsByTags
-      parameters:
-      - name: tags
-        in: query
-        description: Tags to filter by
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: string
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
-        400:
-          description: Invalid tag value
-          content: {}
-      deprecated: true
-      security:
-      - petstore_auth:
-        - write:pets
-        - read:pets
-  /pet/{petId}:
-    get:
-      tags:
-      - pet
-      summary: Find pet by ID
-      description: Returns a single pet
-      operationId: getPetById
-      parameters:
-      - name: petId
-        in: path
-        description: ID of pet to return
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Pet'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pet'
-        400:
-          description: Invalid ID supplied
-          content: {}
-        404:
-          description: Pet not found
-          content: {}
-      security:
-      - api_key: []
-    post:
-      tags:
-      - pet
-      summary: Updates a pet in the store with form data
-      operationId: updatePetWithForm
-      parameters:
-      - name: petId
-        in: path
-        description: ID of pet that needs to be updated
-        required: true
-        schema:
-          type: integer
-          format: int64
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              properties:
-                name:
-                  type: string
-                  description: Updated name of the pet
-                status:
-                  type: string
-                  description: Updated status of the pet
-      responses:
-        405:
-          description: Invalid input
-          content: {}
-      security:
-      - petstore_auth:
-        - write:pets
-        - read:pets
-    delete:
-      tags:
-      - pet
-      summary: Deletes a pet
-      operationId: deletePet
-      parameters:
-      - name: api_key
-        in: header
-        schema:
-          type: string
-      - name: petId
-        in: path
-        description: Pet id to delete
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        400:
-          description: Invalid ID supplied
-          content: {}
-        404:
-          description: Pet not found
-          content: {}
-      security:
-      - petstore_auth:
-        - write:pets
-        - read:pets
-  /pet/{petId}/uploadImage:
-    post:
-      tags:
-      - pet
-      summary: uploads an image
-      operationId: uploadFile
-      parameters:
-      - name: petId
-        in: path
-        description: ID of pet to update
-        required: true
-        schema:
-          type: integer
-          format: int64
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                additionalMetadata:
-                  type: string
-                  description: Additional data to pass to server
-                file:
-                  type: string
-                  description: file to upload
-                  format: binary
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-      security:
-      - petstore_auth:
-        - write:pets
-        - read:pets
-  /store/inventory:
-    get:
-      tags:
-      - store
-      summary: Returns pet inventories by status
-      description: Returns a map of status codes to quantities
-      operationId: getInventory
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties:
-                  type: integer
-                  format: int32
-      security:
-      - api_key: []
-  /store/order:
-    post:
-      tags:
-      - store
-      summary: Place an order for a pet
-      operationId: placeOrder
-      requestBody:
-        description: order placed for purchasing the pet
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/Order'
-        required: true
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Order'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Order'
-        400:
-          description: Invalid Order
-          content: {}
-  /store/order/{orderId}:
-    get:
-      tags:
-      - store
-      summary: Find purchase order by ID
-      description: For valid response try integer IDs with value >= 1 and <= 10.         Other
-        values will generated exceptions
-      operationId: getOrderById
-      parameters:
-      - name: orderId
-        in: path
-        description: ID of pet that needs to be fetched
-        required: true
-        schema:
-          maximum: 10.0
-          minimum: 1.0
-          type: integer
-          format: int64
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Order'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Order'
-        400:
-          description: Invalid ID supplied
-          content: {}
-        404:
-          description: Order not found
-          content: {}
-    delete:
-      tags:
-      - store
-      summary: Delete purchase order by ID
-      description: For valid response try integer IDs with positive integer value.         Negative
-        or non-integer values will generate API errors
-      operationId: deleteOrder
-      parameters:
-      - name: orderId
-        in: path
-        description: ID of the order that needs to be deleted
-        required: true
-        schema:
-          minimum: 1.0
-          type: integer
-          format: int64
-      responses:
-        400:
-          description: Invalid ID supplied
-          content: {}
-        404:
-          description: Order not found
-          content: {}
   /user:
+    get:
+      tags:
+      - "user"
+      summary: "Gibt die Informationen des angemeldeten Users zurück"
+      parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+      responses:
+        200:
+          description: "Informationen des Users"
+          schema:
+            type: "object"
+            properties:
+              userName:
+                type: "string"
+                example: "user01"
+        505:
+          description: "Internal Server Error"
+        401:
+          description: "Registrieren fehlgeschlagen"
+  /user/register:
     post:
       tags:
-      - user
-      summary: Create user
-      description: This can only be done by the logged in user.
-      operationId: createUser
-      requestBody:
-        description: Created user object
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/User'
-        required: true
+      - "user"
+      summary: "Registriert den User"
+      consumes:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "user"
+          description: "The user to create."
+          schema:
+            type: "object"
+            required:
+              - "userName"
+            properties:
+              userName:
+                type: "string"
+                example: "user01"
+              password:
+                type: "string"
+                example: "treppe123"
       responses:
-        default:
-          description: successful operation
-          content: {}
-  /user/createWithArray:
-    post:
-      tags:
-      - user
-      summary: Creates list of users with given input array
-      operationId: createUsersWithArrayInput
-      requestBody:
-        description: List of user object
-        content:
-          '*/*':
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/User'
-        required: true
-      responses:
-        default:
-          description: successful operation
-          content: {}
-  /user/createWithList:
-    post:
-      tags:
-      - user
-      summary: Creates list of users with given input array
-      operationId: createUsersWithListInput
-      requestBody:
-        description: List of user object
-        content:
-          '*/*':
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/User'
-        required: true
-      responses:
-        default:
-          description: successful operation
-          content: {}
+        200:
+          description: "JWT"
+          schema:
+            type: "object"
+            properties:
+              jwt:
+                type: "string"
+                example: "13adwa942839rj2iuhr23i9"
+        505:
+          description: "Internal Server Error"
+        401:
+          description: "Registrieren fehlgeschlagen"
   /user/login:
-    get:
+    post:
       tags:
-      - user
-      summary: Logs user into the system
-      operationId: loginUser
+        - "user"
+      summary: "Meldet den User an"
+      consumes:
+        - "application/json"
       parameters:
-      - name: username
-        in: query
-        description: The user name for login
-        required: true
-        schema:
-          type: string
-      - name: password
-        in: query
-        description: The password for login in clear text
-        required: true
-        schema:
-          type: string
+        - in: "body"
+          name: "user"
+          description: "The user to create."
+          schema:
+            type: "object"
+            required:
+              - "userName"
+              - "password"
+            properties:
+              userName:
+                type: "string"
+                example: "user01"
+              password:
+                type: "string"
+                example: "treppe123"
       responses:
         200:
-          description: successful operation
-          headers:
-            X-Rate-Limit:
-              description: calls per hour allowed by the user
-              schema:
-                type: integer
-                format: int32
-            X-Expires-After:
-              description: date in UTC when token expires
-              schema:
-                type: string
-                format: date-time
-          content:
-            application/xml:
-              schema:
-                type: string
-            application/json:
-              schema:
-                type: string
-        400:
-          description: Invalid username/password supplied
-          content: {}
-  /user/logout:
+          description: "JWT"
+          schema:
+            type: "object"
+            properties:
+              jwt:
+                type: "string"
+                example: "13adwa942839rj2iuhr23i9"
+        505:
+          description: "Internal Server Error"
+        401:
+          description: "Login fehlgeschlagen"
+          
+  /lists:
     get:
       tags:
-      - user
-      summary: Logs out current logged in user session
-      operationId: logoutUser
-      responses:
-        default:
-          description: successful operation
-          content: {}
-  /user/{username}:
-    get:
-      tags:
-      - user
-      summary: Get user by user name
-      operationId: getUserByName
+        - "grocerylists"
+      summary: "Gibt alle Listen des Users zurück"
       parameters:
-      - name: username
-        in: path
-        description: 'The name that needs to be fetched. Use user1 for testing. '
-        required: true
-        schema:
-          type: string
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
       responses:
         200:
-          description: successful operation
-          content:
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/User'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        400:
-          description: Invalid username supplied
-          content: {}
-        404:
-          description: User not found
-          content: {}
+          description: "Einkaufslisten"
+          schema:
+            type: "object"
+            properties:
+              grocerylists:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    name:
+                      type: "string"
+                    creationDate:
+                      type: "string"
+                example:
+                  - name: "Einkaufsliste1"
+                    creationDate: "12.12.12"
+                  - name: "Einkaufsliste2"
+                    creationDate: "13.12.19"
+        505:
+          description: "Internal Server Error"
+        401:
+          description: "JWT nicht gültig"
     put:
       tags:
-      - user
-      summary: Updated user
-      description: This can only be done by the logged in user.
-      operationId: updateUser
+        - "grocerylists"
+      summary: "Erstellt eine Liste"
       parameters:
-      - name: username
-        in: path
-        description: name that need to be updated
-        required: true
-        schema:
-          type: string
-      requestBody:
-        description: Updated user object
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/User'
-        required: true
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+        - in: "body"
+          name: "user"
+          description: "Die liste die angelegt werden soll."
+          schema:
+            type: "object"
+            required:
+              - "listname"
+            properties:
+              listname:
+                type: "string"
+                example: "Einkaufsliste1"
       responses:
-        400:
-          description: Invalid user supplied
-          content: {}
-        404:
-          description: User not found
-          content: {}
+        200:
+          description: "Angelegte Liste"
+          schema:
+            type: "object"
+            properties:
+              listname:
+                type: "string"
+                example: "Einkaufsliste1"
+              creationDate:
+                type: "string"
+                example: "13.12.19"
+                
+        505:
+          description: "Internal Server Error"
+        401:
+          description: "JWT nicht gültig"
     delete:
       tags:
-      - user
-      summary: Delete user
-      description: This can only be done by the logged in user.
-      operationId: deleteUser
+        - "grocerylists"
+      summary: "Löschte eine liste"
       parameters:
-      - name: username
-        in: path
-        description: The name that needs to be deleted
-        required: true
-        schema:
-          type: string
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+        - in: "body"
+          name: "user"
+          description: "Die Liste die angelegt werden soll."
+          schema:
+            type: "object"
+            required:
+              - "listname"
+            properties:
+              listname:
+                type: "string"
+                example: "Einkaufsliste1"
       responses:
-        400:
-          description: Invalid username supplied
-          content: {}
-        404:
-          description: User not found
-          content: {}
-components:
-  schemas:
-    Order:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        petId:
-          type: integer
-          format: int64
-        quantity:
-          type: integer
-          format: int32
-        shipDate:
-          type: string
-          format: date-time
-        status:
-          type: string
-          description: Order Status
-          enum:
-          - placed
-          - approved
-          - delivered
-        complete:
-          type: boolean
-          default: false
-      xml:
-        name: Order
-    Category:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-      xml:
-        name: Category
-    User:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        username:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-        password:
-          type: string
-        phone:
-          type: string
-        userStatus:
-          type: integer
-          description: User Status
-          format: int32
-      xml:
-        name: User
-    Tag:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-      xml:
-        name: Tag
-    Pet:
-      required:
-      - name
-      - photoUrls
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        category:
-          $ref: '#/components/schemas/Category'
-        name:
-          type: string
-          example: doggie
-        photoUrls:
-          type: array
-          xml:
-            name: photoUrl
-            wrapped: true
-          items:
-            type: string
-        tags:
-          type: array
-          xml:
-            name: tag
-            wrapped: true
-          items:
-            $ref: '#/components/schemas/Tag'
-        status:
-          type: string
-          description: pet status in the store
-          enum:
-          - available
-          - pending
-          - sold
-      xml:
-        name: Pet
-    ApiResponse:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        type:
-          type: string
-        message:
-          type: string
-
-
-  # securitySchemes:
-  #   petstore_auth:
-  #     type: oauth2
-  #     flows:
-  #       implicit:
-  #         authorizationUrl: http://petstore.swagger.io/oauth/dialog
-  #         scopes:
-  #           write:pets: modify pets in your account
-  #           read:pets: read your pets
-  #   api_key:
-  #     type: apiKey
-  #     name: api_key
-  #     in: header
+        200:
+          description: "Name der gelöschten liste"
+          schema:
+            type: "object"
+            properties:
+              listname:
+                type: "string"
+                example: "Einkaufsliste1"
+        505:
+          description: "Internal Server Error"
+        401:
+          description: "JWT nicht gültig"
+          
+  /lists/{listname}:
+    get:
+      tags:
+      - "list"
+      summary: "Gibt die Gruppen der Liste zurück, sowie die elemente der Gruppe"
+      parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+        - in: "path"
+          name: "listname"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Gruppen der Liste mit Elementen der Gruppe"
+          schema:
+            type: "object"
+            properties:
+              groceryGroups:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    name:
+                      type: "string"
+                    groceryItems:
+                      type: "array"
+                      items:
+                        type: "object"
+                        properties:
+                          productname: "string"
+                          amount: "int"
+                          measure: "string"
+                          checked: "boolean"
+                example:
+                  - name: "Gruppe1"
+                    groceryItems:
+                      - productname: "produkt"
+                        amount: 1000
+                        measure: "gramm"
+                        checked: true
+                  - name: "Gruppe1"
+                    groceryItems:
+                      - productname: "produkt"
+                        amount: 0
+                        measure: ""
+                        checked: false
+                      - productname: "produkt2"
+                        amount: 2
+                        measure: "kg"
+                        checked: true
+        505:
+          description: "Internal Server Error"
+        401:
+          description: "JWT nicht gültig"
+  /lists/create:
+    put:
+      tags:
+      - "list"
+      summary: "Erstellt eine Gruppe"
+      parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+        - in: "body"
+          name: "user"
+          description: "Die Gruppe die angelegt werden soll."
+          schema:
+            type: "object"
+            required:
+              - "groupname"
+            properties:
+              groupname:
+                type: "string"
+                example: "Edeka"
+      responses:
+        200:
+          description: "Name der erstellten Gruppe"
+          schema:
+            type: "object"
+            properties:
+              groupname:
+                type: "string"
+                example: "Edeka"
+        505:
+          description: "Internal Server Error"
+        401:
+          description: "JWT nicht gültig"
+  
+  /lists/delete:
+    delete:
+      tags:
+      - "list"
+      summary: "Löscht eine Gruppe"
+      parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+        - in: "body"
+          name: "user"
+          description: "Die Gruppe die gelöscht werden soll."
+          schema:
+            type: "object"
+            required:
+              - "groupname"
+            properties:
+              groupname:
+                type: "string"
+                example: "Edeka"
+      responses:
+        200:
+          description: "Name der gelöschten Gruppe"
+          schema:
+            type: "object"
+            properties:
+              groupname:
+                type: "string"
+                example: "Edeka"
+        505:
+          description: "Internal Server Error"
+        401:
+          description: "JWT nicht gültig"
+          
+  /lists/{listname}/{groupname}:
+    put:
+      tags:
+      - "list"
+      summary: "Fügt ein Produkt einer Gruppe hinzu"
+      parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+        - in: "path"
+          name: "listname"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "groupname"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "user"
+          description: "Das Produkt das hinzugefügt werden soll."
+          schema:
+            type: "object"
+            required:
+              - "productname"
+            properties:
+              productname:
+                type: "string"
+                example: "Milch"
+              amount: 
+                type: "number"
+                example: 100
+              measure: 
+                type: "string"
+                example: "gramm"
+              checked:
+                type: "boolean"
+                example: false
+      responses:
+        200:
+          description: "Hinzugefügtes element"
+          schema:
+            type: "object"
+            properties:
+              productname:
+                type: "string"
+                example: "Milch"
+              amount: 
+                type: "number"
+                example: 100
+              measure: 
+                type: "string"
+                example: "gramm"
+              checked:
+                type: "boolean"
+                example: false
+        505:
+          description: "Internal Server Error"
+        401:
+          description: "JWT nicht gültig"
+        423:
+          description: "Produkt existiert bereits in der Gruppe"
+    post:
+      tags:
+      - "list"
+      summary: "Updatet das gegebene Produkt (Key: Produktname) mit den gegebenen Werten."
+      parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+        - in: "path"
+          name: "listname"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "groupname"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "user"
+          description: "Das Produkt das geupdated werden soll"
+          schema:
+            type: "object"
+            required:
+              - "productname"
+            properties:
+              productname:
+                type: "string"
+                example: "Milch"
+              amount: 
+                type: "number"
+                example: 100
+              measure: 
+                type: "string"
+                example: "gramm"
+              checked:
+                type: "boolean"
+                example: false
+      responses:
+        200:
+          description: "Element mit geupdatetem Werten"
+          schema:
+            type: "object"
+            properties:
+              productname:
+                type: "string"
+                example: "Milch"
+              amount: 
+                type: "number"
+                example: 100
+              measure: 
+                type: "string"
+                example: "gramm"
+              checked:
+                type: "boolean"
+                example: false
+        505:
+          description: "Internal Server Error"
+        401:
+          description: "JWT nicht gültig"
+    delete:
+      tags:
+      - "list"
+      summary: "Löscht das gegebene Produkt (Key: Produktname)"
+      parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+        - in: "path"
+          name: "listname"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "groupname"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "user"
+          description: "Das Produkt das gelöscht werden soll"
+          schema:
+            type: "object"
+            required:
+              - "productname"
+            properties:
+              productname:
+                type: "string"
+                example: "Milch"
+      responses:
+        200:
+          description: "Name des gelöschten elements"
+          schema:
+            type: "object"
+            properties:
+              productname:
+                type: "string"
+                example: "Milch"
+        505:
+          description: "Internal Server Error"
+        401:
+          description: "JWT nicht gültig"
