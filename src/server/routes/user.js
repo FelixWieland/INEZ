@@ -62,7 +62,6 @@ export const getUser = (req, res, next) => {
 		if (data) {
 			return res.status(200).json({ userName: decodedUser, lists: data });
 		}
-
 		if (err) {
 			return res.status(500).json({
 				error: err

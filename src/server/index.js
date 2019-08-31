@@ -28,7 +28,7 @@ app.post("/api/user/login", userRoutes.login);
 app.get("/api/user", checkAuth, userRoutes.getUser);
 
 // //grocerylists
-// app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
+app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
 // app.put("/api/lists", checkAuth, listRoutes.createGroceryList);
 // app.delete("/api/lists", checkAuth, listRoutes.deleteGroceryList);
 
