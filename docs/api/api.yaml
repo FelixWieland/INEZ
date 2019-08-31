@@ -3,7 +3,7 @@ info:
   title: INEZ-API - Der INtelligente EinkaufsZettel
   description: 'Dokumentation der API des INtelligenten EinkaufsZettel (INEZ)'
   contact:
-    email: ""
+    email: "w.d@mail.de"
   version: 1.0.0
 basePath: "/api"
 tags:
@@ -22,6 +22,11 @@ paths:
       tags:
       - "user"
       summary: "Gibt die Informationen des angemeldeten Users zurück"
+      parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
       responses:
         200:
           description: "Informationen des Users"
@@ -112,6 +117,11 @@ paths:
       tags:
         - "grocerylists"
       summary: "Gibt alle Listen des Users zurück"
+      parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
       responses:
         200:
           description: "Einkaufslisten"
@@ -141,6 +151,10 @@ paths:
         - "grocerylists"
       summary: "Erstellt eine Liste"
       parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
         - in: "body"
           name: "user"
           description: "Die liste die angelegt werden soll."
@@ -174,6 +188,10 @@ paths:
         - "grocerylists"
       summary: "Löschte eine liste"
       parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
         - in: "body"
           name: "user"
           description: "Die Liste die angelegt werden soll."
@@ -204,13 +222,22 @@ paths:
       tags:
       - "list"
       summary: "Gibt die Gruppen der Liste zurück, sowie die elemente der Gruppe"
+      parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+        - in: "path"
+          name: "listname"
+          required: true
+          type: "string"
       responses:
         200:
           description: "Gruppen der Liste mit Elementen der Gruppe"
           schema:
             type: "object"
             properties:
-              grocerylists:
+              groceryGroups:
                 type: "array"
                 items:
                   type: "object"
@@ -227,13 +254,13 @@ paths:
                           measure: "string"
                           checked: "boolean"
                 example:
-                  - name: "Einkaufsliste1"
+                  - name: "Gruppe1"
                     groceryItems:
                       - productname: "produkt"
                         amount: 1000
                         measure: "gramm"
                         checked: true
-                  - name: "Einkaufsliste2"
+                  - name: "Gruppe1"
                     groceryItems:
                       - productname: "produkt"
                         amount: 0
@@ -253,6 +280,10 @@ paths:
       - "list"
       summary: "Erstellt eine Gruppe"
       parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
         - in: "body"
           name: "user"
           description: "Die Gruppe die angelegt werden soll."
@@ -284,6 +315,10 @@ paths:
       - "list"
       summary: "Löscht eine Gruppe"
       parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
         - in: "body"
           name: "user"
           description: "Die Gruppe die gelöscht werden soll."
@@ -315,6 +350,18 @@ paths:
       - "list"
       summary: "Fügt ein Produkt einer Gruppe hinzu"
       parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+        - in: "path"
+          name: "listname"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "groupname"
+          required: true
+          type: "string"
         - in: "body"
           name: "user"
           description: "Das Produkt das hinzugefügt werden soll."
@@ -364,6 +411,18 @@ paths:
       - "list"
       summary: "Updatet das gegebene Produkt (Key: Produktname) mit den gegebenen Werten."
       parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+        - in: "path"
+          name: "listname"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "groupname"
+          required: true
+          type: "string"
         - in: "body"
           name: "user"
           description: "Das Produkt das geupdated werden soll"
@@ -411,6 +470,18 @@ paths:
       - "list"
       summary: "Löscht das gegebene Produkt (Key: Produktname)"
       parameters:
+        - in: "header"
+          name: "jwt"
+          description: "JSON-Web-Token"
+          type: "string"
+        - in: "path"
+          name: "listname"
+          required: true
+          type: "string"
+        - in: "path"
+          name: "groupname"
+          required: true
+          type: "string"
         - in: "body"
           name: "user"
           description: "Das Produkt das gelöscht werden soll"
@@ -435,6 +506,3 @@ paths:
           description: "Internal Server Error"
         401:
           description: "JWT nicht gültig"
-    
-        
-          
