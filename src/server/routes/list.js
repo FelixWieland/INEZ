@@ -9,7 +9,6 @@ export const getGroceryLists = (req, res, next) => {
 				grocerylists: data
 			});
 		}
-
 		if (err) {
 			return res.status(500).json({
 				error: err
@@ -19,8 +18,18 @@ export const getGroceryLists = (req, res, next) => {
 };
 
 export const createGroceryList = (req, res, next) => {
-	res.status(200).json({
-		message: "Test"
+	const decodedUser = extractUser(req);
+	dbRequests.createShoppingList(decodedUser, req.body.listname, (err, data) => {
+		if (data) {
+			return res.status(200).json({
+				listname: req.body.listname
+			});
+		}
+		if (err) {
+			return res.status(500).json({
+				error: err
+			});
+		}
 	});
 };
 
