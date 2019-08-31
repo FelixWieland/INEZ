@@ -6,6 +6,7 @@ import socketio from "socket.io";
 import bodyParser from "body-parser";
 import * as routes from "./routes/test";
 import * as userRoutes from "./routes/user";
+import * as listRoutes from "./routes/list";
 import { checkAuth } from "./check-auth";
 
 const PORT = process.env.NODE_ENV === "production" ? 8000 : 3001;
@@ -18,12 +19,41 @@ app.use(cors());
 app.use(staticFiles("dist"));
 app.options("*", cors());
 
+//test
 app.get("/api/getUsername", routes.getUsername);
 
+//user
 app.post("/api/user/register", userRoutes.register);
 app.post("/api/user/login", userRoutes.login);
 app.get("/api/user", checkAuth, userRoutes.getUser);
 
+//grocerylists
+app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
+app.put("/api/lists", checkAuth, listRoutes.createGroceryList);
+app.delete("/api/lists", checkAuth, listRoutes.deleteGroceryList);
+
+//list
+app.get("/api/lists/:listname", checkAuth, listRoutes.getGroceryListGroups);
+app.put("/api/lists/create", checkAuth, listRoutes.createProductGroup);
+app.delete("/api/lists/delete", checkAuth, listRoutes.deleteProductGroup);
+
+app.put(
+	"/api/lists/:listname/:groupname",
+	checkAuth,
+	listRoutes.addProductToGroup
+);
+app.post(
+	"/api/lists/:listname/:groupname",
+	checkAuth,
+	listRoutes.updateProduct
+);
+app.delete(
+	"/api/lists/:listname/:groupname",
+	checkAuth,
+	listRoutes.deleteProduct
+);
+
+//test
 app.all("/api/demoCall", routes.demoCall);
 
 // rewrites non matching routes to index.html
