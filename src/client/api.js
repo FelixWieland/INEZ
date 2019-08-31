@@ -22,7 +22,6 @@ export const login = (username, password, onSuccess, onError) => {
     fetch(uri + 'api/demoCall', {
         method: 'POST',
     }).then((response) => {
-        console.log(response)
         switch (response.status) {
             case 200: return response.json()
             case 401: ;
@@ -137,4 +136,3 @@ export const deleteGroceryList = (listname, onSuccess, onError) => {
         onError()
     }).then((data) => onSuccess(data)).catch((err) => onError(err))
 }
-

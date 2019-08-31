@@ -122,13 +122,14 @@ export const suggestPortionMeasure = (amount, portionMeasure) => {
 
 
 export const getPluralBasedOnAmount = (amount, measure) => {
-    const isGreaterOne = (instead) => amount > 1 ? instead : measure
-    switch (measure.toLowerCase()) {
+    const lowerMeasure = measure.toLowerCase()
+    const isGreaterOne = (instead) => amount > 1 ? instead : lowerMeasure
+    switch (lowerMeasure) {
         case 'flasche': return isGreaterOne('flaschen')
         case 'packung': return isGreaterOne('packungen')
         case 'portion': return isGreaterOne('portionen')
     }
-    return measure
+    return lowerMeasure
 }
 
 export const getPluralBasedOnMeasure = (measure) => {
@@ -144,4 +145,11 @@ export const getSingularBasedOnMeasure = (measure) => {
     return measure.toLowerCase()
 }
 
-
+export const normalizeMeasure = (measure) => {
+    switch (measure.toLowerCase()) {
+        case 'gramm': return 'g'
+        case 'kilo': return 'kg'
+        case 'liter': return 'l'
+    }
+    return measure
+}

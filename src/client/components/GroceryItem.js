@@ -57,6 +57,7 @@ const styles = (theme) => ({
             cursor: 'pointer',
         },
         'backgroundColor': theme.palette.primary.main,
+        'overflow': 'hidden',
     },
     groupImage: {
         height: '75%',
@@ -250,7 +251,7 @@ class GroceryItem extends Component {
                             onClick={this.toggleChecked}
                         >
                             {this.state.loading &&
-                                <CircularProgress size={43} className={classes.fabProgress} />}
+                                <CircularProgress size={42} className={classes.fabProgress} />}
                             {this.state.checked
                                 ? <CheckIcon />
                                 : <img
