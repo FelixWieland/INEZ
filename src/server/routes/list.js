@@ -1,14 +1,48 @@
 import dbRequests from "../dbRequests";
+<<<<<<< HEAD
 import { extractUser } from "./user";
 import * as db from './../dbRequests'
+=======
+import { extractUser } from "./user.js";
+>>>>>>> 632a55f00de00c76a701d46ad627f06c6d13d492
 
 export const getGroceryLists = (req, res, next) => {
-	res.status(200).json({
-		message: "Test"
+	const decodedUser = extractUser(req);
+	dbRequests.getShoppingLists(decodedUser, (err, data) => {
+		if (data) {
+			return res.status(200).json({
+				grocerylists: data
+			});
+		}
+		if (err) {
+			return res.status(500).json({
+				error: err
+			});
+		}
 	});
 };
 
+export const createGroceryList = (req, res, next) => {
+	const decodedUser = extractUser(req);
+	dbRequests.createShoppingList(decodedUser, req.body.listname, (err, data) => {
+		if (data) {
+			return res.status(200).json({
+				message: "succesfully created",
+				listname: req.body.listname
+			});
+		}
+		if (err) {
+			return res.status(500).json({
+				error: err
+			});
+		}
+	});
+};
 
+export const deleteGroceryList = (req, res, next) => {
+	const decodedUser = extractUser(req);
+
+<<<<<<< HEAD
 export const getGroceryListGroups = (req, res, next) => {
 	const username = extractUser(req)
 	db.getShoppingLists(username, (err, result) => {
@@ -67,3 +101,39 @@ export const deleteProductGroup = (req, res, next) => {
 		})
 	})
 }
+=======
+	dbRequests.getShoppingLists(decodedUser, (err, data) => {
+		if (data) {
+			data.forEach(dataElement => {
+				if (dataElement.list_name == req.body.listname) {
+					const deleteListID = dataElement._id;
+					dbRequests.deleteShoppingList(
+						decodedUser,
+						deleteListID,
+						(err, data) => {
+							if (data) {
+								return res.status(200).json({
+									message: "succesfully deleted",
+									listname: req.body.listname
+								});
+							}
+							if (err) {
+								return res.status(500).json({
+									error: err
+								});
+							}
+						}
+					);
+				}
+			});
+		}
+		if (err) {
+			return res.status(500).json({
+				error: err
+			});
+		}
+	});
+};
+
+//export const getGroceryListGroups = (req, res, next) => {};
+>>>>>>> 632a55f00de00c76a701d46ad627f06c6d13d492

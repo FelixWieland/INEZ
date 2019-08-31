@@ -27,6 +27,7 @@ app.post("/api/user/register", userRoutes.register);
 app.post("/api/user/login", userRoutes.login);
 app.get("/api/user", checkAuth, userRoutes.getUser);
 
+<<<<<<< HEAD
 //grocerylists
 // app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
 // app.put("/api/lists", checkAuth, listRoutes.createGroceryList);
@@ -36,6 +37,17 @@ app.get("/api/user", checkAuth, userRoutes.getUser);
 app.get("/api/lists/:listname", checkAuth, listRoutes.getGroceryListGroups);
 app.put("/api/lists/:listname/create", checkAuth, listRoutes.createProductGroup);
 app.delete("/api/lists/:listname/delete", checkAuth, listRoutes.deleteProductGroup);
+=======
+// //grocerylists
+app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
+app.put("/api/lists", checkAuth, listRoutes.createGroceryList);
+app.delete("/api/lists", checkAuth, listRoutes.deleteGroceryList);
+
+// //list
+// app.get("/api/lists/:listname", checkAuth, listRoutes.getGroceryListGroups);
+// app.put("/api/lists/create", checkAuth, listRoutes.createProductGroup);
+// app.delete("/api/lists/delete", checkAuth, listRoutes.deleteProductGroup);
+>>>>>>> 632a55f00de00c76a701d46ad627f06c6d13d492
 
 // app.put(
 // 	"/api/lists/:listname/:groupname",
