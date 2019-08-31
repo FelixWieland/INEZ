@@ -18,6 +18,7 @@ app.get("/api/getUsername", routes.getUsername);
 app.all("/api/demoCall", routes.demoCall);
 
 // rewrites non matching routes to index.html
+<<<<<<< HEAD
 if (PORT === 8000)
 	app.all("/*", (req, res) =>
 		res.sendFile(path.resolve(__dirname, "../../dist/index.html"))
@@ -27,3 +28,12 @@ const server = app.listen(PORT, () => console.log("Listening on port " + PORT));
 const io = socketio.listen(server);
 
 io.on("connection", onConnection);
+=======
+
+if (PORT === 8000) app.all('/*', (req, res) => res.sendFile(path.resolve(__dirname, '../../dist/index.html')))
+
+const server = app.listen(PORT, () => console.log('Listening on port ' + PORT))
+const io = socketio.listen(server)
+
+io.on('connection', onConnection)
+>>>>>>> 319b6bd8ef933d095ef0ed28ffacb2f766ec832c
