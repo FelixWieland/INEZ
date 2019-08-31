@@ -48,16 +48,24 @@ app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
 app.put("/api/lists", checkAuth, listRoutes.createGroceryList);
 app.delete("/api/lists", checkAuth, listRoutes.deleteGroceryList);
 
-// //list
-// app.get("/api/lists/:listname", checkAuth, listRoutes.getGroceryListGroups);
-// app.put("/api/lists/create", checkAuth, listRoutes.createProductGroup);
-// app.delete("/api/lists/delete", checkAuth, listRoutes.deleteProductGroup);
+//list
+app.get("/api/lists/:listname", checkAuth, listRoutes.getGroceryListGroups);
+app.put(
+	"/api/lists/:listname/create",
+	checkAuth,
+	listRoutes.createProductGroup
+);
+app.delete(
+	"/api/lists/:listname/delete",
+	checkAuth,
+	listRoutes.deleteProductGroup
+);
 
-// app.put(
-// 	"/api/lists/:listname/:groupname",
-// 	checkAuth,
-// 	listRoutes.addProductToGroup
-// );
+app.put(
+	"/api/lists/:listname/:groupname",
+	checkAuth,
+	listRoutes.addProductToGroup
+);
 // app.post(
 // 	"/api/lists/:listname/:groupname",
 // 	checkAuth,
