@@ -30,7 +30,7 @@ app.get("/api/user", checkAuth, userRoutes.getUser);
 // //grocerylists
 app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
 app.put("/api/lists", checkAuth, listRoutes.createGroceryList);
-// app.delete("/api/lists", checkAuth, listRoutes.deleteGroceryList);
+app.delete("/api/lists", checkAuth, listRoutes.deleteGroceryList);
 
 // //list
 // app.get("/api/lists/:listname", checkAuth, listRoutes.getGroceryListGroups);
