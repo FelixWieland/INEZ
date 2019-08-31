@@ -164,16 +164,13 @@ export const addProductToGroup = (req, res, next) => {
 };
 
 export const updateProduct = (req, res, next) => {
-	console.log("test1");
 	const username = extractUser(req);
 	db.getShoppingLists(username, (err, result) => {
 		if (err) {
-			return res.status(500).json({ message: "Test blabla" });
+			return res.status(500).json({ message: "Keine Liste vorhanden" });
 		}
-		console.log("test2");
 		result.map(elm => {
 			if (elm.list_name === req.params.listname) {
-				console.log("test3");
 				db.updateProductInGroup(
 					elm._id,
 					req.params.groupname,
@@ -193,6 +190,34 @@ export const updateProduct = (req, res, next) => {
 						return res
 							.status(200)
 							.json({ message: "liste wurde aktualisiert" });
+					}
+				);
+			}
+		});
+	});
+};
+
+export const deleteProduct = (req, res, next) => {
+	const username = extractUser(req);
+	db.getShoppingLists(username, (err, result) => {
+		if (err) {
+			return res.status(500).json({ message: "Keine Liste vorhanden" });
+		}
+		result.map(elm => {
+			if (elm.list_name === req.params.listname) {
+				db.removeProductFromShoppingList(
+					elm._id,
+					req.params.groupname,
+					req.body.productId,
+					(err, result) => {
+						if (err) {
+							return res
+								.status(500)
+								.json({ message: "Produkt konnte nicht gelöscht werden" });
+						}
+						return res
+							.status(200)
+							.json({ message: "Produkt erfolgreich gelöscht" });
 					}
 				);
 			}

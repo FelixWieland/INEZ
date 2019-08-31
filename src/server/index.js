@@ -55,11 +55,11 @@ app.post(
 	checkAuth,
 	listRoutes.updateProduct
 );
-// app.delete(
-// 	"/api/lists/:listname/:groupname",
-// 	checkAuth,
-// 	listRoutes.deleteProduct
-// );
+app.delete(
+	"/api/lists/:listname/:groupname",
+	checkAuth,
+	listRoutes.deleteProduct
+);
 
 //test
 app.all("/api/demoCall", routes.demoCall);
