@@ -58,6 +58,7 @@ export const getGroceryListGroups = (req, res, next) => {
 
 export const createProductGroup = (req, res, next) => {
 	const username = extractUser(req)
+	console.log(username)
 	db.getShoppingLists(username, (err, result) => {
 		if (err) {
 			return res.status(500).json({ message: 'liste existiert nicht' });

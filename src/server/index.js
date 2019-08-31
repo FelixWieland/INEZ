@@ -16,6 +16,13 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
+// app.use((req, res, next) => {
+// 	res.header("Access-Control-Allow-Origin", "*");
+// 	res.header(
+// 		"Access-Control-Allow-Headers",
+// 		"Origin, X-Requested-With, Content-Type, Accept, Authorization"
+// 	);
+// })
 app.use(staticFiles("dist"));
 app.options("*", cors());
 
@@ -27,17 +34,15 @@ app.post("/api/user/register", userRoutes.register);
 app.post("/api/user/login", userRoutes.login);
 app.get("/api/user", checkAuth, userRoutes.getUser);
 
-<<<<<<< HEAD
 //grocerylists
 // app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
 // app.put("/api/lists", checkAuth, listRoutes.createGroceryList);
 // app.delete("/api/lists", checkAuth, listRoutes.deleteGroceryList);
 
 //list
-app.get("/api/lists/:listname", checkAuth, listRoutes.getGroceryListGroups);
+app.all("/api/lists/:listname", checkAuth, listRoutes.getGroceryListGroups);
 app.put("/api/lists/:listname/create", checkAuth, listRoutes.createProductGroup);
 app.delete("/api/lists/:listname/delete", checkAuth, listRoutes.deleteProductGroup);
-=======
 // //grocerylists
 app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
 app.put("/api/lists", checkAuth, listRoutes.createGroceryList);
@@ -47,7 +52,6 @@ app.delete("/api/lists", checkAuth, listRoutes.deleteGroceryList);
 // app.get("/api/lists/:listname", checkAuth, listRoutes.getGroceryListGroups);
 // app.put("/api/lists/create", checkAuth, listRoutes.createProductGroup);
 // app.delete("/api/lists/delete", checkAuth, listRoutes.deleteProductGroup);
->>>>>>> 632a55f00de00c76a701d46ad627f06c6d13d492
 
 // app.put(
 // 	"/api/lists/:listname/:groupname",
