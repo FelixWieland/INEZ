@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar'
 import GroceryGroups from '../components/GroceryGroups'
 import { Container } from '@material-ui/core'
 import * as api from '../api'
+import { withRouter } from 'react-router-dom'
 
 class GroceryNote extends Component {
     constructor(props) {
@@ -45,12 +46,12 @@ class GroceryNote extends Component {
                         listName={''}
                         exportAdd={this.exportGroupAddFunction}
                         activeGroup={this.setActiveGroup}
-                        id={this.props.match.id} />
+                        id={this.props.match.params.id} />
                 </Container>
             </>
         )
     }
 }
 
-export default GroceryNote
+export default withRouter(GroceryNote)
 

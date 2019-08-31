@@ -150,7 +150,7 @@ const Login = (props) => {
             <Box mt={8}>
                 {/* <Copyright /> */}
             </Box>
-            <CSessionEvents variant={'ERROR'} open={true} noevent />
+            {/* <CSessionEvents variant={'ERROR'} open={true} noevent /> */}
         </Container>
     )
 }

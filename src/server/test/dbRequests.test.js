@@ -7,17 +7,17 @@ db.createUser('Felix Wieland', '123', () => {
 })
 
 
-// db.createShoppingList('Felix Wieland', 'EinkaufsListe2', (err, result) => {
+// db.createShoppingList('test123', 'EinkaufsListe2', (err, result) => {
 //     console.log(err, result)
 // })
 
-// db.createShoppingListGroup('5d6a692ebb7b6414e614b6c6', 'Group1', (err, result) => {
+// db.createShoppingListGroup('5d6abc51cf431534fdbd539d', 'Group2', (err, result) => {
 //     console.log(result)
 // })
 
-// db.addProductToShoppingList('5d6a692ebb7b6414e614b6c6', 'Group1', '5d60503e25e690b4eefece01', 'Produktname', 'gramm', 100, (data) => {
-//     console.log(data)
-// })
+db.addProductToShoppingList('5d6abc51cf431534fdbd539d', 'Group2', '5d60503e25e690b4eefece01', 'Produktname', 'gramm', 100, false, (data) => {
+    console.log(data)
+})
 
 
 // db.removeProductFromShoppingList('5d6a692ebb7b6414e614b6c6', 'Group1', '5d60503e25e690b4eefece04', (data) => {
@@ -48,6 +48,6 @@ db.createUser('Felix Wieland', '123', () => {
 //     console.log(err, result)
 // })
 
-// db.getShoppingLists("Felix Wieland", (err, result) => {
-//     console.log(result)
-// })
+db.getShoppingLists("test123", (err, result) => {
+    console.log(result)
+})
