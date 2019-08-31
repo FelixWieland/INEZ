@@ -1,10 +1,6 @@
 import dbRequests from "../dbRequests";
-<<<<<<< HEAD
 import { extractUser } from "./user";
 import * as db from './../dbRequests'
-=======
-import { extractUser } from "./user.js";
->>>>>>> 632a55f00de00c76a701d46ad627f06c6d13d492
 
 export const getGroceryLists = (req, res, next) => {
 	const decodedUser = extractUser(req);
@@ -39,10 +35,6 @@ export const createGroceryList = (req, res, next) => {
 	});
 };
 
-export const deleteGroceryList = (req, res, next) => {
-	const decodedUser = extractUser(req);
-
-<<<<<<< HEAD
 export const getGroceryListGroups = (req, res, next) => {
 	const username = extractUser(req)
 	db.getShoppingLists(username, (err, result) => {
@@ -101,7 +93,9 @@ export const deleteProductGroup = (req, res, next) => {
 		})
 	})
 }
-=======
+
+export const deleteGroceryList = (req, res, next) => {
+	const decodedUser = extractUser(req);
 	dbRequests.getShoppingLists(decodedUser, (err, data) => {
 		if (data) {
 			data.forEach(dataElement => {
@@ -136,4 +130,3 @@ export const deleteProductGroup = (req, res, next) => {
 };
 
 //export const getGroceryListGroups = (req, res, next) => {};
->>>>>>> 632a55f00de00c76a701d46ad627f06c6d13d492
