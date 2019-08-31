@@ -5,6 +5,10 @@ const socket = openSocket(process.env.API_URL, {
 })
 
 const uri = 'http://' + process.env.API_URL
+const header = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+}
 
 export const subscribeToAutosuggestion = (callback) => {
     const event = 'autosuggest'
@@ -19,8 +23,15 @@ const handleJWTUpdate = () => {
 }
 
 export const login = (username, password, onSuccess, onError) => {
-    fetch(uri + 'api/demoCall', {
+    fetch(uri + 'api/user/login', {
         method: 'POST',
+        headers: header,
+        body: JSON.stringify(
+            {
+                userName: username,
+                password: password
+            }
+        )
     }).then((response) => {
         switch (response.status) {
             case 200: return response.json()
@@ -30,22 +41,31 @@ export const login = (username, password, onSuccess, onError) => {
         onError(new Error('login failed'))
     }).then((data) => {
         window.sessionStorage.setItem('jwt', data.jwt)
+        window.sessionStorage.setItem('reLogin', "-")
         onSuccess()
     }).catch((err) => onError(err))
 }
 
 export const register = (username, password, onSuccess, onError) => {
-    fetch(uri + 'api/demoCall', {
+    fetch(uri + 'api/user/register', {
         method: 'POST',
+        headers: header,
+        body: JSON.stringify(
+            {
+                userName: username,
+                password: password
+            }
+        )
     }).then((response) => {
         switch (response.status) {
-            case 200: return response.json()
+            case 201: return response.json()
             case 401: ;
             case 505: ;
         }
         onError(new Error('registration failed'))
     }).then((data) => {
         window.sessionStorage.setItem('jwt', data.jwt)
+        window.sessionStorage.setItem('register', "-")
         onSuccess()
     }).catch((err) => onError(err))
 }
