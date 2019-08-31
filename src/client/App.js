@@ -20,6 +20,7 @@ class App extends Component {
 				<BrowserRouter>
 					<CSessionEvents message={"Willkommen zurück!"} sessionKey={"reLogin"} />
 					<CSessionEvents message={"Vielen Dank fürs Registrieren!"} sessionKey={"register"} />
+
 					<Switch>
 						{hasSession() && <Route path={"/"} component={Grocerys} />}
 						{!hasSession() && (

@@ -3,11 +3,13 @@ import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import SuccessIcon from '@material-ui/icons/Check';
+import ErrorIcon from '@material-ui/icons/Error';
 
 const CSessionEvents = (props) => {
-    const { className, message, onClose, variant, sessionKey, ...other } = props;
+    const { className, message, onClose, variant, sessionKey, variant, open, noEvent, ...other } = props;
 
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(open !== undefined ? open : true);
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -28,7 +30,15 @@ const CSessionEvents = (props) => {
         return false
     }
 
-    if (sessionKey) {
+    const getVariantIcon = (variantName) => {
+        switch (variantName) {
+            case 'SUCCESS': return <SuccessIcon />
+            case 'ERROR': return <ErrorIcon />
+            default: return <></>
+        }
+    }
+
+    if (sessionKey && !noEvent) {
         console.log(window.sessionStorage.getItem(sessionKey))
         if (!checkIfKeyExitsInSession(sessionKey)) {
             return (<></>)
@@ -49,6 +59,7 @@ const CSessionEvents = (props) => {
                 aria-describedby="client-snackbar"
                 message={
                     <span id="client-snackbar" >
+                        {getVariantIcon(variant)}
                         {message}
                     </span>
                 }
