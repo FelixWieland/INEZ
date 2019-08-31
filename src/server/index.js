@@ -50,11 +50,11 @@ app.put(
 	checkAuth,
 	listRoutes.addProductToGroup
 );
-// app.post(
-// 	"/api/lists/:listname/:groupname",
-// 	checkAuth,
-// 	listRoutes.updateProduct
-// );
+app.post(
+	"/api/lists/:listname/:groupname",
+	checkAuth,
+	listRoutes.updateProduct
+);
 // app.delete(
 // 	"/api/lists/:listname/:groupname",
 // 	checkAuth,

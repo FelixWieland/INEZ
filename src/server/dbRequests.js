@@ -458,6 +458,7 @@ const getAllItemsInShoppingList = (shoppingListId, done) => {
 };
 
 const updateProductInGroup = (shoppingListId, groupname, updateObj, done) => {
+	console.log("test4");
 	model.shopping_List.findOne(
 		{ _id: mongoose.Types.ObjectId(shoppingListId) },
 		(err, data) => {

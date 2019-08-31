@@ -162,3 +162,40 @@ export const addProductToGroup = (req, res, next) => {
 		});
 	});
 };
+
+export const updateProduct = (req, res, next) => {
+	console.log("test1");
+	const username = extractUser(req);
+	db.getShoppingLists(username, (err, result) => {
+		if (err) {
+			return res.status(500).json({ message: "Test blabla" });
+		}
+		console.log("test2");
+		result.map(elm => {
+			if (elm.list_name === req.params.listname) {
+				console.log("test3");
+				db.updateProductInGroup(
+					elm._id,
+					req.params.groupname,
+					{
+						_id: req.body.productId,
+						productname: req.body.productname,
+						measure: req.body.measure,
+						amount: req.body.amount,
+						checked: req.body.checked
+					},
+					(err, result) => {
+						if (err) {
+							return res
+								.status(500)
+								.json({ message: "Update funktioniert nicht" });
+						}
+						return res
+							.status(200)
+							.json({ message: "liste wurde aktualisiert" });
+					}
+				);
+			}
+		});
+	});
+};
