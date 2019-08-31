@@ -135,5 +135,30 @@ export const deleteProductGroup = (req, res, next) => {
 	});
 };
 
-
 export const addProductToGroup = (req, res, next) => {
+	const username = extractUser(req);
+	db.getShoppingLists(username, (err, result) => {
+		if (err) {
+			return res.status(500).json({ message: "liste existiert nicht" });
+		}
+		result.map(elm => {
+			if (elm.list_name === req.params.listname) {
+				db.addProductToShoppingList(
+					elm._id,
+					req.params.groupname,
+					req.body.productId,
+					req.body.productname,
+					req.body.measure,
+					req.body.amount,
+					req.body.checked,
+					(err, result) => {
+						if (err) {
+							return res.status(500).json({ message: "liste existiert nicht" });
+						}
+						return res.status(200).json({ message: "liste wurde angelegt" });
+					}
+				);
+			}
+		});
+	});
+};
