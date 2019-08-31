@@ -5,3 +5,8 @@ export const getGroceryLists = (req, res, next) => {
 		message: "Test"
 	});
 };
+
+
+export const getGroceryListGroups = (req, res, next) => {
+
+}

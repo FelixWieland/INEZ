@@ -65,6 +65,12 @@ export const getUser = (req, res, next) => {
 	res.status(200).json({ userName: decodedUser });
 };
 
+export const extractUser = (req) => {
+	const token = req.headers.authorization.split(" ")[1];
+	const decoded = jwt.verify(token, process.env.JWT_KEY);
+	return decoded.userName;
+}
+
 //function that provides the jwt
 const responseJWT = (res, message, resCode, userName) => {
 	const token = jwt.sign(
