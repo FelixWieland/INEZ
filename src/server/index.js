@@ -6,6 +6,7 @@ import socketio from "socket.io";
 import bodyParser from "body-parser";
 import * as routes from "./routes/test";
 import * as userRoutes from "./routes/user";
+import { checkAuth } from "./check-auth";
 
 const PORT = process.env.NODE_ENV === "production" ? 8000 : 3001;
 
@@ -21,6 +22,7 @@ app.get("/api/getUsername", routes.getUsername);
 
 app.post("/api/user/register", userRoutes.register);
 app.post("/api/user/login", userRoutes.login);
+app.get("/api/user", checkAuth, userRoutes.getUser);
 
 app.all("/api/demoCall", routes.demoCall);
 

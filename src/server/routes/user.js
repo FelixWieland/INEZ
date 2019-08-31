@@ -59,6 +59,15 @@ export const login = (req, res, next) => {
 	});
 };
 
+export const getUser = (req, res, next) => {
+	//quick and dirty, aber läuft :D
+	const token = req.headers.authorization.split(" ")[1];
+	const decoded = jwt.verify(token, process.env.JWT_KEY);
+	req.userData = decoded;
+	const decodedUser = decoded.userName;
+	res.status(200).json({ userName: decodedUser });
+};
+
 //function that provides the jwt
 const responseJWT = (res, message, resCode, userName) => {
 	const token = jwt.sign(
