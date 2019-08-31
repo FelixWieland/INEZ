@@ -24,6 +24,7 @@ class FuzzyAutosuggest {
 				if (err) {
 					throw err
 				}
+				console.log("ok")
 				const db = conn.db('INEZ')
 				db.collection('products')
 					.find({})

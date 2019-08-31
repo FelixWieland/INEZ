@@ -123,9 +123,13 @@ export const createGroceryItem = (grocerylistid, item, onSuccess, onError) => {
     }).then((data) => onSuccess(data)).catch((err) => onError(err))
 }
 
-export const deleteGroceryListGroup = (grocerylistid, groupname, onSuccess, onError) => {
-    fetch(uri + 'api/demoCall', {
-        method: 'DELETE',
+export const deleteGroceryListGroup = (listname, groupname, onSuccess, onError) => {
+    fetch(uri + 'api/lists/' + listname + '/delete' + createAuthParam(), {
+        method: 'PUT',
+        header: header,
+        body: JSON.stringify({
+            groupname: groupname
+        })
     }).then((response) => {
         switch (response.status) {
             case 200: return response.json()

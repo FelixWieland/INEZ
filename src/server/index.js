@@ -24,7 +24,6 @@ app.use(cors());
 // 	);
 // })
 app.use(staticFiles("dist"));
-app.options("*", cors());
 
 //test
 app.get("/api/getUsername", routes.getUsername);
@@ -61,11 +60,11 @@ app.delete(
 	listRoutes.deleteProductGroup
 );
 
-app.put(
-	"/api/lists/:listname/:groupname",
-	checkAuth,
-	listRoutes.addProductToGroup
-);
+// app.put(
+// 	"/api/lists/:listname/:groupname",
+// 	checkAuth,
+// 	listRoutes.addProductToGroup
+// );
 // app.post(
 // 	"/api/lists/:listname/:groupname",
 // 	checkAuth,
