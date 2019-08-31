@@ -4,7 +4,7 @@ import SnackbarContent from '@material-ui/core/SnackbarContent';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
-const CSnackbar = (props) => {
+const CSessionEvents = (props) => {
     const { className, message, onClose, variant, sessionKey, ...other } = props;
 
     const [open, setOpen] = React.useState(true);
@@ -13,7 +13,11 @@ const CSnackbar = (props) => {
         if (reason === 'clickaway') {
             return;
         }
-
+        if (sessionKey) {
+            if (checkIfKeyExitsInSession(sessionKey)) {
+                window.sessionStorage.removeItem(sessionKey)
+            }
+        }
         setOpen(false)
     }
 
@@ -24,9 +28,12 @@ const CSnackbar = (props) => {
         return false
     }
 
-    // if (sessionKey) {
-    //     if (checkIfKeyExitsInSession)
-    // }
+    if (sessionKey) {
+        console.log(window.sessionStorage.getItem(sessionKey))
+        if (!checkIfKeyExitsInSession(sessionKey)) {
+            return (<></>)
+        }
+    }
 
     return (
         <Snackbar
@@ -57,4 +64,4 @@ const CSnackbar = (props) => {
 }
 
 
-export default CSnackbar;
+export default CSessionEvents;

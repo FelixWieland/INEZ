@@ -7,6 +7,7 @@ import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { hasSession } from "./session";
+import CSessionEvents from "./components/CSessionEvents"
 
 class App extends Component {
 	constructor(props) {
@@ -17,6 +18,8 @@ class App extends Component {
 		return (
 			<MuiThemeProvider theme={theme}>
 				<BrowserRouter>
+					<CSessionEvents message={"Willkommen zurück!"} sessionKey={"reLogin"} />
+					<CSessionEvents message={"Vielen Dank fürs Registrieren!"} sessionKey={"register"} />
 					<Switch>
 						{hasSession() && <Route path={"/"} component={Grocerys} />}
 						{!hasSession() && (
