@@ -2,13 +2,9 @@ import FuzzyAutosuggest from "./../FuzzyAutosuggest";
 import fs from "fs";
 import path from "path";
 
-const unparsed = fs
-	.readFileSync(
-		path.dirname(require.main.filename) + "/config/credentials.json"
-	)
-	.toString();
-const credentials = JSON.parse(unparsed);
-const fuzzyAutosuggest = new FuzzyAutosuggest(credentials.mongo.srv);
+const fuzzyAutosuggest = new FuzzyAutosuggest(
+	"mongodb+srv://inez_user:inez_user@cluster0-p8frj.mongodb.net/INEZ?retryWrites=true&w=majority"
+);
 fuzzyAutosuggest.runSearch("DUMMYVALUE", _ => undefined);
 
 const emitAutosuggestResponse = (socket, result) =>
