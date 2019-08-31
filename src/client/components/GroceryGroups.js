@@ -51,7 +51,7 @@ class GroceryGroups extends Component {
         super(props)
         this.state = {
             activeTab: 0,
-            groceryList: '',
+            groceryList: this.props.id,
             addGroup: false,
             deleteGroup: false,
             groups: [
@@ -141,7 +141,10 @@ class GroceryGroups extends Component {
 
 
     addGroup = (groupname) => {
-        api.createGroceryListGroup(this.props.listName, groupname, (jsonResponse) => {
+        api.createGroceryListGroup(this.props.id, groupname, (jsonResponse) => {
+            if (!jsonResponse) {
+                return
+            }
             const newGroups = this.state.groups
             newGroups.push({ label: groupname })
             this.setState({ groups: newGroups, activeGroup: newGroups.length })

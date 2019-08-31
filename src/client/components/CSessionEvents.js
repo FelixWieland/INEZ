@@ -7,9 +7,9 @@ import SuccessIcon from '@material-ui/icons/Check';
 import ErrorIcon from '@material-ui/icons/Error';
 
 const CSessionEvents = (props) => {
-    const { className, message, onClose, variant, sessionKey, variant, open, noEvent, ...other } = props;
+    const { className, message, onClose, variant, sessionKey, popen, noEvent, ...other } = props;
 
-    const [open, setOpen] = React.useState(open !== undefined ? open : true);
+    const [open, setOpen] = React.useState(popen !== undefined ? popen : true);
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {

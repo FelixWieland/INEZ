@@ -10,6 +10,12 @@ const header = {
     'Content-Type': 'application/json'
 }
 
+const authHeader = () => ({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': window.sessionStorage.getItem('jwt'),
+})
+
 export const subscribeToAutosuggestion = (callback) => {
     const event = 'autosuggest'
     socket.on(event, (autosuggestions) => callback(autosuggestions))
@@ -40,7 +46,7 @@ export const login = (username, password, onSuccess, onError) => {
         }
         onError(new Error('login failed'))
     }).then((data) => {
-        window.sessionStorage.setItem('jwt', data.jwt)
+        window.sessionStorage.setItem('jwt', 'Bearer ' + data.jwt)
         window.sessionStorage.setItem('reLogin', "-")
         onSuccess()
     }).catch((err) => onError(err))
@@ -64,7 +70,7 @@ export const register = (username, password, onSuccess, onError) => {
         }
         onError(new Error('registration failed'))
     }).then((data) => {
-        window.sessionStorage.setItem('jwt', data.jwt)
+        window.sessionStorage.setItem('jwt', 'Bearer ' + data.jwt)
         window.sessionStorage.setItem('register', "-")
         onSuccess()
     }).catch((err) => onError(err))
@@ -118,15 +124,20 @@ export const deleteGroceryListGroup = (grocerylistid, groupname, onSuccess, onEr
     }).then((data) => onSuccess(data)).catch((err) => onError(err))
 }
 
-export const createGroceryListGroup = (grocerylistid, groupname, onSuccess, onError) => {
-    fetch(uri + 'api/demoCall', {
+export const createGroceryListGroup = (listname, groupname, onSuccess, onError) => {
+    fetch(uri + 'api/lists/' + listname + '/create', {
         method: 'PUT',
+        header: authHeader(),
+        body: JSON.stringify({
+            groupname: groupname
+        })
     }).then((response) => {
         switch (response.status) {
             case 200: return response.json()
             case 401: handleJWTUpdate()
             case 505: ;
         }
+        console.log(authHeader())
         onError()
     }).then((data) => onSuccess(data)).catch((err) => onError(err))
 }
