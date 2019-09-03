@@ -33,23 +33,6 @@ app.post("/api/user/register", userRoutes.register);
 app.post("/api/user/login", userRoutes.login);
 app.get("/api/user", checkAuth, userRoutes.getUser);
 
-//grocerylists
-// app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
-// app.put("/api/lists", checkAuth, listRoutes.createGroceryList);
-// app.delete("/api/lists", checkAuth, listRoutes.deleteGroceryList);
-
-//list
-app.all("/api/lists/:listname", checkAuth, listRoutes.getGroceryListGroups);
-app.put(
-	"/api/lists/:listname/create",
-	checkAuth,
-	listRoutes.createProductGroup
-);
-app.delete(
-	"/api/lists/:listname/delete",
-	checkAuth,
-	listRoutes.deleteProductGroup
-);
 // //grocerylists
 app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
 app.put("/api/lists", checkAuth, listRoutes.createGroceryList);
