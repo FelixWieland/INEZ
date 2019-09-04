@@ -22,7 +22,7 @@ const shoppingListSchema = new Schema({
 			group: { type: String, required: true },
 			products: [
 				{
-					_id: { type: Schema.Types.ObjectId, ref: "products", required: true },
+					_id: { type: Schema.Types.ObjectId, ref: "products", required: false },
 					name: String,
 					measure: String,
 					amount: { type: Number, min: 0 },

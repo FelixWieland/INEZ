@@ -1,7 +1,7 @@
 import {
     extractFirstMeasure, extractMeasureObj, buildStringFromMeasureObj,
     capitalizeFirstLetter, capitalizeMeasure, getSingularBasedOnMeasure,
-    getPluralBasedOnMeasure, suggestPortionMeasure, getPluralBasedOnAmount, normalizeMeasure,
+    getPluralBasedOnMeasure, suggestPortionMeasure, getPluralBasedOnAmount, normalizeMeasure, normalizePossibleMeasures,
 } from '../utility'
 import chai, { expect } from 'chai'
 import resnap from 'resnap'
@@ -303,5 +303,18 @@ describe('#normalizeMeasure', () => {
         })
     })
 })
+
+describe('#normalizePossibleMeasures', () => {
+    context('All measures', () => {
+        it('should return all measures but normalized', () => {
+            expect(normalizePossibleMeasures()).to.eql([
+                'g', 'l', 'ml', 'pack', 'tüte',
+                'tetrapack', 'packung', 'portion', 'flasche', 'becher',
+                'wurst',
+            ])
+        })
+    })
+})
+
 
 resnap()

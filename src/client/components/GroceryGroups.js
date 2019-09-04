@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { withStyles } from '@material-ui/core'
+import { withStyles, Badge } from '@material-ui/core'
 import GroceryList from './GroceryList'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
@@ -19,6 +19,10 @@ const styles = (theme) => ({
     },
     tabbar: {
         marginTop: 25,
+    },
+    padding: {
+        padding: theme.spacing(0, 2),
+        zIndex: 0,
     },
 })
 
@@ -54,22 +58,29 @@ class GroceryGroups extends Component {
             groceryList: this.props.id,
             addGroup: false,
             deleteGroup: false,
-            groups: [
-                {
-                    label: 'Edeka',
-                },
-                {
-                    label: 'Lidl',
-                },
-                {
-                    label: 'Sonstiges',
-                },
-            ],
+            groups: [],
         }
     }
 
     componentDidMount() {
-        this.props.activeGroup(this.state.groups[this.state.activeTab].label)
+        api.getGroceryListItems(this.state.groceryList, (result) => {
+            console.log(result)
+            this.setState({
+                groups: result.productgroups.map((elm) => {
+                    console.log(elm)
+                    return {
+                        label: elm.group,
+                        products: elm.products,
+                        amount: elm.products.length,
+                    }
+                }),
+            })
+            if (result.productgroups.length > 0) {
+                this.props.activeGroup(result.productgroups[this.state.activeTab].group)
+            }
+        }, (err) => {
+
+        })
     }
 
 
@@ -80,13 +91,32 @@ class GroceryGroups extends Component {
     buildTabButtons = () => {
         return this.state.groups.map((elm, index) => {
             return (
-                <Tab label={elm.label} {...a11yProps(index)} />
+                <Tab label={(
+                    <Badge
+                        className={this.props.classes.padding}
+                        color={'primary'}
+                        badgeContent={elm.products !== undefined ? elm.products.length : 0}>
+                        {elm.label}
+                    </Badge>
+                )} {...a11yProps(index)} />
             )
         })
     }
 
-    changeGroup = (obj, newgroup) => {
-        this.state[newgroup + 'AddFn'](obj.id, obj.name, obj.amount, obj.measure, obj.productgroupid)
+    getItemsInGroup = (groupname, amountItems) => {
+        this.setState({
+            groups: this.state.groups.map((elm) => {
+                if (elm.label !== groupname) {
+                    return elm
+                }
+                elm.amount = amountItems
+                return elm
+            }),
+        })
+    }
+
+    changeGroup = (obj, newGroup) => {
+        this.state[newGroup + 'AddFn'](obj.id, obj.name, obj.amount, obj.measure, obj.productgroupid, obj.checked)
     }
 
     handleChange(event, newValue) {
@@ -101,8 +131,10 @@ class GroceryGroups extends Component {
                     <GroceryList
                         group={elm.label}
                         groceryList={this.state.groceryList}
+                        products={elm.products}
                         onGroupChange={this.changeGroup}
                         currentGroups={this.state.groups}
+                        exportItemsInGroup={(amount) => this.getItemsInGroup(elm.label, amount)}
                         exportAdd={(fn) => {
                             this.setState({ [elm.label + 'AddFn']: fn })
                             this.props.exportAdd(elm.label, fn)
@@ -147,12 +179,12 @@ class GroceryGroups extends Component {
             }
             const newGroups = this.state.groups
             newGroups.push({ label: groupname })
-            this.setState({ groups: newGroups, activeGroup: newGroups.length })
+            this.setState({ groups: newGroups, activeGroup: newGroups.length, amount: 0 })
         }, (err) => { })
     }
 
     deleteGroup = (groupobj) => {
-        api.deleteGroceryListGroup(this.props.listName, groupobj.label, (jsonResponse) => {
+        api.deleteGroceryListGroup(this.state.groceryList, groupobj.label, (jsonResponse) => {
             if (!jsonResponse) {
                 return
             }

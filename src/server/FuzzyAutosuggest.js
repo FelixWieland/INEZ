@@ -28,6 +28,7 @@ class FuzzyAutosuggest {
 				const db = conn.db('INEZ')
 				db.collection('products')
 					.find({})
+					.project({ portionsizename: 1, name: 1, productgroupid: 1 })
 					.toArray((err, result) => {
 						if (err) throw err
 						ready(result)

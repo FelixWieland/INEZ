@@ -15,7 +15,7 @@ class GroceryNote extends Component {
     }
 
     addGroceryItem = (measureObj) => {
-        api.createGroceryItem('list', measureObj, (jsonResponse) => {
+        api.createGroceryItem(this.props.match.params.id, this.state.activeGroup, measureObj, (jsonResponse) => {
             this.state[this.state.activeGroup]
                 .addGroceryItem(
                     jsonResponse.id,

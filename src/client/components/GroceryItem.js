@@ -10,7 +10,8 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess'
 import CheckIcon from '@material-ui/icons/Check'
 import { green } from '@material-ui/core/colors'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { capitalizeFirstLetter, getPluralBasedOnAmount } from '../utility'
+import { capitalizeFirstLetter, getPluralBasedOnAmount, normalizePossibleMeasures, capitalizeMeasure } from '../utility'
+import * as api from './../api'
 
 const styles = (theme) => ({
     card: {
@@ -99,20 +100,17 @@ class GroceryItem extends Component {
             group: undefined,
             productgroupid: null,
 
-            measureItems: [
-                {
-                    key: 1,
-                    value: 'gramm',
-                },
-                {
-                    key: 2,
-                    value: 'kilo',
-                },
-            ],
+            measureItems: normalizePossibleMeasures().map((measure, index) => {
+                return {
+                    key: index,
+                    value: measure,
+                }
+            }),
         }
     }
 
     componentDidMount() {
+        console.log(this.props)
         this.setState({
             checked: this.props.checked !== undefined ? this.props.checked : false,
             amount: this.props.amount !== undefined ? this.props.amount : 0,
@@ -137,32 +135,52 @@ class GroceryItem extends Component {
     toggleExpand = () => this.setState({ expanded: !this.state.expanded })
 
     toggleChecked = () => {
-        this.setState({ loading: !this.state.checked })
-        setTimeout(() => {
+        const newValue = !this.state.checked
+        this.setState({ loading: newValue })
+        this.handleItemChange(this.state.amount, this.state.measure, newValue, () => {
             this.setState({
-                checked: !this.state.checked,
+                checked: newValue,
                 loading: false,
             })
-        }, 1000)
+        })
     }
 
-    buildItems = (collection) => collection.map((elm) => (
+    buildItems = (collection, applyToValue = ((e) => e)) => collection.map((elm) => (
         <MenuItem key={elm.key} value={elm.value}>
-            {elm.value}
+            {applyToValue(elm.value)}
         </MenuItem>
     ))
 
-    buildMeasureItems = () => this.buildItems(this.state.measureItems)
+    buildMeasureItems = () => this.buildItems(this.state.measureItems,
+        (v) => capitalizeMeasure(getPluralBasedOnAmount(this.state.amount, v)))
 
     buildGroupItems = () => this.buildItems(this.props.currentGroups.map(
         (elm, index) => ({ key: index, value: elm.label })))
 
     handleMeasureChange = (e) => {
-        this.setState({ measure: e.target.value })
+        const newValue = e.target.value
+        this.handleItemChange(this.state.amount, newValue, this.state.checked, () => {
+            this.setState({ measure: newValue })
+        })
     }
 
     handleAmountChange = (e) => {
-        this.setState({ amount: e.target.value })
+        const newValue = e.target.value
+        this.handleItemChange(newValue, this.state.measure, this.state.checked, () => {
+            this.setState({ amount: newValue })
+        })
+    }
+
+    handleItemChange = (amount, measure, checked, onSuccess) => {
+        api.updateGroceryItem(this.props.listname, this.props.group, {
+            id: this.props.id,
+            name: this.props.name,
+            amount: amount,
+            measure: measure,
+            checked: checked,
+        }, onSuccess, (err) => {
+
+        })
     }
 
     handleGroupChange = (e) => {
@@ -171,6 +189,7 @@ class GroceryItem extends Component {
             name: this.props.name,
             amount: this.state.amount,
             measure: this.state.measure,
+            checked: this.state.checked,
         }, e.target.value)
         this.setState({ group: e.target.value })
     }
@@ -242,7 +261,7 @@ class GroceryItem extends Component {
     render() {
         const { classes } = this.props
         return (
-            <Card className={classes.card} key={this.props.key}>
+            <Card className={classes.card} key={this.props.key} >
                 <CardHeader
                     avatar={
                         <Avatar

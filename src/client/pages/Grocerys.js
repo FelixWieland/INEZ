@@ -52,17 +52,23 @@ class Grocerys extends Component {
         this.state = {
             addGroceryNote: false,
             deleteGroceryNote: false,
-            groceryNotes: [
-                {
-                    label: 'TestNote',
-                    time: '12.05.09',
-                },
-                {
-                    label: 'Demo',
-                    time: '12.05.18',
-                },
-            ],
+            groceryNotes: [],
         }
+    }
+
+    componentDidMount() {
+        api.getGroceryLists((result) => {
+            this.setState({
+                groceryNotes: result.grocerylists.reverse().map((elm) => {
+                    return {
+                        _id: elm._id,
+                        label: elm.list_name,
+                    }
+                }),
+            })
+        }, (err) => {
+
+        })
     }
 
     toggleAddGroceryNote = (e) => this.setState({ addGroceryNote: true })
@@ -70,10 +76,12 @@ class Grocerys extends Component {
 
     addGroceryNote = (name) => {
         api.createGroceryList(name, (jsonResponse) => {
+            if (!jsonResponse) {
+                return
+            }
             const newNotes = this.state.groceryNotes
             newNotes.unshift({
                 label: name,
-                time: ddmmyyyy(),
             })
             this.setState({ groceryNotes: newNotes })
         }, (err) => {
@@ -139,7 +147,7 @@ class Grocerys extends Component {
                                                 {elm.label}
                                             </Typography>
                                             <Typography variant={'subtitle1'} color={'textSecondary'}>
-                                                {elm.time}
+                                                {''}
                                             </Typography>
                                         </CardContent>
                                         <div className={classes.controls}>

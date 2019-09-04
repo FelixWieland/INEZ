@@ -29,16 +29,17 @@ class GroceryList extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            listItems: [
-            ],
+            listItems: [],
         }
     }
 
     componentDidMount() {
         this.props.exportAdd(this.addItem)
+        this.props.exportItemsInGroup(this.props.products.length)
+        this.setState({ listItems: this.props.products !== undefined ? this.props.products : [] })
     }
 
-    addItem = (id, name, amount, measure, productgroupid) => {
+    addItem = (id, name, amount, measure, productgroupid, checked) => {
         const newItems = this.state.listItems
         newItems.push({
             id: id,
@@ -46,15 +47,20 @@ class GroceryList extends React.Component {
             amount: amount,
             measure: measure,
             productgroupid: productgroupid,
+            checked: checked,
         })
         this.setState({
             listItems: newItems,
         })
+        this.props.exportItemsInGroup(newItems.length)
     }
 
-    deleteItem = (id) => {
-        console.log(id)
-        this.setState({ listItems: this.state.listItems.filter((elm) => elm.id != id) })
+    deleteItem = (name) => {
+        api.deleteGroceryItem(this.props.groceryList, this.props.group, { product: name }, (result) => {
+            this.setState({ listItems: this.state.listItems.filter((elm) => elm.name != name) })
+        }, (err) => {
+
+        })
     }
 
     deleteItemComponentOnly = (id) => {
@@ -93,19 +99,24 @@ class GroceryList extends React.Component {
         }
     }
 
-    groupChange = (obj, newgroup) => {
+    groupChange = (obj, newGroup) => {
         // api.updateGroceryItem()
+        const currentGroup = this.props.group
+        const listname = this.props.groceryList
+        api.changeProductGroup(listname, currentGroup, newGroup, { product: obj.name }, (result) => {
+            this.deleteItemComponentOnly(obj.id)
+            this.props.onGroupChange(obj, newGroup)
+        }, (err) => {
 
-        this.deleteItemComponentOnly(obj.id)
-        this.props.onGroupChange(obj, newgroup)
+        })
     }
 
-    buildGroceryItem = (id, name, amount, measure, productgroupid) => {
+    buildGroceryItem = (id, name, amount, measure, productgroupid, checked) => {
         return (
             <GroceryItem
-                key={id}
+                key={name}
                 id={id}
-                onDelete={() => this.deleteItem(id)}
+                onDelete={() => this.deleteItem(name)}
                 onGroupChange={this.groupChange}
                 name={name}
                 amount={amount}
@@ -113,6 +124,8 @@ class GroceryList extends React.Component {
                 group={this.props.group}
                 currentGroups={this.props.currentGroups}
                 productgroupid={productgroupid}
+                checked={checked}
+                listname={this.props.groceryList}
             />
         )
     }
@@ -123,7 +136,14 @@ class GroceryList extends React.Component {
         return (
             <List className={classes.list}>
                 {this.state.listItems.map((elm) => {
-                    return this.buildGroceryItem(elm.id, elm.name, elm.amount, elm.measure, elm.productgroupid)
+                    return this.buildGroceryItem(
+                        elm.id,
+                        elm.name,
+                        elm.amount,
+                        elm.measure,
+                        elm.productgroupid,
+                        elm.checked
+                    )
                 })}
             </List>
         )

@@ -1,113 +1,72 @@
-import express, { static as staticFiles } from "express";
-import path from "path";
-import cors from "cors";
-import { onConnection } from "./routes/autosuggestSocket";
-import socketio from "socket.io";
-import bodyParser from "body-parser";
-import * as routes from "./routes/test";
-import * as userRoutes from "./routes/user";
-import * as listRoutes from "./routes/list";
-import { checkAuth } from "./check-auth";
+import express, { static as staticFiles } from 'express'
+import path from 'path'
+import cors from 'cors'
+import { onConnection } from './routes/autosuggestSocket'
+import socketio from 'socket.io'
+import bodyParser from 'body-parser'
+import * as routes from './routes/test'
+import * as userRoutes from './routes/user'
+import * as listRoutes from './routes/list'
+import { checkAuth } from './check-auth'
+import morgan from 'morgan'
 
-const PORT = process.env.NODE_ENV === "production" ? 8000 : 3001;
+const PORT = process.env.NODE_ENV === 'production' ? 8000 : 3001
 
-const app = express();
-//bodyparser makes urlencoded and json easily readible
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(cors());
-// app.use((req, res, next) => {
-// 	res.header("Access-Control-Allow-Origin", "*");
-// 	res.header(
-// 		"Access-Control-Allow-Headers",
-// 		"Origin, X-Requested-With, Content-Type, Accept, Authorization"
-// 	);
-// })
-app.use(staticFiles("dist"));
+const app = express()
 
-//test
-app.get("/api/getUsername", routes.getUsername);
+app.use(cors())
+app.use('*', cors())
 
-//user
-app.post("/api/user/register", userRoutes.register);
-app.post("/api/user/login", userRoutes.login);
-app.get("/api/user", checkAuth, userRoutes.getUser);
+// bodyparser makes urlencoded and json easily readible
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+app.use(express.json(
+	{ type: ['application/json', 'text/plain'] }
+))
 
-//grocerylists
-// app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
-// app.put("/api/lists", checkAuth, listRoutes.createGroceryList);
-// app.delete("/api/lists", checkAuth, listRoutes.deleteGroceryList);
 
-//list
-app.all("/api/lists/:listname", checkAuth, listRoutes.getGroceryListGroups);
-app.put("/api/lists/:listname/create", checkAuth, listRoutes.createProductGroup);
-app.delete("/api/lists/:listname/delete", checkAuth, listRoutes.deleteProductGroup);
+app.use(staticFiles('dist'))
+
+// test
+app.get('/api/getUsername', routes.getUsername)
+
+// user
+app.post('/api/user/register', userRoutes.register)
+app.post('/api/user/login', userRoutes.login)
+app.post('/api/user/refreshToken', userRoutes.refreshToken)
+app.get('/api/user', checkAuth, userRoutes.getUser)
+
 // //grocerylists
-app.get("/api/lists", checkAuth, listRoutes.getGroceryLists);
-app.put("/api/lists", checkAuth, listRoutes.createGroceryList);
-app.delete("/api/lists", checkAuth, listRoutes.deleteGroceryList);
+app.get('/api/lists', checkAuth, listRoutes.getGroceryLists)
+app.put('/api/lists', checkAuth, listRoutes.createGroceryList)
+app.delete('/api/lists', checkAuth, listRoutes.deleteGroceryList)
 
-//list
-app.get("/api/lists/:listname", checkAuth, listRoutes.getGroceryListGroups);
-app.put(
-	"/api/lists/:listname/create",
-	checkAuth,
-	listRoutes.createProductGroup
-);
-app.delete(
-	"/api/lists/:listname/delete",
-	checkAuth,
-	listRoutes.deleteProductGroup
-);
+// list
+app.get('/api/lists/:listname', checkAuth, listRoutes.getGroceryListGroups)
+app.put('/api/lists/:listname/create', checkAuth, listRoutes.createProductGroup)
+app.delete('/api/lists/:listname/delete', checkAuth, listRoutes.deleteProductGroup)
 
-<<<<<<< HEAD
-app.put(
-	"/api/lists/:listname/:groupname",
-	checkAuth,
-	listRoutes.addProductToGroup
-);
-app.post(
-	"/api/lists/:listname/:groupname",
-	checkAuth,
-	listRoutes.updateProduct
-);
-app.delete(
-	"/api/lists/:listname/:groupname",
-	checkAuth,
-	listRoutes.deleteProduct
-);
-=======
-// app.put(
-// 	"/api/lists/:listname/:groupname",
-// 	checkAuth,
-// 	listRoutes.addProductToGroup
-// );
-// app.post(
-// 	"/api/lists/:listname/:groupname",
-// 	checkAuth,
-// 	listRoutes.updateProduct
-// );
-// app.delete(
-// 	"/api/lists/:listname/:groupname",
-// 	checkAuth,
-// 	listRoutes.deleteProduct
-// );
->>>>>>> f958137bc9bca0a1cf5069c200d03ed61d583ee7
+app.put('/api/lists/:listname/:groupname', checkAuth, listRoutes.addProductToGroup)
+app.post('/api/lists/:listname/:groupname', checkAuth, listRoutes.updateProduct)
+app.delete('/api/lists/:listname/:groupname', checkAuth, listRoutes.deleteProduct)
 
-//test
-app.all("/api/demoCall", routes.demoCall);
+app.post('/api/lists/:listname/:groupname/changegroup/:newgroupname', checkAuth, listRoutes.changeProductGroup)
+
+// test
+app.all('/api/demoCall', routes.demoCall)
 
 // rewrites non matching routes to index.html
 
-if (PORT === 8000)
-	app.all("/*", (req, res) =>
-		res.sendFile(path.resolve(__dirname, "../../dist/index.html"))
-	);
+if (PORT === 8000) {
+	app.all('/*', (req, res) =>
+		res.sendFile(path.resolve(__dirname, '../../dist/index.html'))
+	)
+}
 
-const server = app.listen(PORT, () => console.log("Listening on port " + PORT));
-const io = socketio.listen(server);
+const server = app.listen(PORT, () => console.log('Listening on port ' + PORT))
+const io = socketio.listen(server)
 
-io.on("connection", onConnection);
+io.on('connection', onConnection)
 
 // logger
-// app.use(morgan("dev"));
+app.use(morgan('dev'))

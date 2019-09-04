@@ -153,3 +153,9 @@ export const normalizeMeasure = (measure) => {
     }
     return measure
 }
+
+export const normalizePossibleMeasures = () => [...new Set(
+    measures.map((measure) => {
+        return normalizeMeasure(measure)
+    })
+)]

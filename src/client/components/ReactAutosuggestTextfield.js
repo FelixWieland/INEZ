@@ -55,6 +55,17 @@ const styles = (theme) => ({
     },
     suggestion: {
         display: 'block',
+        [theme.breakpoints.down('sm')]: {
+            // position: 'absolute',
+            width: 'calc(100vw - 10px) !important',
+        },
+    },
+    paper: {
+        [theme.breakpoints.down('sm')]: {
+            // position: 'absolute',
+            marginTop: 4,
+            width: 'calc(100vw - 10px) !important',
+        },
     },
     suggestionsList: {
         margin: 0,
@@ -238,10 +249,14 @@ class ReactAutosuggestTextfield extends React.Component {
                         suggestion: classes.suggestion,
                     }}
                     renderSuggestionsContainer={(options) => (
-                        <Popper anchorEl={this.state.anchorEl} open={Boolean(options.children)}>
+                        <Popper
+                            anchorEl={this.state.anchorEl}
+                            open={Boolean(options.children)}
+                            className={classes.paper}>
                             <Paper
                                 square
                                 {...options.containerProps}
+                                className={classes.paper}
                                 style={{ width: this.state.anchorEl ? this.state.anchorEl.clientWidth : undefined }}
                             >
                                 {options.children}
